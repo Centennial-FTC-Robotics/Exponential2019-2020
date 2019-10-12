@@ -49,6 +49,20 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
+    public boolean motorsBusy() {
+        boolean busy = false;
+        for (DcMotor motor : driveMotors) {
+           if(motor.isBusy())
+               busy = true;
+        }
+        return busy;
+    }
+
+    public void waitForMotors(){
+        while(opModeIsActive() && motorsBusy()){
+        }
+    }
+
     public void turnRelative(double counterClockwise) {
 
     }
