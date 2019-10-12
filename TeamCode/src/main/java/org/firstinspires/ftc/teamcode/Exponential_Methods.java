@@ -17,7 +17,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         super.backRight.setPower(backRight);
     }
 
-    public void setRotateSpeed(double counterClockwise) {
+    public void setPowerDriveMotors(double power) {
+        for (DcMotor motor: driveMotors) {
+            motor.setPower(power);
+        }
+    }
+    public void setRotateSpeed(double counterClockwise){
         setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
     }
 
@@ -33,7 +38,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         int forwardVal = convertInchToEncoder(forward);
         int rightVal = convertInchToEncoder(right);
 
-        for (DcMotor motor : driveMotors) {
+        for(DcMotor motor : driveMotors){
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(power);
         }
@@ -43,8 +49,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         driveMotors[2].setTargetPosition(forwardVal + rightVal);
         driveMotors[3].setTargetPosition(forwardVal - rightVal);
 
-        waitForMotors();
+        while (motorsBusy() && opModeIsActive()) {
 
+        }
+        setPowerDriveMotors(0);
         //return motors to original runmode
         for (DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -52,23 +60,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public boolean motorsBusy() {
-        boolean busy = false;
-        for (DcMotor motor : driveMotors) {
-            if (motor.isBusy())
-                busy = true;
-        }
-        return busy;
-    }
-
-    public void waitForMotors() {
-        while (opModeIsActive() && motorsBusy()) {
-        }
+        return driveMotors[0].isBusy() || driveMotors[1].isBusy() || driveMotors[2].isBusy() || driveMotors[3].isBusy();
     }
 
     public void turnRelative(double counterClockwiseAngle, double max, double min, double tolerance) {
         double constant = 1.0;
 
-        resetEncoders();
     }
 
     public void turnAbsolute(double counterClockwiseAngle, double max, double min, double tolerance) {
