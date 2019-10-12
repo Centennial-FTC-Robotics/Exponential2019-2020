@@ -42,6 +42,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         driveMotors[2].setTargetPosition(forwardVal + rightVal );
         driveMotors[3].setTargetPosition(forwardVal - rightVal);
 
+        waitForMotors();
 
         //return motors to original runmode
         for(DcMotor motor : driveMotors){
@@ -49,7 +50,19 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
+    public boolean motorsBusy() {
+        boolean busy = false;
+        for (DcMotor motor : driveMotors) {
+           if(motor.isBusy())
+               busy = true;
+        }
+        return busy;
+    }
 
+    public void waitForMotors(){
+        while(opModeIsActive() && motorsBusy()){
+        }
+    }
 
     public void turnRelative(double counterClockwiseAngle, double max, double min, double tolerance) {
         double constant = 1.0;
@@ -59,6 +72,5 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void turnAbsolute(double counterClockwise){
 
     }
-
-    public void resetEncoders()
+    
 }
