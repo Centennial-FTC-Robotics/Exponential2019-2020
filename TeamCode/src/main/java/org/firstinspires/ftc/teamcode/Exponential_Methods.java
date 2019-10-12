@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
@@ -49,13 +49,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void turnRelative(double targetChange, double speed) {
+    public void turnRelative(double counterClockwise) {
 
     }
 
-    public void turnAbsolute(double targetAngle, double speed){
+    public void turnAbsolute(double counterClockwise){
 
     }
-
     
 }
