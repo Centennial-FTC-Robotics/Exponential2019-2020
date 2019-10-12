@@ -9,7 +9,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         super.runOpMode();
     }
 
-    public void setPowerWheelMotors (double frontRight, double backRight, double backLeft, double frontLeft){
+    public void setPowerDriveMotors (double frontRight, double backRight, double backLeft, double frontLeft){
         super.frontRight.setPower(frontRight);
         super.frontLeft.setPower(frontLeft);
         super.backLeft.setPower(backLeft);
@@ -17,7 +17,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void setRotateSpeed(double counterClockwise){
-        setPowerWheelMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
+        setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
     }
 
     public int convertInchToEncoder(double inches){
@@ -49,7 +49,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void turnRelative(double counterClockwise) {
+
+
+    public void turnRelative(double counterClockwiseAngle, double max, double min, double tolerance) {
+        double constant = 1.0;
 
     }
 
