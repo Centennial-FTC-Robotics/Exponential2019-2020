@@ -37,7 +37,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         int forwardVal = convertInchToEncoder(forward);
         int rightVal = convertInchToEncoder(right);
 
-        for(DcMotor motor : driveMotors){
+        for(DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor.setPower(power);
