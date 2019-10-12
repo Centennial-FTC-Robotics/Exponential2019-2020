@@ -14,6 +14,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor intakeRight;
     protected DcMotor slideLeft;
     protected DcMotor slideRight;
+    protected DcMotor[] driveMotors = new DcMotor[4];
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,5 +34,10 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        driveMotors[0] = frontLeft;
+        driveMotors[1] = frontRight;
+        driveMotors[2] = backLeft;
+        driveMotors[3] = backRight;
     }
 }
