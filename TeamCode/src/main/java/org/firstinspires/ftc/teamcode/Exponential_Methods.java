@@ -59,5 +59,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void turnAbsolute(double counterClockwise){
 
     }
-    
+
+    public void resetEncoders()
 }
