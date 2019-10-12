@@ -15,9 +15,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void setRotateSpeed(double anticlockwise){
-        super.frontRight.setPower(frontRight);
-        super.frontLeft.setPower(frontLeft);
-        super.backLeft.setPower(backLeft);
-        super.backRight.setPower(backRight);
+        setPowerWheelMotors(anticlockwise, anticlockwise, -anticlockwise, -anticlockwise);
     }
+
+    
 }
