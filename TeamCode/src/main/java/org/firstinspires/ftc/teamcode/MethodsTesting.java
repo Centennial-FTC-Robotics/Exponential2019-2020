@@ -1,22 +1,30 @@
 package org.firstinspires.ftc.teamcode;
 
-public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+public class MethodsTesting extends LinearOpMode {
+    //upleft, upright, backleft, backright
+    private DcMotor[] driveMotors = new DcMotor[4];
 
     @Override
     public void runOpMode() throws InterruptedException {
-        super.runOpMode();
+        while(opModeIsActive()){
+            driveMotors[0] = hardwareMap.dcMotor.get("upleft");
+            driveMotors[1] = hardwareMap.dcMotor.get("upright");
+            driveMotors[2] = hardwareMap.dcMotor.get("backleft");
+            driveMotors[3] = hardwareMap.dcMotor.get("backright");
+
+            driveMotors[0].setDirection(DcMotorSimple.Direction.REVERSE);
+            driveMotors[2].setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+            move(5,5,1);
+        }
     }
 
-    public void setPowerWheelMotors (double frontRight, double backRight, double backLeft, double frontLeft){
-        super.frontRight.setPower(frontRight);
-        super.frontLeft.setPower(frontLeft);
-        super.backLeft.setPower(backLeft);
-        super.backRight.setPower(backRight);
-    }
-
-    public void setRotateSpeed(double counterClockwise){
-        setPowerWheelMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
-    }
 
     public int convertInchToEncoder(double inches){
         //get the right value ok
@@ -47,13 +55,13 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void turnRelative(double counterClockwise) {
+    public void turnRelative(double targetChange, double speed) {
 
     }
 
-    public void turnAbsolute(double counterClockwise){
+    public void turnAbsolute(double targetAngle, double speed){
 
     }
 
-    
 }
+
