@@ -29,6 +29,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //Note that one of the intake motors has to be set to reverse but we don't know yet
 
         driveMotors[0] = frontLeft;
         driveMotors[1] = frontRight;

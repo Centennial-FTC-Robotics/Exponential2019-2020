@@ -8,6 +8,29 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         super.runOpMode();
     }
 
+    //-------------- Basic --------------
+
+    public int convertInchToEncoder(double inches){
+        //get the right value ok
+        int encoderValue = (int) Math.round(50 * inches);
+        return encoderValue;
+    }
+
+    public boolean motorsBusy() {
+        return driveMotors[0].isBusy() || driveMotors[1].isBusy() || driveMotors[2].isBusy() || driveMotors[3].isBusy();
+    }
+
+    public void waitForMotors(){
+        while(motorsBusy() && opModeIsActive()){
+        }
+    }
+
+    public void resetOrientation(){
+
+    }
+
+    //-------------- Movement --------------
+
     public void setPowerDriveMotors (double frontRight, double backRight, double backLeft, double frontLeft){
         super.frontRight.setPower(frontRight);
         super.frontLeft.setPower(frontLeft);
@@ -19,15 +42,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         for (DcMotor motor: driveMotors) {
             motor.setPower(power);
         }
-    }
-    public void setRotateSpeed(double counterClockwise){
-        setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
-    }
-
-    public int convertInchToEncoder(double inches){
-        //get the right value ok
-        int encoderValue = (int) Math.round(50 * inches);
-        return encoderValue;
     }
 
     //distance in inches
@@ -56,13 +70,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public boolean motorsBusy() {
-        return driveMotors[0].isBusy() || driveMotors[1].isBusy() || driveMotors[2].isBusy() || driveMotors[3].isBusy();
-    }
-
-    public void waitForMotors(){
-        while(motorsBusy() && opModeIsActive()){
-        }
+    public void setRotateSpeed(double counterClockwise){
+        setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
     }
 
     public void turnRelative(double counterClockwiseAngle, double max, double min, double tolerance) {
@@ -73,5 +82,34 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void turnAbsolute(double counterClockwise){
 
     }
+
+    //Idk parameters yet
+    public void extendSlides(){
+
+    }
+
+    //Negative = backwards, positive = forwards
+    public void setIntakeWheels(double power){
+        intakeLeft.setPower(power);
+        intakeRight.setPower(power);
+    }
+
+    //Idk parameters yet
+    public void toggleHook(){
+
+    }
+
+    //Idk parameters yet
+    public void intakeToggle(){
+
+    }
+
+    //-------------- Computer Vision --------------
+
+    public void findSkyStone(){
+
+    }
+
+
     
 }
