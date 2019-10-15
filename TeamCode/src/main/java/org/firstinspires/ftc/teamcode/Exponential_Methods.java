@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
@@ -48,9 +47,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         driveMotors[2].setTargetPosition(forwardVal + rightVal );
         driveMotors[3].setTargetPosition(forwardVal - rightVal);
 
-        while (motorsBusy() && opModeIsActive()) {
+        waitForMotors();
 
-        }
         setPowerDriveMotors(0);
         //return motors to original runmode
         for(DcMotor motor : driveMotors){
@@ -60,6 +58,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     public boolean motorsBusy() {
         return driveMotors[0].isBusy() || driveMotors[1].isBusy() || driveMotors[2].isBusy() || driveMotors[3].isBusy();
+    }
+
+    public void waitForMotors(){
+        while(motorsBusy() && opModeIsActive()){
+        }
     }
 
     public void turnRelative(double counterClockwiseAngle, double max, double min, double tolerance) {
