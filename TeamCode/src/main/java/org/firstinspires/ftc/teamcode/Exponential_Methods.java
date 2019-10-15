@@ -79,13 +79,35 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     }
 
-    public void turnAbsolute(double counterClockwise){
+    public void turnAbsolute(double targetAngle, double speed){
+        double currentAngle;
 
     }
 
-    //Idk parameters yet
-    public void extendSlides(){
+    //What units should position be?
+    public void extendSlidesTo(int position, float speed){
+        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        //SET POSITION but idk if we want parameter to be inch or encoder values
+        //so i left it blank for now
+        //slideLeft.setTargetPosition(value??);
+        //slideRight.setTargetPosition(value??);
+
+        slideLeft.setPower(speed);
+        slideRight.setPower(speed);
+
+        while(opModeIsActive() && slideLeft.isBusy() || slideRight.isBusy()){}
+
+        slideLeft.setPower(0);
+        slideRight.setPower(0);
+    }
+
+    public void setSlidePower(float power){
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideLeft.setPower(power);
+        slideRight.setPower(power);
     }
 
     //Negative = backwards, positive = forwards
@@ -94,12 +116,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         intakeRight.setPower(power);
     }
 
-    //Idk parameters yet
+    //Idk parameters yet; this is the hook for moving foundation
     public void toggleHook(){
 
     }
 
-    //Idk parameters yet
+    //Idk parameters yet; this is the servos that allows the intake to clamp
     public void intakeToggle(){
 
     }
