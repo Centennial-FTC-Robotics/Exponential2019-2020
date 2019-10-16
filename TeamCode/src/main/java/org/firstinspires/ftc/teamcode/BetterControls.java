@@ -44,10 +44,10 @@ public class BetterControls extends LinearOpMode {
             upright.setPower((powerright + powerup) / magnitude);
             backright.setPower((-powerright + powerup) / magnitude);
         } else {
-            upleft.setPower((-powerright + powerup) / 2);
-            backleft.setPower((powerright + powerup) / 2);
-            upright.setPower((powerright + powerup) / 2);
-            backright.setPower((-powerright + powerup) / 2);
+            upleft.setPower((-powerright + powerup));
+            backleft.setPower((powerright + powerup));
+            upright.setPower((powerright + powerup));
+            backright.setPower((-powerright + powerup));
         }
     }
 
