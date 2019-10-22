@@ -109,26 +109,26 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
     }
 
-    public void turnRelative(double counterClockwiseAngle, double max, double min, double tolerance) {
-        double constant = 1.0;
+    public void turnRelative(double targetAngle) {
 
     }
 
     public void turnAbsolute(double targetAngle){
         double currentAngle;
         int direction;
-        double turnRate = 0;
-        double P;
-        double tolerance = 0.5;
+        double turnRate = 00000; //set later
+        double P = 00000; //set later
+        double tolerance = 0.5; //set later
+        double maxSpeed = 00000; //set later
+        double minSpeed = 00000; //set later
         double error;
 
         do{
-            currentAngle = update it with gyroscope;
+            currentAngle = 00000; //set later
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
-            turnRate = Range.clip(P * error, )
-            setPowerDriveMotors((float) -(turnRate));
-
+            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
+            setPowerDriveMotors((float) -(turnRate * direction), (float) (turnRate * direction));
         }
         while(opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
@@ -139,7 +139,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //SET POSITION but idk if we want parameter to be inch or encoder values
+        //SET POSITION!! but idk if we want parameter to be inch or encoder values
         //so i left it blank for now
         //slideLeft.setTargetPosition(value??);
         //slideRight.setTargetPosition(value??);
