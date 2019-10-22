@@ -33,7 +33,7 @@ public class Forward extends LinearOpMode {
         while(opModeIsActive()) {
             double power = gamepad1.left_stick_y;
             double rotate = gamepad1.right_stick_x;
-            upleft.setPower();
+            upleft.setPower(Range.clip(power + rotate, -1, 1));
             upright.setPower(Range.clip(power+rotate,-1,1));
             backleft.setPower(Range.clip(power-rotate,-1,1));
             backright.setPower(Range.clip(power+rotate,-1,1));
