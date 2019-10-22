@@ -116,18 +116,18 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void turnAbsolute(double targetAngle){
         double currentAngle;
         int direction;
-        double turnRate = 0;
-        double P = hand tune it!!;
-        double tolerance = 0.5;
-        double maxSpeed = some value!!;
-        double minSpeed = some value!!;
+        double turnRate = 00000; //set later
+        double P = 00000; //set later
+        double tolerance = 0.5; //set later
+        double maxSpeed = 00000; //set later
+        double minSpeed = 00000; //set later
         double error;
 
         do{
-            currentAngle = update it with gyroscope!!;
+            currentAngle = 00000; //set later
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
-            turnRate = Range.clip(P * error, minSpeed, maxSpeed)
+            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
             setPowerDriveMotors((float) -(turnRate * direction), (float) (turnRate * direction));
         }
         while(opModeIsActive() && error > tolerance);
