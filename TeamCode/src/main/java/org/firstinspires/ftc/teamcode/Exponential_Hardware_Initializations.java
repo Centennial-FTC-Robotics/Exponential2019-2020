@@ -22,13 +22,17 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
-        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-        intakeRight = hardwareMap.dcMotor.get("intakeRight");
-        slideLeft = hardwareMap.dcMotor.get("slideLeft");
-        slideRight = hardwareMap.dcMotor.get("slideRight");
+
+//        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+//        intakeRight = hardwareMap.dcMotor.get("intakeRight");
+//        slideLeft = hardwareMap.dcMotor.get("slideLeft");
+//        slideRight = hardwareMap.dcMotor.get("slideRight");
+
+
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //Note that one of the intake motors has to be set to reverse but we don't know yet
 
         driveMotors[0] = frontLeft;
         driveMotors[1] = frontRight;
@@ -40,9 +44,9 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

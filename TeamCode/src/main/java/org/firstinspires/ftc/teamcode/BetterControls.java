@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode;
-
+// :3
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "TeleOp", group = "TeleOp")
+@TeleOp(name = "Controls", group = "TeleOp")
 public class BetterControls extends LinearOpMode {
     private DcMotor upleft;
     private DcMotor backleft;
@@ -55,10 +55,10 @@ public class BetterControls extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        upleft = hardwareMap.dcMotor.get("upleft");
-        backleft = hardwareMap.dcMotor.get("backleft");
-        backright = hardwareMap.dcMotor.get("backright");
-        upright = hardwareMap.dcMotor.get("upright");
+        upleft = hardwareMap.dcMotor.get("frontLeft");
+        backleft = hardwareMap.dcMotor.get("backLeft");
+        backright = hardwareMap.dcMotor.get("backRight");
+        upright = hardwareMap.dcMotor.get("frontRight");
 
         upleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -86,7 +86,7 @@ public class BetterControls extends LinearOpMode {
                 // brute_force_method(adjustable_move_factor * trigger_factor * powerright, adjustable_move_factor * trigger_factor * powerup);
             } else if (rotate_counterclockwise != 0.0) {
                 // change this to adjust rotation speed
-                double adjustable_rotate_factor = .5;
+                double adjustable_rotate_factor = .25;
 
                 upleft.setPower(adjustable_rotate_factor * trigger_factor * -rotate_counterclockwise);
                 backleft.setPower(adjustable_rotate_factor * trigger_factor * -rotate_counterclockwise);
