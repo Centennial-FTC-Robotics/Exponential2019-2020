@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
@@ -15,6 +16,31 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         int encoderValue = (int) Math.round(50 * inches);
         return encoderValue;
     }
+
+    public double getAngleDist(double targetAngle, double currentAngle) {
+        double angleDifference = currentAngle - targetAngle;
+        if (Math.abs(angleDifference) > 180) {
+            angleDifference = 360 - Math.abs(angleDifference);
+        } else {
+            angleDifference = Math.abs(angleDifference);
+        }
+
+        return angleDifference;
+    }
+
+    public int getAngleDir(double targetAngle, double currentAngle) {
+
+        double angleDifference = currentAngle - targetAngle;
+        int angleDir = (int) (angleDifference / Math.abs(angleDifference));
+
+        if (Math.abs(angleDifference) > 180) {
+            angleDir *= -1;
+        }
+
+        return angleDir;
+    }
+
+    //-------------- Status --------------
 
     public boolean motorsBusy() {
         return driveMotors[0].isBusy() || driveMotors[1].isBusy() || driveMotors[2].isBusy() || driveMotors[3].isBusy();
@@ -38,6 +64,13 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         super.backRight.setPower(backRight);
     }
 
+    public void setPowerDriveMotors(float leftSpeed, float rightSpeed){
+        frontLeft.setPower(Range.clip(leftSpeed, -1, 1));
+        backLeft.setPower(Range.clip(leftSpeed, -1, 1));
+        frontRight.setPower(Range.clip(rightSpeed, -1, 1));
+        backRight.setPower(Range.clip(rightSpeed, -1, 1));
+    }
+
     public void setPowerDriveMotors(double power) {
         for (DcMotor motor: driveMotors) {
             motor.setPower(power);
@@ -51,7 +84,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         int rightVal = convertInchToEncoder(right);
 
         for(DcMotor motor : driveMotors) {
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
@@ -82,9 +114,24 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     }
 
-    public void turnAbsolute(double targetAngle, double speed){
+    public void turnAbsolute(double targetAngle){
         double currentAngle;
+        int direction;
+        double turnRate = 0;
+        double P;
+        double tolerance = 0.5;
+        double error;
 
+        do{
+            currentAngle = update it with gyroscope;
+            error = getAngleDist(targetAngle, currentAngle);
+            direction = getAngleDir(targetAngle, currentAngle);
+            turnRate = Range.clip(P * error, )
+            setPowerDriveMotors((float) -(turnRate));
+
+        }
+        while(opModeIsActive() && error > tolerance);
+        setPowerDriveMotors(0);
     }
 
     //What units should position be?
