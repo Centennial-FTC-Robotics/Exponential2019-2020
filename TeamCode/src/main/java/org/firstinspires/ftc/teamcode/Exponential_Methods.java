@@ -120,7 +120,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double P = 00000; //set later
         double tolerance = 0.5; //set later
         double maxSpeed = 00000; //set later
-        double minSpeed = 00000; //set later
+        double minSpeed = 0.5; //set later
         double error;
 
         do{
