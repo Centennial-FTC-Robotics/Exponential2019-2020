@@ -40,6 +40,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         driveMotors[3] = backRight;
 
         for(DcMotor motor : driveMotors){
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }

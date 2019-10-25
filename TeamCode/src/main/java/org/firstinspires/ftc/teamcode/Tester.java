@@ -12,6 +12,8 @@ public class Tester extends Exponential_Methods{
         while (opModeIsActive()) {
 
             move(12,12,0.5);
+            wait(5000);
+            turnAbsolute(90);
         }
     }
 }
