@@ -83,10 +83,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         int forwardVal = convertInchToEncoder(forward);
         int rightVal = convertInchToEncoder(right);
 
-        driveMotors[0].setTargetPosition(forwardVal - rightVal);
-        driveMotors[1].setTargetPosition(forwardVal + rightVal);
-        driveMotors[2].setTargetPosition(forwardVal + rightVal );
-        driveMotors[3].setTargetPosition(forwardVal - rightVal);
+        frontLeft.setTargetPosition(forwardVal - rightVal);
+        frontRight.setTargetPosition(forwardVal + rightVal);
+        backLeft.setTargetPosition(forwardVal + rightVal );
+        backRight.setTargetPosition(forwardVal - rightVal);
 
         for(DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
