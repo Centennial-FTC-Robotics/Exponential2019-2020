@@ -40,6 +40,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return angleDir;
     }
 
+    public void resetMotorEncoder(DcMotor motor) {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     //-------------- Status --------------
 
     public boolean motorsBusy() {
@@ -49,6 +54,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void waitForMotors(){
         while(motorsBusy() && opModeIsActive()){
         }
+    }
+
+    public void resetDriveMotorsEncoders(){
+        for(DcMotor motor : driveMotors)
+            resetMotorEncoder(motor);
     }
 
     public void resetOrientation(){
@@ -135,6 +145,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     //What units should position be?
+    //PUT A LIMIT IN
     public void extendSlidesTo(int position, float speed){
         slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
