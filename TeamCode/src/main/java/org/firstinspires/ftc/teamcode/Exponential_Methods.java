@@ -116,11 +116,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void turnAbsolute(double targetAngle){
         double currentAngle;
         int direction;
-        double turnRate = 00000; //set later
-        double P = 00000; //set later
+        double turnRate = 0;
+        double P = 0.1; //set later
         double tolerance = 0.5; //set later
-        double maxSpeed = 00000; //set later
-        double minSpeed = 00000; //set later
+        double maxSpeed = 0.5; //set later
+        double minSpeed = 0.02; //set later
         double error;
 
         do{
