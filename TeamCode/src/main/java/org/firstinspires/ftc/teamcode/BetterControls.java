@@ -86,7 +86,7 @@ public class BetterControls extends LinearOpMode {
                 // brute_force_method(adjustable_move_factor * trigger_factor * powerright, adjustable_move_factor * trigger_factor * powerup);
             } else if (rotate_counterclockwise != 0.0) {
                 // change this to adjust rotation speed
-                double adjustable_rotate_factor = .25;
+                double adjustable_rotate_factor = .5;
 
                 upleft.setPower(adjustable_rotate_factor * trigger_factor * -rotate_counterclockwise);
                 backleft.setPower(adjustable_rotate_factor * trigger_factor * -rotate_counterclockwise);
