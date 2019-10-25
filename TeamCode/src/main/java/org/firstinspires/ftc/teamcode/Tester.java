@@ -11,7 +11,7 @@ public class Tester extends Exponential_Methods{
 
         while (opModeIsActive()) {
 
-            move(10,10,0.3);
+            move(10,10,0.5);
         }
     }
 }
