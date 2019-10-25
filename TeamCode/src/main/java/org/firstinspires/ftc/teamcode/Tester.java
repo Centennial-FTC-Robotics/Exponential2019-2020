@@ -8,12 +8,9 @@ public class Tester extends Exponential_Methods{
         super.runOpMode();
 
         waitForStart();
-
+        move(12,0,0.5);
+        // turnAbsolute(90);
         while (opModeIsActive()) {
-
-            move(12,12,0.5);
-            wait(5000);
-            turnAbsolute(90);
         }
     }
 }
