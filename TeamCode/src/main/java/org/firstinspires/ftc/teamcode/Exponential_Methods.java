@@ -12,8 +12,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     //-------------- Basic --------------
 
     public int convertInchToEncoder(double inches){
-        //get the right value ok
-        int encoderValue = (int) Math.round(50 * inches);
+        double conversion = 31.01439480317557;
+        int encoderValue = (int) Math.round(conversion * inches);
         return encoderValue;
     }
 
@@ -83,14 +83,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         int forwardVal = convertInchToEncoder(forward);
         int rightVal = convertInchToEncoder(right);
 
-        for(DcMotor motor : driveMotors) {
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
         driveMotors[0].setTargetPosition(forwardVal - rightVal);
         driveMotors[1].setTargetPosition(forwardVal + rightVal);
         driveMotors[2].setTargetPosition(forwardVal + rightVal );
         driveMotors[3].setTargetPosition(forwardVal - rightVal);
+
+        for(DcMotor motor : driveMotors) {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
 
         for(DcMotor motor : driveMotors) {
             motor.setPower(power);
