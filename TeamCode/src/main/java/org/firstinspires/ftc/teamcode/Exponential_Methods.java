@@ -97,7 +97,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             case 'X':
                 return AngleUnit.normalizeDegrees(orientation.secondAngle - initialPitch);
             case 'Y':
-                return AngleUnit.normalizeDegrees(orientation.thirdAngle() - initialRoll);
+                return AngleUnit.normalizeDegrees(orientation.thirdAngle - initialRoll);
             case 'Z':
                 return AngleUnit.normalizeDegrees(orientation.firstAngle - initialHeading);
         }
