@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+
 
 public abstract class Exponential_Hardware_Initializations extends LinearOpMode {
     protected DcMotor frontLeft;
@@ -15,6 +16,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor slideLeft;
     protected DcMotor slideRight;
     protected DcMotor[] driveMotors = new DcMotor[4];
+
+    protected BNO055IMU imu;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,7 +31,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 //        slideLeft = hardwareMap.dcMotor.get("slideLeft");
 //        slideRight = hardwareMap.dcMotor.get("slideRight");
 
-
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -49,5 +52,6 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 //        intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 }

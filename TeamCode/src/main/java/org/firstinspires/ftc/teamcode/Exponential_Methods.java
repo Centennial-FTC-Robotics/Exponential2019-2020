@@ -1,12 +1,26 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
+    }
+    //-------------- Initialization --------------
+    public void initializeIMU() {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu.initialize(parameters);
+        while (opModeIsActive() && !imu.isGyroCalibrated()) ;
+        resetOrientation();
     }
 
     //-------------- Basic --------------
@@ -113,10 +127,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         for(DcMotor motor : driveMotors){
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    }
-
-    public void setRotateSpeed(double counterClockwise){
-        setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
     }
 
     public void turnRelative(double targetAngle) {
