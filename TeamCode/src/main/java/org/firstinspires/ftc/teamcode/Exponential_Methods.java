@@ -157,7 +157,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void turnRelative(double targetAngle) {
-        turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle);
+        turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
     //clockwise
