@@ -93,10 +93,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         int forwardVal = convertInchToEncoder(forward);
         int rightVal = convertInchToEncoder(right);
 
-        frontLeft.setTargetPosition(forwardVal - rightVal);
-        frontRight.setTargetPosition(forwardVal + rightVal);
-        backLeft.setTargetPosition(forwardVal + rightVal );
-        backRight.setTargetPosition(forwardVal - rightVal);
+        frontLeft.setTargetPosition(forwardVal + rightVal);
+        frontRight.setTargetPosition(forwardVal - rightVal);
+        backLeft.setTargetPosition(forwardVal - rightVal );
+        backRight.setTargetPosition(forwardVal + rightVal);
 
         for(DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -126,7 +126,24 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
+        resetDriveMotorEncoders();
+        double tolerance = convertInchToEncoder(inchesTolerance);
 
+        double frontLeft_encoder = encoderForward-encoderSideways;
+        double frontRight_encoder = encoderForward+encoderSideways;
+        double backLeft_encoder = encoderForward+encoderSideways;
+        double backRight_encoder = encoderForward-encoderSideways;
+
+
+
+        double frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+        double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+        double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+        double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+
+        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance&&){
+        }
+        setPowerDriveMotors(0);
     }
 
     public void resetDriveMotorEncoders(){

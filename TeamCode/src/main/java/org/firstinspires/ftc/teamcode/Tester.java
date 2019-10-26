@@ -8,7 +8,7 @@ public class Tester extends Exponential_Methods{
         super.runOpMode();
 
         waitForStart();
-        setPowerDriveMotors(1);
+        move(60, 0, .5);
         while (opModeIsActive()) {
 
         }
