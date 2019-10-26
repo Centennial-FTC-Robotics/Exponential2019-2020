@@ -2,6 +2,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
@@ -76,8 +81,30 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void resetOrientation(){
-
+        updateOrientation();
+        initialHeading = orientation.firstAngle;
+        initialRoll = orientation.secondAngle;
+        initialPitch = orientation.thirdAngle;
     }
+
+    public void updateOrientation() {
+        orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    }
+
+    public double getRotationinDimension(char dimension) {
+        updateOrientation();
+        switch (Character.toUpperCase(dimension)) {
+            case 'X':
+                return AngleUnit.normalizeDegrees(orientation.secondAngle - initialPitch);
+            case 'Y':
+                return AngleUnit.normalizeDegrees(orientation.thirdAngle() - initialRoll);
+            case 'Z':
+                return AngleUnit.normalizeDegrees(orientation.firstAngle - initialHeading);
+        }
+        return 0;
+    }
+
+
 
     //-------------- Movement --------------
 
@@ -130,9 +157,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void turnRelative(double targetAngle) {
-
+        turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle);
     }
 
+    //clockwise
     public void turnAbsolute(double targetAngle){
         double currentAngle;
         int direction;
@@ -144,7 +172,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double error;
 
         do{
-            currentAngle = 00000; //set later
+            currentAngle = getRotationinDimension('Z');
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);

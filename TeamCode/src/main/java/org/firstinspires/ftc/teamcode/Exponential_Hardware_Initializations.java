@@ -5,6 +5,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 
 public abstract class Exponential_Hardware_Initializations extends LinearOpMode {
     protected DcMotor frontLeft;
@@ -17,7 +22,11 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor slideRight;
     protected DcMotor[] driveMotors = new DcMotor[4];
 
+    protected Orientation orientation = new Orientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES,0,0,0,0);
     protected BNO055IMU imu;
+    double initialHeading;
+    double initialPitch;
+    double initialRoll;
 
     @Override
     public void runOpMode() throws InterruptedException {
