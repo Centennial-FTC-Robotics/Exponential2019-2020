@@ -109,8 +109,21 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
     }
 
-    public void turnRelative(double targetAngle) {
+    public void turnRelative(int inchesForward, int inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
 
+    }
+
+    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
+        double encoderForward = convertInchToEncoder(inchesForward);
+        double encoderSideways = convertInchToEncoder(inchesSideways);
+
+    }
+
+    public void resetDriveMotorEncoders(){
+        for (int i=0; i<driveMotors.length; i++) {
+            driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            driveMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 
     public void turnAbsolute(double targetAngle){
@@ -182,10 +195,5 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     }
 
-    public void resetEncoders(){
-        for (DcMotor motor: driveMotors){
-            //motor.
-        }
-    }
     
 }
