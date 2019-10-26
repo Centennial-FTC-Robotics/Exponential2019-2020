@@ -8,9 +8,10 @@ public class Tester extends Exponential_Methods{
         super.runOpMode();
 
         waitForStart();
-        move(60, 0, .5);
+        //move(60, 0, .5);
+        move(60, 0, 1.0/20, 0,0,.5,-.5,.1);
         while (opModeIsActive()) {
-
+            
         }
     }
 }

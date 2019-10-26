@@ -123,10 +123,18 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     }
 
-    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
+    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max_positive, double min_negative, double inchesTolerance){
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
         resetDriveMotorEncoders();
+
         double tolerance = convertInchToEncoder(inchesTolerance);
 
         double frontLeft_encoder = encoderForward-encoderSideways;
@@ -141,7 +149,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
 
-        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance&&){
+        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance){
+            frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
+            frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
+            backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
+            backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
         }
         setPowerDriveMotors(0);
     }
