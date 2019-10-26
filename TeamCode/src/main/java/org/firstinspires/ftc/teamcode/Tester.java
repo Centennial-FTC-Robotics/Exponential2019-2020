@@ -7,12 +7,11 @@ public class Tester extends Exponential_Methods{
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         initializeIMU();
-        waitForStart();
 
+        waitForStart();
+        move(60, 0, .5);
         while (opModeIsActive()) {
 
-            move(12,12,0.5);
-            turnAbsolute(90);
         }
     }
 }

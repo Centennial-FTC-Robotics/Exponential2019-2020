@@ -42,8 +42,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         //Note that one of the intake motors has to be set to reverse but we don't know yet
 
         driveMotors[0] = frontLeft;
@@ -54,6 +54,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         for(DcMotor motor : driveMotors){
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
