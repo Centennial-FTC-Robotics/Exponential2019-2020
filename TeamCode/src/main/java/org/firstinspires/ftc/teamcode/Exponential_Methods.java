@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
     @Override
@@ -149,11 +151,34 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
 
-        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance){
+        while (opModeIsActive()&& (Math.abs(frontLeft_displacement)>tolerance || Math.abs(frontRight_displacement)>tolerance || Math.abs(backLeft_displacement)>tolerance || Math.abs(backRight_displacement)>tolerance)){
+
+            // telemetry.addData("frontLeft",Range.clip(p*frontLeft_displacement, min_negative, max_positive));
+            telemetry.addData("frontLeft",frontLeft_displacement);
+
+            //telemetry.addData("frontRight",Range.clip(p*frontRight_displacement, min_negative, max_positive));
+            telemetry.addData("frontRight", frontRight_displacement);
+
+            //telemetry.addData("backLeft",Range.clip(p*backLeft_displacement, min_negative, max_positive));
+            telemetry.addData("backLeft", backLeft_displacement);
+
+            //telemetry.addData("backRight",Range.clip(p*backRight_displacement, min_negative, max_positive));
+            telemetry.addData("backRight", backRight_displacement);
+
+            telemetry.update();
+
             frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
             frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
             backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
             backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
+
+
+            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+
+
         }
         setPowerDriveMotors(0);
     }
