@@ -12,6 +12,8 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
+
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
     //tensor flow and vuforia stuff
@@ -20,6 +22,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private TFObjectDetector tfod; //Tensor Flow Object Detection engine
     private int cameraMonitorViewId;
 
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -123,6 +128,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
 
     //-------------- Movement --------------
 
