@@ -57,8 +57,16 @@ public class SomeAutonomousPath extends Exponential_Methods {
                                     recognition.getLeft(), recognition.getTop());
                             telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                     recognition.getRight(), recognition.getBottom());
+                            telemetry.addData(String.format("TOP (%d)", i), "%.03f", recognition.getTop());
+                            telemetry.addData(String.format("BOTTOM (%d)", i), "%.03f", recognition.getBottom());
+                            telemetry.addData(String.format("RIGHT (%d)", i), "%.03f", recognition.getRight());
+                            telemetry.addData(String.format("LEFT (%d)", i), "%.03f", recognition.getLeft());
+                            telemetry.addData(String.format("BOTTOM - TOP (%d)", i), "%.03f", recognition.getBottom() - recognition.getTop());
+                            telemetry.addData(String.format("RIGHT - LEFT (%d)", i), "%.03f", recognition.getRight() - recognition.getLeft());
+
                         }
                         telemetry.update();
+
                     }
                 }
             }
