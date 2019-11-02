@@ -18,16 +18,25 @@ public class SomeAutonomousPath extends Exponential_Methods {
     private static final String VUFORIA_KEY =
             "AQmuIUP/////AAAAGR6dNDzwEU07h7tcmZJ6YVoz5iaF8njoWsXQT5HnCiI/oFwiFmt4HHTLtLcEhHCU5ynokJgYSvbI32dfC2rOvqmw81MMzknAwxKxMitf8moiK62jdqxNGADODm/SUvu5a5XrAnzc7seCtD2/d5bAIv1ZuseHcK+oInFHZTi+3BvhbUyYNvnVb0tQEAv8oimzjiQW18dSUcEcB/d6QNGDvaDHpxuRCJXt8U3ShJfBWWQEex0Vp6rrb011z8KxU+dRMvGjaIy+P2p5GbWXGJn/yJS9oxuwDn3zU6kcQoAwI7mUgAw5zBGxxM+P35DoDqiOja6ST6HzDszHxClBm2dvTRP7C4DEj0gPkhX3LtBgdolt";
 
-    private VuforiaLocalizer vuforia;
+    //private VuforiaLocalizer vuforia;
 
-    private TFObjectDetector tfod;
+    //private TFObjectDetector tfod;
 
 
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
+
+        waitForStart();
+        initVuforia();
+        initTfod();
+        telemetry.update();
         testingTensorFlow();
     }
     public void testingTensorFlow() {
+        telemetry.update();
+        if (tfod != null) {
+            tfod.activate();
+        }
         if (opModeIsActive()) {
 
             while (opModeIsActive()) {

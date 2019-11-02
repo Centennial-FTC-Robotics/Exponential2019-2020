@@ -8,7 +8,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
+
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
+
+    //tensor flow and vuforia stuff
+    private static final String VUFORIA_KEY = "AQmuIUP/////AAAAGR6dNDzwEU07h7tcmZJ6YVoz5iaF8njoWsXQT5HnCiI/oFwiFmt4HHTLtLcEhHCU5ynokJgYSvbI32dfC2rOvqmw81MMzknAwxKxMitf8moiK62jdqxNGADODm/SUvu5a5XrAnzc7seCtD2/d5bAIv1ZuseHcK+oInFHZTi+3BvhbUyYNvnVb0tQEAv8oimzjiQW18dSUcEcB/d6QNGDvaDHpxuRCJXt8U3ShJfBWWQEex0Vp6rrb011z8KxU+dRMvGjaIy+P2p5GbWXGJn/yJS9oxuwDn3zU6kcQoAwI7mUgAw5zBGxxM+P35DoDqiOja6ST6HzDszHxClBm2dvTRP7C4DEj0gPkhX3LtBgdolt";
+    public VuforiaLocalizer vuforia; //Vuforia localization engine
+    public TFObjectDetector tfod; //Tensor Flow Object Detection engine
+    private int cameraMonitorViewId;
+
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -104,7 +120,22 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return 0;
     }
 
+    public void initVuforia() {
+        //create parameter object and pass it to create Vuforia engine
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    }
 
+    public void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
 
     //-------------- Movement --------------
 
@@ -156,7 +187,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
+    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max_positive, double min_negative, double inchesTolerance){
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
         resetDriveMotorEncoders();
@@ -174,7 +205,23 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
 
-        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance){ }
+        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
+            frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
+            frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
+            backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
+            backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
+
+            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+            telemetry.addData("frontLeft", frontLeft_displacement);
+            telemetry.addData("backLeft", backLeft_displacement);
+            telemetry.addData("frontRight", frontRight_displacement);
+            telemetry.addData("backRight", backRight_displacement);
+            telemetry.addData("tolerance", tolerance);
+            telemetry.update();
+        }
         setPowerDriveMotors(0);
     }
 
