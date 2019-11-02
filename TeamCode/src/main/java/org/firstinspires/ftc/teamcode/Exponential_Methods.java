@@ -120,7 +120,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return 0;
     }
 
-    private void initVuforia() {
+    public void initVuforia() {
         //create parameter object and pass it to create Vuforia engine
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
@@ -128,7 +128,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
-    private void initTfod() {
+    public void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
