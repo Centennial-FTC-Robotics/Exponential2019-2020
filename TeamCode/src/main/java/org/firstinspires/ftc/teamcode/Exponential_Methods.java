@@ -2,7 +2,18 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
+
+    //tensor flow and vuforia stuff
+    private static final String VUFORIA_KEY = "AQmuIUP/////AAAAGR6dNDzwEU07h7tcmZJ6YVoz5iaF8njoWsXQT5HnCiI/oFwiFmt4HHTLtLcEhHCU5ynokJgYSvbI32dfC2rOvqmw81MMzknAwxKxMitf8moiK62jdqxNGADODm/SUvu5a5XrAnzc7seCtD2/d5bAIv1ZuseHcK+oInFHZTi+3BvhbUyYNvnVb0tQEAv8oimzjiQW18dSUcEcB/d6QNGDvaDHpxuRCJXt8U3ShJfBWWQEex0Vp6rrb011z8KxU+dRMvGjaIy+P2p5GbWXGJn/yJS9oxuwDn3zU6kcQoAwI7mUgAw5zBGxxM+P35DoDqiOja6ST6HzDszHxClBm2dvTRP7C4DEj0gPkhX3LtBgdolt";
+    private VuforiaLocalizer vuforia; //Vuforia localization engine
+    private TFObjectDetector tfod; //Tensor Flow Object Detection engine
+    private int cameraMonitorViewId;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -53,6 +64,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     public void resetOrientation(){
 
+    }
+
+    private void initVuforia() {
+        //create parameter object and pass it to create Vuforia engine
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
     //-------------- Movement --------------

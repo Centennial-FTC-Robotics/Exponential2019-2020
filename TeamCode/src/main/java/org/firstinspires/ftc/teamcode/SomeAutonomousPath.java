@@ -24,13 +24,27 @@ public class SomeAutonomousPath extends Exponential_Methods {
 
 
     public void runOpMode() throws InterruptedException {
+        telemetry.update();
         super.runOpMode();
+
+        telemetry.update();
+        waitForStart();
+
+        telemetry.update();
         testingTensorFlow();
     }
     public void testingTensorFlow() {
+        telemetry.update();
+        if (tfod != null) {
+            tfod.activate();
+        }
         if (opModeIsActive()) {
 
+            telemetry.addData("here5", "");
+            telemetry.update();
             while (opModeIsActive()) {
+                telemetry.addData("in loop", "");
+                telemetry.update();
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
