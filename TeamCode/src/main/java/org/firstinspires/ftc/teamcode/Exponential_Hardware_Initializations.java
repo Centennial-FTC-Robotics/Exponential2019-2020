@@ -18,8 +18,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor backRight;
     protected DcMotor intakeLeft;
     protected DcMotor intakeRight;
-    protected DcMotor slideLeft;
-    protected DcMotor slideRight;
+    protected DcMotor slideUp;
+    protected DcMotor slideDown;
     protected DcMotor[] driveMotors = new DcMotor[4];
 
     protected Orientation orientation = new Orientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES,0,0,0,0);
@@ -37,14 +37,15 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
 //        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
 //        intakeRight = hardwareMap.dcMotor.get("intakeRight");
-//        slideLeft = hardwareMap.dcMotor.get("slideLeft");
-//        slideRight = hardwareMap.dcMotor.get("slideRight");
+//        slideUp = hardwareMap.dcMotor.get("slideLeft");
+//        slideDown = hardwareMap.dcMotor.get("slideRight");
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         //Note that one of the intake motors has to be set to reverse but we don't know yet
+        //Note that one of the slides motors MIGHT have to be set reverse
 
         driveMotors[0] = frontLeft;
         driveMotors[1] = frontRight;
@@ -61,8 +62,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
 //        intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 }

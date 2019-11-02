@@ -26,6 +26,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
+
+    //limits
+    public static final int slidesLimit = 5; //set later
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -77,7 +81,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     public void resetMotorEncoder(DcMotor motor) {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //-------------- Status --------------
@@ -253,31 +257,33 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         setPowerDriveMotors(0);
     }
 
-    //What units should position be?
-    //PUT A LIMIT IN
+    //position in inches
+    //probably need to add negative signs and reverse stuff later when we actually have slides
+    //add a minimum limit if necessary
     public void extendSlidesTo(int position, float speed){
-        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //SET POSITION!! but idk if we want parameter to be inch or encoder values
-        //so i left it blank for now
-        //slideLeft.setTargetPosition(value??);
-        //slideRight.setTargetPosition(value??);
+        int encoderVal = position; //CONVERSION?
 
-        slideLeft.setPower(speed);
-        slideRight.setPower(speed);
+        slideUp.setTargetPosition(encoderVal);
+        slideDown.setTargetPosition(encoderVal);
 
-        while(opModeIsActive() && slideLeft.isBusy() || slideRight.isBusy()){}
-
-        slideLeft.setPower(0);
-        slideRight.setPower(0);
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesLimit
+                && slideDown.getCurrentPosition() < slidesLimit &&
+                (slideUp.isBusy() || slideDown.isBusy())){}
+        setSlidePower(0);
     }
 
+    //Positive = extend, negative = retract
     public void setSlidePower(float power){
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideLeft.setPower(power);
-        slideRight.setPower(power);
+        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesLimit
+                && slideDown.getCurrentPosition() < slidesLimit){
+            slideUp.setPower(power);
+            slideDown.setPower(power);
+        }
     }
 
     //Negative = backwards, positive = forwards
