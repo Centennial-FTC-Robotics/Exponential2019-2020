@@ -1,9 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 
 public abstract class Exponential_Hardware_Initializations extends LinearOpMode {
     protected DcMotor frontLeft;
@@ -15,6 +21,12 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor slideLeft;
     protected DcMotor slideRight;
     protected DcMotor[] driveMotors = new DcMotor[4];
+
+    protected Orientation orientation = new Orientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES,0,0,0,0);
+    protected BNO055IMU imu;
+    double initialHeading;
+    double initialPitch;
+    double initialRoll;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,7 +40,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 //        slideLeft = hardwareMap.dcMotor.get("slideLeft");
 //        slideRight = hardwareMap.dcMotor.get("slideRight");
 
-
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -51,5 +63,6 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 //        intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 }

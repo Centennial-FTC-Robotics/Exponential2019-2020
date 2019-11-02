@@ -1,14 +1,31 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
 public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
 
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
+    }
+    //-------------- Initialization --------------
+    public void initializeIMU() {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu.initialize(parameters);
+        while (opModeIsActive() && !imu.isGyroCalibrated()) ;
+        resetOrientation();
     }
 
     //-------------- Basic --------------
@@ -58,14 +75,36 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void resetDriveMotorsEncoders(){
+    public void resetDriveMotorEncoders(){
         for(DcMotor motor : driveMotors)
             resetMotorEncoder(motor);
     }
 
     public void resetOrientation(){
-
+        updateOrientation();
+        initialHeading = orientation.firstAngle;
+        initialRoll = orientation.secondAngle;
+        initialPitch = orientation.thirdAngle;
     }
+
+    public void updateOrientation() {
+        orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    }
+
+    public double getRotationinDimension(char dimension) {
+        updateOrientation();
+        switch (Character.toUpperCase(dimension)) {
+            case 'X':
+                return AngleUnit.normalizeDegrees(orientation.secondAngle - initialPitch);
+            case 'Y':
+                return AngleUnit.normalizeDegrees(orientation.thirdAngle - initialRoll);
+            case 'Z':
+                return AngleUnit.normalizeDegrees(orientation.firstAngle - initialHeading);
+        }
+        return 0;
+    }
+
+
 
     //-------------- Movement --------------
 
@@ -117,26 +156,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void setRotateSpeed(double counterClockwise){
-        setPowerDriveMotors(counterClockwise, counterClockwise, -counterClockwise, -counterClockwise);
-    }
-
-    public void turnRelative(int inchesForward, int inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
-
-    }
-
-    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max_positive, double min_negative, double inchesTolerance){
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-
+    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
         resetDriveMotorEncoders();
-
         double tolerance = convertInchToEncoder(inchesTolerance);
 
         double frontLeft_encoder = encoderForward-encoderSideways;
@@ -151,45 +174,16 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
 
-        while (opModeIsActive()&& (Math.abs(frontLeft_displacement)>tolerance || Math.abs(frontRight_displacement)>tolerance || Math.abs(backLeft_displacement)>tolerance || Math.abs(backRight_displacement)>tolerance)){
-
-            // telemetry.addData("frontLeft",Range.clip(p*frontLeft_displacement, min_negative, max_positive));
-            telemetry.addData("frontLeft",frontLeft_displacement);
-
-            //telemetry.addData("frontRight",Range.clip(p*frontRight_displacement, min_negative, max_positive));
-            telemetry.addData("frontRight", frontRight_displacement);
-
-            //telemetry.addData("backLeft",Range.clip(p*backLeft_displacement, min_negative, max_positive));
-            telemetry.addData("backLeft", backLeft_displacement);
-
-            //telemetry.addData("backRight",Range.clip(p*backRight_displacement, min_negative, max_positive));
-            telemetry.addData("backRight", backRight_displacement);
-
-            telemetry.update();
-
-            frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
-            frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
-            backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
-            backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
-
-
-            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
-            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
-            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
-            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-
-
+        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance&&){
         }
         setPowerDriveMotors(0);
     }
 
-    public void resetDriveMotorEncoders(){
-        for (int i=0; i<driveMotors.length; i++) {
-            driveMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            driveMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+    public void turnRelative(double targetAngle) {
+        turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
+    //clockwise
     public void turnAbsolute(double targetAngle){
         double currentAngle;
         int direction;
@@ -201,7 +195,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double error;
 
         do{
-            currentAngle = 00000; //set later
+            currentAngle = getRotationinDimension('Z');
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
@@ -259,6 +253,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void findSkyStone(){
 
     }
+
 
     
 }
