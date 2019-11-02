@@ -18,9 +18,9 @@ public class SomeAutonomousPath extends Exponential_Methods {
     private static final String VUFORIA_KEY =
             "AQmuIUP/////AAAAGR6dNDzwEU07h7tcmZJ6YVoz5iaF8njoWsXQT5HnCiI/oFwiFmt4HHTLtLcEhHCU5ynokJgYSvbI32dfC2rOvqmw81MMzknAwxKxMitf8moiK62jdqxNGADODm/SUvu5a5XrAnzc7seCtD2/d5bAIv1ZuseHcK+oInFHZTi+3BvhbUyYNvnVb0tQEAv8oimzjiQW18dSUcEcB/d6QNGDvaDHpxuRCJXt8U3ShJfBWWQEex0Vp6rrb011z8KxU+dRMvGjaIy+P2p5GbWXGJn/yJS9oxuwDn3zU6kcQoAwI7mUgAw5zBGxxM+P35DoDqiOja6ST6HzDszHxClBm2dvTRP7C4DEj0gPkhX3LtBgdolt";
 
-    private VuforiaLocalizer vuforia;
+    //private VuforiaLocalizer vuforia;
 
-    private TFObjectDetector tfod;
+    //private TFObjectDetector tfod;
 
 
     public void runOpMode() throws InterruptedException {
@@ -39,14 +39,8 @@ public class SomeAutonomousPath extends Exponential_Methods {
         }
         if (opModeIsActive()) {
 
-            telemetry.addData("here5", "");
-            telemetry.update();
             while (opModeIsActive()) {
-                telemetry.addData("in loop", "");
-                telemetry.update();
                 if (tfod != null) {
-                    telemetry.addData("in if statement", "");
-                    telemetry.update();
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
