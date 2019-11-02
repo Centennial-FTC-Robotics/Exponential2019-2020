@@ -174,8 +174,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
 
-        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance&&){
-        }
+        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance){ }
         setPowerDriveMotors(0);
     }
 
@@ -183,15 +182,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
-    //clockwise
     public void turnAbsolute(double targetAngle){
         double currentAngle;
         int direction;
-        double turnRate = 0;
-        double P = 0.1; //set later
-        double tolerance = 0.5; //set later
-        double maxSpeed = 0.5; //set later
-        double minSpeed = 0.02; //set later
+        double turnRate;
+        double P = 0.001; //set later
+        double tolerance = 4; //set later
+        double maxSpeed = 0.4; //set later
+        double minSpeed = 0.01; //set later
         double error;
 
         do{
@@ -199,7 +197,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
-            setPowerDriveMotors((float) -(turnRate * direction), (float) (turnRate * direction));
+            telemetry.addData("error",error);
+            telemetry.addData("turnRate", turnRate);
+            telemetry.update();
+            setPowerDriveMotors((float) (turnRate * direction), -(float) (turnRate * direction));
         }
         while(opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
