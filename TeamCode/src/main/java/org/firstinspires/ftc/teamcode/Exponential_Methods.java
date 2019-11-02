@@ -156,7 +156,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max, double min, double inchesTolerance){
+    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max_positive, double min_negative, double inchesTolerance){
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
         resetDriveMotorEncoders();
@@ -174,7 +174,22 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
 
-        while (Math.abs(frontLeft_displacement)>tolerance&&Math.abs(frontRight_displacement)>tolerance&&Math.abs(backLeft_displacement)>tolerance&&Math.abs(backRight_displacement)>tolerance&&){
+        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
+            frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
+            frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
+            backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
+            backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
+
+            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+            telemetry.addData("frontLeft", frontLeft_displacement);
+            telemetry.addData("backLeft", backLeft_displacement);
+            telemetry.addData("frontRight", frontRight_displacement);
+            telemetry.addData("backRight", backRight_displacement);
+            telemetry.addData("tolerance", tolerance);
+            telemetry.update();
         }
         setPowerDriveMotors(0);
     }
