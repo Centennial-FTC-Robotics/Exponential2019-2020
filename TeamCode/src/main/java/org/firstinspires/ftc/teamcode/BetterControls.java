@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
-
+// :3
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "TeleOp", group = "TeleOp")
+import java.sql.Driver;
+
+@TeleOp(name = "Controls", group = "TeleOp")
 public class BetterControls extends LinearOpMode {
     private DcMotor upleft;
     private DcMotor backleft;
@@ -44,10 +46,10 @@ public class BetterControls extends LinearOpMode {
             upright.setPower((powerright + powerup) / magnitude);
             backright.setPower((-powerright + powerup) / magnitude);
         } else {
-            upleft.setPower((-powerright + powerup) / 2);
-            backleft.setPower((powerright + powerup) / 2);
-            upright.setPower((powerright + powerup) / 2);
-            backright.setPower((-powerright + powerup) / 2);
+            upleft.setPower((-powerright + powerup));
+            backleft.setPower((powerright + powerup));
+            upright.setPower((powerright + powerup));
+            backright.setPower((-powerright + powerup));
         }
     }
 
@@ -55,18 +57,25 @@ public class BetterControls extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        upleft = hardwareMap.dcMotor.get("upleft");
-        backleft = hardwareMap.dcMotor.get("backleft");
-        backright = hardwareMap.dcMotor.get("backright");
-        upright = hardwareMap.dcMotor.get("upright");
+        upleft = hardwareMap.dcMotor.get("frontLeft");
+        backleft = hardwareMap.dcMotor.get("backLeft");
+        backright = hardwareMap.dcMotor.get("backRight");
+        upright = hardwareMap.dcMotor.get("frontRight");
 
         upleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         upleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         upright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        upleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        upright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         waitForStart();
 
