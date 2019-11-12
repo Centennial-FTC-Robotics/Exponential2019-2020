@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -21,6 +22,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor slideLeft;
     protected DcMotor slideRight;
     protected DcMotor[] driveMotors = new DcMotor[4];
+    protected CRServo rightIntakeServo;
+    protected CRServo leftIntakeServo;
 
     protected Orientation orientation = new Orientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES,0,0,0,0);
     protected BNO055IMU imu;
@@ -34,6 +37,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
+        rightIntakeServo = hardwareMap.crservo.get("servoIntakeRight");
+        leftIntakeServo = hardwareMap.crservo.get("servoIntakeLeft");
 
 //        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
 //        intakeRight = hardwareMap.dcMotor.get("intakeRight");
