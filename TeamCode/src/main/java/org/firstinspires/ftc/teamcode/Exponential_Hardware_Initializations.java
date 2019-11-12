@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -18,6 +19,9 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor backRight;
     protected DcMotor intakeLeft;
     protected DcMotor intakeRight;
+    protected Servo intakeServoLeft;
+    protected Servo intakeServoRight;
+    protected Servo hookServo;
     protected DcMotor slideUp;
     protected DcMotor slideDown;
     protected DcMotor[] driveMotors = new DcMotor[4];
@@ -35,10 +39,16 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
 
+//        hookServo = hardwareMap.servo.get("hookServo");
+//        intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
+//        intakeServoRight = hardwareMap.servo.get("intakeServoRight");
+
 //        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
 //        intakeRight = hardwareMap.dcMotor.get("intakeRight");
 //        slideUp = hardwareMap.dcMotor.get("slideLeft");
 //        slideDown = hardwareMap.dcMotor.get("slideRight");
+
+
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
@@ -46,6 +56,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         //Note that one of the intake motors has to be set to reverse but we don't know yet
         //Note that one of the slides motors MIGHT have to be set reverse
+        //Note that one of the intake servos has to be set to reverse Servo.Direction.REVERSE
+
 
         driveMotors[0] = frontLeft;
         driveMotors[1] = frontRight;

@@ -28,7 +28,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
 
     //limits
-    public static final int slidesLimit = 5; //set later
+    public static final int slidesMax = 5; //set later
+    public static final int slidesMin = 0; //set later
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -269,8 +270,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         slideUp.setTargetPosition(encoderVal);
         slideDown.setTargetPosition(encoderVal);
 
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesLimit
-                && slideDown.getCurrentPosition() < slidesLimit &&
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
+                && slideDown.getCurrentPosition() < slidesMax &&
+        slideUp.getCurrentPosition() > slidesMin &&
+                slideDown.getCurrentPosition() > slidesMin &&
                 (slideUp.isBusy() || slideDown.isBusy())){}
         setSlidePower(0);
     }
@@ -279,8 +282,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void setSlidePower(float power){
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesLimit
-                && slideDown.getCurrentPosition() < slidesLimit){
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
+                && slideDown.getCurrentPosition() < slidesMax &&
+                slideUp.getCurrentPosition() > slidesMin &&
+                slideDown.getCurrentPosition() > slidesMin){
             slideUp.setPower(power);
             slideDown.setPower(power);
         }
@@ -292,14 +297,18 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         intakeRight.setPower(power);
     }
 
-    //Idk parameters yet; this is the hook for moving foundation
-    public void toggleHook(){
-
+    //hook for moving foundation, true = down, false = up
+    public void toggleHook(boolean down){
+        if(down)
+            hookServo.setPosition(1);
+        else
+            hookServo.setPosition(0);
     }
 
-    //Idk parameters yet; this is the servos that allows the intake to clamp
-    public void intakeToggle(){
-
+    //servos that clamp
+    public void setIntakeServosPosition(double position){
+        intakeServoLeft.setPosition(position);
+        intakeServoRight.setPosition(position);
     }
 
     //-------------- Computer Vision --------------
