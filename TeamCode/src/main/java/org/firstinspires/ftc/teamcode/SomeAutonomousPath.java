@@ -27,7 +27,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
 
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
-
+        initializeIMU();
         waitForStart();
         initVuforia();
         initTfod();
@@ -83,7 +83,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
         }
 
         if (left) {//turn left 45 deg, go right until skystone in middle, go forwards
-            //move(12, 12, .7); //go diagonally 1 foot
+            move(12, 12, .5, -.5); //go diagonally 1 foot
             turnRelative(45);
             moveRightUntilCenter();
         }
@@ -105,7 +105,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                setPowerDriveMotors(.5, -.5, .5, -.5); //going right
+                setPowerDriveMotors(-.5, .5, -.5, .5); //going right
                 if (tfod != null) {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
