@@ -105,7 +105,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                setPowerDriveMotors(-.5, .5, -.5, .5); //going right
+                setPowerDriveMotors(-.2, .2, -.2, .2); //going right
                 if (tfod != null) {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
