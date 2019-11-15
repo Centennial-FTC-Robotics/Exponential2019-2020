@@ -9,7 +9,7 @@ public class Tester extends Exponential_Methods{
         initializeIMU();
 
         waitForStart();
-        move(12,0,0.3);
+        turnRelative(90);
         sleep(2000);
         move(0,-12,0.3);
         sleep(2000);
