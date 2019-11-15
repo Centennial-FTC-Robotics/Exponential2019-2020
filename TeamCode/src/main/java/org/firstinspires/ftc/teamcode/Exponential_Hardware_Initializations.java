@@ -26,8 +26,6 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor slideUp;
     protected DcMotor slideDown;
     protected DcMotor[] driveMotors = new DcMotor[4];
-    protected CRServo rightIntakeServo;
-    protected CRServo leftIntakeServo;
 
     protected Orientation orientation = new Orientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES,0,0,0,0);
     protected BNO055IMU imu;
@@ -41,13 +39,10 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
-        rightIntakeServo = hardwareMap.crservo.get("servoIntakeRight");
-        leftIntakeServo = hardwareMap.crservo.get("servoIntakeLeft");
+        intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
+        intakeServoRight = hardwareMap.servo.get("intakeServoRight");
 
 //        hookServo = hardwareMap.servo.get("hookServo");
-//        intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
-//        intakeServoRight = hardwareMap.servo.get("intakeServoRight");
-
 //        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
 //        intakeRight = hardwareMap.dcMotor.get("intakeRight");
 //        slideUp = hardwareMap.dcMotor.get("slideLeft");
