@@ -231,6 +231,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void turnRelative(double targetAngle) {
+        telemetry.addData("starting angle", getRotationinDimension(('z')));
+        telemetry.update();
+        turnAbsolute(0);
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
