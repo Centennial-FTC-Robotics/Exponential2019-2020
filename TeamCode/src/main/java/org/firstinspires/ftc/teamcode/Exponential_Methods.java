@@ -192,7 +192,13 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max_positive, double min_negative, double inchesTolerance){
+    public void move(double inchesForward, double inchesSideways, double max_positive, double min_negative){
+        inchesSideways = -inchesSideways;
+        double p = 1.0/800;
+        double i;
+        double d;
+        double inchesTolerance = 0.5;
+
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
         resetDriveMotorEncoders();
@@ -241,10 +247,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double currentAngle;
         int direction;
         double turnRate;
-        double P = 0.005; //set later
+        double P = 0.001; //set later
         double tolerance = 4; //set later
-        double maxSpeed = 0.5; //set later
-        double minSpeed = 0.05; //set later
+        double maxSpeed = 0.4; //set later
+        double minSpeed = 0.01; //set later
         double error;
 
         do{
@@ -261,18 +267,17 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         setPowerDriveMotors(0);
     }
 
-    //position in inches?? or encoder val
+    //position in inches
     //probably need to add negative signs and reverse stuff later when we actually have slides
+    //add a minimum limit if necessary
     public void extendSlidesTo(int position, float speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        int encoderVal = position; //CONVERSION? if in inches
+        int encoderVal = position; //CONVERSION?
 
         slideUp.setTargetPosition(encoderVal);
         slideDown.setTargetPosition(encoderVal);
-
-        setSlidePower(speed);
 
         while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
                 && slideDown.getCurrentPosition() < slidesMax &&

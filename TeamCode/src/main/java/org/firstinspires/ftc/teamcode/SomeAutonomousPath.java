@@ -27,7 +27,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
 
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
-
+        initializeIMU();
         waitForStart();
         initVuforia();
         initTfod();
@@ -45,7 +45,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
         }
         if (opModeIsActive()) {
 
-            while (/*!left && !center && !right*/ opModeIsActive()) {
+            while (!left && !center && !right) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -72,23 +72,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
                         }
 
                         telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                            /*telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                    recognition.getLeft(), recognition.getTop());
-                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                    recognition.getRight(), recognition.getBottom());*/
-                        //telemetry.addData(String.format("TOP (%d)", i), "%.03f", recognition.getTop());
-                        //telemetry.addData(String.format("BOTTOM (%d)", i), "%.03f", recognition.getBottom());
-                        //telemetry.addData(String.format("RIGHT (%d)", i), "%.03f", recognition.getRight());
-                        //telemetry.addData(String.format("LEFT (%d)", i), "%.03f", recognition.getLeft());
-                        //telemetry.addData("Angle ", recognition.estimateAngleToObject(AngleUnit.DEGREES));
 
-                        //telemetry.addData(String.format("BOTTOM - TOP (%d)", i), "%.03f", recognition.getBottom() - recognition.getTop());
-                        //telemetry.addData(String.format("RIGHT - LEFT (%d)", i), "%.03f", recognition.getRight() - recognition.getLeft());
-
-                        //telemetry.addData(String.format("getHeight() (%d)", i), recognition.getHeight());
-                        //telemetry.addData(String.format("getImageHeight() (%d)", i), recognition.getImageHeight());
-                        //telemetry.addData(String.format("getWidth() (%d)", i), recognition.getWidth());
-                        //telemetry.addData(String.format("getImageWidth (%d)", i), recognition.getImageWidth());
 
                     }
                     telemetry.update();
@@ -99,8 +83,9 @@ public class SomeAutonomousPath extends Exponential_Methods {
         }
 
         if (left) {//turn left 45 deg, go right until skystone in middle, go forwards
-            turnAbsolute(45);
-
+            move(12, 12, .5, -.5); //go diagonally 1 foot
+            turnRelative(45);
+            moveRightUntilCenter();
         }
 
         if (center) {
@@ -113,7 +98,33 @@ public class SomeAutonomousPath extends Exponential_Methods {
     }
 
     public void moveRightUntilCenter() {
+        boolean center = false;
+        if (tfod != null) {
+            tfod.activate();
+        }
+        if (opModeIsActive()) {
 
+            while (!center) {
+                setPowerDriveMotors(-.5, .5, -.5, .5); //going right
+                if (tfod != null) {
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        int i = 0;
+                        telemetry.addData(String.format("updatedRecognitions size: (%d)", i), updatedRecognitions.size());
+                        for (Recognition recognition : updatedRecognitions) {
+                            if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                                float stoneMiddlePosition = (recognition.getTop() + recognition.getBottom()) / 2;
+                                center = getInCenter(stoneMiddlePosition);
+                                telemetry.addData(String.format("stoneMiddlePosition (%d)", i), stoneMiddlePosition);
+                            }
+                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        }
+                        telemetry.update();
+                    }
+                }
+            }
+            setPowerDriveMotors(0);
+        }
     }
 
     public boolean getInLeft(float center) {
@@ -127,67 +138,5 @@ public class SomeAutonomousPath extends Exponential_Methods {
     public boolean getInRight(float center) {
         return center - 100 > MIDDLE_SCREEN;
     }
-    public boolean continueMoving() {
-        boolean returnBoolean = true;
-        telemetry.update();
-        if (tfod != null) {
-            tfod.activate();
-        }
-        if (opModeIsActive()) {
 
-            //while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-
-                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-                        // step through the list of recognitions and display boundary info.
-
-                        int i = 0;
-                        telemetry.addData(String.format("updatedRecognitions size: (%d)", i), updatedRecognitions.size());
-                        boolean right = true;
-                        boolean center = true;
-                        boolean left = true;
-                        for (Recognition recognition : updatedRecognitions) {
-                            if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                                float stoneMiddlePosition = (recognition.getTop() + recognition.getBottom()) / 2;
-                                if (stoneMiddlePosition + 50 > MIDDLE_SCREEN && MIDDLE_SCREEN > stoneMiddlePosition - 50) {
-                                    returnBoolean = false;
-                                }
-
-                                telemetry.addData(String.format("stoneMiddlePosition (%d)", i), stoneMiddlePosition);
-                                telemetry.addData(String.format("returnBoolean (%b)", i), returnBoolean); //TODO: TEST THIS
-                            }
-
-                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                            /*telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                    recognition.getLeft(), recognition.getTop());
-                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                    recognition.getRight(), recognition.getBottom());*/
-                            //telemetry.addData(String.format("TOP (%d)", i), "%.03f", recognition.getTop());
-                            //telemetry.addData(String.format("BOTTOM (%d)", i), "%.03f", recognition.getBottom());
-                            //telemetry.addData(String.format("RIGHT (%d)", i), "%.03f", recognition.getRight());
-                            //telemetry.addData(String.format("LEFT (%d)", i), "%.03f", recognition.getLeft());
-                            //telemetry.addData("Angle ", recognition.estimateAngleToObject(AngleUnit.DEGREES));
-
-                            //telemetry.addData(String.format("BOTTOM - TOP (%d)", i), "%.03f", recognition.getBottom() - recognition.getTop());
-                            //telemetry.addData(String.format("RIGHT - LEFT (%d)", i), "%.03f", recognition.getRight() - recognition.getLeft());
-
-                            //telemetry.addData(String.format("getHeight() (%d)", i), recognition.getHeight());
-                            //telemetry.addData(String.format("getImageHeight() (%d)", i), recognition.getImageHeight());
-                            //telemetry.addData(String.format("getWidth() (%d)", i), recognition.getWidth());
-                            //telemetry.addData(String.format("getImageWidth (%d)", i), recognition.getImageWidth());
-
-                        }
-                        telemetry.update();
-
-                    }
-                }
-            //}
-        }
-        return returnBoolean;
-    }
 }
