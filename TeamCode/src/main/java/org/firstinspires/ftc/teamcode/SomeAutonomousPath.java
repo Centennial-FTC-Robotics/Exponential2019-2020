@@ -37,9 +37,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
     }
 
     public void findAndGetSkystone() {
-
-
-
+        //testing github
         move(24, 0, .5); //go forward 2 feet
         turnRelative(45);
         moveBackRightUntilCenter();
