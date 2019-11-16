@@ -165,16 +165,17 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     //distance in inches
-        for(DcMotor motor : driveMotors) {
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-        for(DcMotor motor : driveMotors) {
-        motor.setPower(power);
-    }
-
-    waitForMotors();
     public void oldMove(double forward, double right, double power){
+
+        for(DcMotor motor : driveMotors) {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        for(DcMotor motor : driveMotors) {
+            motor.setPower(power);
+        }
+
+        waitForMotors();
 
         int forwardVal = convertInchToEncoder(forward);
         int rightVal = convertInchToEncoder(right);
