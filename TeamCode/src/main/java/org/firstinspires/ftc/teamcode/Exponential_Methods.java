@@ -165,16 +165,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     //distance in inches
-    public void move(double forward, double right, double power){
-
-        int forwardVal = convertInchToEncoder(forward);
-        int rightVal = convertInchToEncoder(right);
-
-        frontLeft.setTargetPosition(forwardVal + rightVal);
-        frontRight.setTargetPosition(forwardVal - rightVal);
-        backLeft.setTargetPosition(forwardVal - rightVal );
-        backRight.setTargetPosition(forwardVal + rightVal);
-
         for(DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -184,18 +174,32 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
 
         waitForMotors();
+        public void oldMove(double forward, double right, double power){
 
-        setPowerDriveMotors(0);
+            int forwardVal = convertInchToEncoder(forward);
+            int rightVal = convertInchToEncoder(right);
+
+            frontLeft.setTargetPosition(forwardVal + rightVal);
+            frontRight.setTargetPosition(forwardVal - rightVal);
+            backLeft.setTargetPosition(forwardVal - rightVal );
+            backRight.setTargetPosition(forwardVal + rightVal);
+
+
+            setPowerDriveMotors(0);
         //return motors to original runmode
         for(DcMotor motor : driveMotors){
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
-    public void move(double inchesForward, double inchesSideways, double pVal, double iVal, double dVal, double max_positive, double min_negative, double inchesTolerance){
-        double p = 1/800;
-        double i = 0;
-        double d = 0;
+    public void move(double inchesForward, double inchesSideways, double maxPower){
+        inchesSideways = -inchesSideways;
+        double p = 1.0/800;
+        double i;
+        double d;
+        double inchesTolerance = 0.5;
+        double max_positive = maxPower;
+        double min_negative = -maxPower;
 
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
@@ -235,6 +239,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void turnRelative(double targetAngle) {
+        telemetry.addData("starting angle", getRotationinDimension(('z')));
+        telemetry.update();
+        turnAbsolute(0);
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
@@ -242,10 +249,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double currentAngle;
         int direction;
         double turnRate;
-        double P = 0.005; //set later
+        double P = 0.001; //set later
         double tolerance = 4; //set later
-        double maxSpeed = 0.5; //set later
-        double minSpeed = 0.05; //set later
+        double maxSpeed = 0.4; //set later
+        double minSpeed = 0.01; //set later
         double error;
 
         do{
@@ -262,18 +269,17 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         setPowerDriveMotors(0);
     }
 
-    //position in inches?? or encoder val
+    //position in inches
     //probably need to add negative signs and reverse stuff later when we actually have slides
+    //add a minimum limit if necessary
     public void extendSlidesTo(int position, float speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        int encoderVal = position; //CONVERSION? if in inches
+        int encoderVal = position; //CONVERSION?
 
         slideUp.setTargetPosition(encoderVal);
         slideDown.setTargetPosition(encoderVal);
-
-        setSlidePower(speed);
 
         while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
                 && slideDown.getCurrentPosition() < slidesMax &&
