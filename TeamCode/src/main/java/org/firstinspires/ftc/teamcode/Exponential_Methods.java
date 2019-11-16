@@ -192,7 +192,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void move(double inchesForward, double inchesSideways, double p, double i, double d, double max_positive, double min_negative, double inchesTolerance){
+    public void move(double inchesForward, double inchesSideways, double pVal, double iVal, double dVal, double max_positive, double min_negative, double inchesTolerance){
+        double p = 1/800;
+        double i = 0;
+        double d = 0;
+
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
         resetDriveMotorEncoders();

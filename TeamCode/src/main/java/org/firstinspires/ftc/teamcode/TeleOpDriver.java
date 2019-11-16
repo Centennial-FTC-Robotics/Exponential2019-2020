@@ -112,9 +112,6 @@ public class TeleOpDriver extends Exponential_Methods {
                 //intake servos release stone
                 setIntakeServosPosition(0.7); //set later BY MANUALLY TESTING HAHAHAHA
             }
-
-
-
         }
     }
 
