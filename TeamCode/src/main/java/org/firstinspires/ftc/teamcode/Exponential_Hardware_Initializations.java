@@ -43,6 +43,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
        // intakeServoRight = hardwareMap.servo.get("intakeServoRight");
 
 //        hookServo = hardwareMap.servo.get("hookServo");
+
+
 //        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
 //        intakeRight = hardwareMap.dcMotor.get("intakeRight");
 //        slideUp = hardwareMap.dcMotor.get("slideLeft");
@@ -72,7 +74,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 //        intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//          intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

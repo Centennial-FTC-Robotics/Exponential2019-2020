@@ -10,13 +10,13 @@ public class Tester extends Exponential_Methods{
 
         waitForStart();
         turnRelative(90);
-        sleep(2000);
-        move(0,-12,0.3);
-        sleep(2000);
-        move(12,12,0.3);
-        sleep(2000);
-        turnAbsolute(90);
-        sleep(2000);
-        move(30,0,0.3);
+        move(24,0,0.5);
+        move(0,24,0.5);
+        move(-24,0,0.5);
+        move(0,-24,0.5);
+        sleep(1000);
+        turnAbsolute(0);
+        sleep(1000);
+        move(36,0,1);
     }
 }

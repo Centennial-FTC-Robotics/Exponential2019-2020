@@ -165,7 +165,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     //distance in inches
-    public void move(double forward, double right, double power){
+    public void oldMove(double forward, double right, double power){
 
         int forwardVal = convertInchToEncoder(forward);
         int rightVal = convertInchToEncoder(right);
@@ -192,12 +192,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void move(double inchesForward, double inchesSideways, double max_positive, double min_negative){
+    public void move(double inchesForward, double inchesSideways, double maxPower){
         inchesSideways = -inchesSideways;
         double p = 1.0/800;
         double i;
         double d;
         double inchesTolerance = 0.5;
+        double max_positive = maxPower;
+        double min_negative = maxPower;
 
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
