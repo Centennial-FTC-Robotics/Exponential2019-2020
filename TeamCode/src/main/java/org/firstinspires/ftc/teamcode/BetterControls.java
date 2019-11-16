@@ -119,7 +119,7 @@ public class BetterControls extends LinearOpMode {
             }
 
             //probably need to change the positions
-            /*if(gamepad1.x){
+            if(gamepad1.x){
                 //open intake
                 intakeLeft.setPosition(0);
                 intakeRight.setPosition(0);
@@ -127,7 +127,7 @@ public class BetterControls extends LinearOpMode {
                 //close intake
                 intakeLeft.setPosition(0.5);
                 intakeRight.setPosition(0.5);
-            }*/
+            }
         }
     }
 }
