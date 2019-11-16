@@ -37,6 +37,15 @@ public class SomeAutonomousPath extends Exponential_Methods {
     }
 
     public void findAndGetSkystone() {
+
+
+
+        move(24, 0, .5); //go forward 2 feet
+        turnRelative(45);
+        moveBackRightUntilCenter();
+
+    }
+    /*public void findAndGetSkystone() {
         boolean left = false;
         boolean center = false;
         boolean right = false;
@@ -83,7 +92,8 @@ public class SomeAutonomousPath extends Exponential_Methods {
         }
 
         if (left) {//turn left 45 deg, go right until skystone in middle, go forwards
-            move(12, 12, .5, -.5); //go diagonally 1 foot
+
+            move(24, 0, .5); //go forward 2 feet
             turnRelative(45);
             moveBackRightUntilCenter();
         }
@@ -95,7 +105,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (right) {
 
         }
-    }
+    }*/
 
     public void moveBackRightUntilCenter() {
         boolean center = false;
@@ -105,7 +115,11 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                setPowerDriveMotors(.05, -.05, 0, -.05); //going right
+                frontLeft.setPower(-.05);
+                frontRight.setPower(0);
+                backLeft.setPower(0);
+                backRight.setPower(-.05);
+                //setPowerDriveMotors(.05, -.05, 0, -.05); //going right
                 if (tfod != null) {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
