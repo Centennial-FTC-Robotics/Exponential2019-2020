@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.sql.Driver;
 
@@ -13,6 +14,12 @@ public class BetterControls extends LinearOpMode {
     private DcMotor backleft;
     private DcMotor upright;
     private DcMotor backright;
+
+    private Servo intakeLeft;
+    private Servo intakeRight;
+
+    //double MIN_POSITION = 0;
+    //double MAX_POSITION = 1;
 
     private double[] circle_to_taxicab(double circle_x, double circle_y) {
         double[] answer = new double[2];
@@ -62,6 +69,9 @@ public class BetterControls extends LinearOpMode {
         backright = hardwareMap.dcMotor.get("backRight");
         upright = hardwareMap.dcMotor.get("frontRight");
 
+        intakeLeft = hardwareMap.servo.get("intakeLeft");
+        intakeRight = hardwareMap.servo.get("intakeRight");
+
         upleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -80,9 +90,9 @@ public class BetterControls extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            double powerright = gamepad1.right_stick_x;
-            double powerup = gamepad1.right_stick_y;
-            double rotate_counterclockwise = gamepad1.left_stick_x;
+            double powerright = gamepad1.left_stick_x;
+            double powerup = gamepad1.left_stick_y;
+            double rotate_counterclockwise = gamepad1.right_stick_x;
 
             double trigger_factor = 1.0 - gamepad1.left_trigger;
             if (powerright != 0.0 || powerup != 0.0) {
@@ -107,6 +117,17 @@ public class BetterControls extends LinearOpMode {
                 upright.setPower(0);
                 backright.setPower(0);
             }
+
+            //probably need to change the positions
+            /*if(gamepad1.x){
+                //open intake
+                intakeLeft.setPosition(0);
+                intakeRight.setPosition(0);
+            } else if (gamepad1.b){
+                //close intake
+                intakeLeft.setPosition(0.5);
+                intakeRight.setPosition(0.5);
+            }*/
         }
     }
 }
