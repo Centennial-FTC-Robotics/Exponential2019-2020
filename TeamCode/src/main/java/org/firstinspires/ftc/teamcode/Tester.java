@@ -1,22 +1,34 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@Autonomous(group = "Autonomous", name = "Tester")
-public class Tester extends Exponential_Methods{
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@Autonomous(group = "Autonomous", name = "Intake Tester")
+public class Tester extends LinearOpMode {
+
+
     public void runOpMode() throws InterruptedException {
-        super.runOpMode();
-        initializeIMU();
+
+        Servo servoLeft = hardwareMap.servo.get("intakeServoLeft");
+        Servo servoRight = hardwareMap.servo.get("intakeServoRight");
+
+
 
         waitForStart();
-        turnRelative(90);
-        sleep(2000);
-        move(0,-12,0.3);
-        sleep(2000);
-        move(12,12,0.3);
-        sleep(2000);
-        turnAbsolute(90);
-        sleep(2000);
-        move(30,0,0.3);
+            servoLeft.setPosition(0);
+            sleep(1000);
+            telemetry.addData("Position", servoLeft.getPosition());
+            telemetry.update();
+            servoLeft.setPosition(0);
+            sleep(1000);
+            servoLeft.setPosition(.4);
+            sleep(1000);
+            servoLeft.setPosition(.8);
+
+
     }
 }

@@ -165,15 +165,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     //distance in inches
-    public void move(double forward, double right, double power){
-
-        int forwardVal = convertInchToEncoder(forward);
-        int rightVal = convertInchToEncoder(right);
-
-        frontLeft.setTargetPosition(forwardVal + rightVal);
-        frontRight.setTargetPosition(forwardVal - rightVal);
-        backLeft.setTargetPosition(forwardVal - rightVal );
-        backRight.setTargetPosition(forwardVal + rightVal);
+    public void oldMove(double forward, double right, double power){
 
         for(DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -185,6 +177,15 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         waitForMotors();
 
+        int forwardVal = convertInchToEncoder(forward);
+        int rightVal = convertInchToEncoder(right);
+
+        frontLeft.setTargetPosition(forwardVal + rightVal);
+        frontRight.setTargetPosition(forwardVal - rightVal);
+        backLeft.setTargetPosition(forwardVal - rightVal );
+        backRight.setTargetPosition(forwardVal + rightVal);
+
+
         setPowerDriveMotors(0);
         //return motors to original runmode
         for(DcMotor motor : driveMotors){
@@ -192,12 +193,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void move(double inchesForward, double inchesSideways, double max_positive, double min_negative){
+    public void move(double inchesForward, double inchesSideways, double maxPower){
         inchesSideways = -inchesSideways;
         double p = 1.0/800;
         double i;
         double d;
         double inchesTolerance = 0.5;
+        double max_positive = maxPower;
+        double min_negative = -maxPower;
 
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
@@ -281,7 +284,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
                 && slideDown.getCurrentPosition() < slidesMax &&
-        slideUp.getCurrentPosition() > slidesMin &&
+                slideUp.getCurrentPosition() > slidesMin &&
                 slideDown.getCurrentPosition() > slidesMin &&
                 (slideUp.isBusy() || slideDown.isBusy())){}
         setSlidePower(0);
@@ -327,5 +330,5 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
 
-    
+
 }
