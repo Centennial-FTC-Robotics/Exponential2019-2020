@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -26,6 +28,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected DcMotor slideUp;
     protected DcMotor slideDown;
     protected DcMotor[] driveMotors = new DcMotor[4];
+    protected ColorSensor sensorColor;
+    protected DistanceSensor sensorDistance;
 
     protected Orientation orientation = new Orientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES,0,0,0,0);
     protected BNO055IMU imu;
@@ -51,7 +55,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 //        slideDown = hardwareMap.dcMotor.get("slideRight");
 
 
-
+        sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
