@@ -55,8 +55,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 //        slideDown = hardwareMap.dcMotor.get("slideRight");
 
 
-        sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
-        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
+//        sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
+//        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
