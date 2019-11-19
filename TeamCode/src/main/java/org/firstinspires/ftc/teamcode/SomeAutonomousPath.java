@@ -37,6 +37,13 @@ public class SomeAutonomousPath extends Exponential_Methods {
     }
 
     public void findAndGetSkystone() {
+        //testing github
+        move(24, 0, .5); //go forward 2 feet
+        turnRelative(45);
+        moveBackRightUntilCenter();
+
+    }
+    /*public void findAndGetSkystone() {
         boolean left = false;
         boolean center = false;
         boolean right = false;
@@ -83,9 +90,10 @@ public class SomeAutonomousPath extends Exponential_Methods {
         }
 
         if (left) {//turn left 45 deg, go right until skystone in middle, go forwards
-            move(12, 12, .5, -.5); //go diagonally 1 foot
+
+            move(24, 0, .5); //go forward 2 feet
             turnRelative(45);
-            moveRightUntilCenter();
+            moveBackRightUntilCenter();
         }
 
         if (center) {
@@ -95,9 +103,9 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (right) {
 
         }
-    }
+    }*/
 
-    public void moveRightUntilCenter() {
+    public void moveBackRightUntilCenter() {
         boolean center = false;
         if (tfod != null) {
             tfod.activate();
@@ -105,7 +113,11 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                setPowerDriveMotors(-.2, .2, -.2, .2); //going right
+                frontLeft.setPower(-.05);
+                frontRight.setPower(0);
+                backLeft.setPower(0);
+                backRight.setPower(-.05);
+                //setPowerDriveMotors(.05, -.05, 0, -.05); //going right
                 if (tfod != null) {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
@@ -128,15 +140,15 @@ public class SomeAutonomousPath extends Exponential_Methods {
     }
 
     public boolean getInLeft(float center) {
-        return center + 100 < MIDDLE_SCREEN;
+        return center + 50 < MIDDLE_SCREEN;
     }
 
     public boolean getInCenter(float center) {
-        return center + 100 > MIDDLE_SCREEN && MIDDLE_SCREEN > center - 100;
+        return center + 50 > MIDDLE_SCREEN && MIDDLE_SCREEN > center - 50;
     }
 
     public boolean getInRight(float center) {
-        return center - 100 > MIDDLE_SCREEN;
+        return center - 50 > MIDDLE_SCREEN;
     }
 
 }

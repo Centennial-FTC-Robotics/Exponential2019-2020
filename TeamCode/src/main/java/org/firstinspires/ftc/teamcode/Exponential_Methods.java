@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
@@ -47,6 +48,23 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         imu.initialize(parameters);
         while (opModeIsActive() && !imu.isGyroCalibrated()) ;
         resetOrientation();
+    }
+
+    public void initVuforia() {
+        //create parameter object and pass it to create Vuforia engine
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    }
+
+    public void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
     //-------------- Basic --------------
@@ -125,22 +143,13 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return 0;
     }
 
-    public void initVuforia() {
-        //create parameter object and pass it to create Vuforia engine
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    public boolean hasBlock(){
+        if(sensorDistance.getDistance(DistanceUnit.INCH) < 2){
+            return true;
+        }
+        return false;
     }
 
-    public void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
-    }
 
     //-------------- Movement --------------
 
@@ -167,14 +176,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     //distance in inches
     public void oldMove(double forward, double right, double power){
 
-        int forwardVal = convertInchToEncoder(forward);
-        int rightVal = convertInchToEncoder(right);
-
-        frontLeft.setTargetPosition(forwardVal + rightVal);
-        frontRight.setTargetPosition(forwardVal - rightVal);
-        backLeft.setTargetPosition(forwardVal - rightVal );
-        backRight.setTargetPosition(forwardVal + rightVal);
-
         for(DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -184,6 +185,15 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
 
         waitForMotors();
+
+        int forwardVal = convertInchToEncoder(forward);
+        int rightVal = convertInchToEncoder(right);
+
+        frontLeft.setTargetPosition(forwardVal + rightVal);
+        frontRight.setTargetPosition(forwardVal - rightVal);
+        backLeft.setTargetPosition(forwardVal - rightVal );
+        backRight.setTargetPosition(forwardVal + rightVal);
+
 
         setPowerDriveMotors(0);
         //return motors to original runmode
@@ -199,7 +209,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double d;
         double inchesTolerance = 0.5;
         double max_positive = maxPower;
-        double min_negative = maxPower;
+        double min_negative = -maxPower;
 
         double encoderForward = convertInchToEncoder(inchesForward);
         double encoderSideways = convertInchToEncoder(inchesSideways);
@@ -283,7 +293,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
                 && slideDown.getCurrentPosition() < slidesMax &&
-        slideUp.getCurrentPosition() > slidesMin &&
+                slideUp.getCurrentPosition() > slidesMin &&
                 slideDown.getCurrentPosition() > slidesMin &&
                 (slideUp.isBusy() || slideDown.isBusy())){}
         setSlidePower(0);
@@ -329,5 +339,5 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
 
-    
+
 }
