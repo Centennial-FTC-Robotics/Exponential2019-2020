@@ -43,8 +43,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
-        intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
-        intakeServoRight = hardwareMap.servo.get("intakeServoRight");
+      /*  intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
+        intakeServoRight = hardwareMap.servo.get("intakeServoRight");*/
 
 //        hookServo = hardwareMap.servo.get("hookServo");
 
