@@ -144,7 +144,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public boolean hasBlock(){
-        if(sensorDistance.getDistance(DistanceUnit.INCH) < 2){
+        if(sensorDistance.getDistance(DistanceUnit.INCH) < 1){
             return true;
         }
         return false;
