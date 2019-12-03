@@ -11,7 +11,6 @@ public class ExponentialTester extends Exponential_Methods{
         waitForStart();
 
         //move forward
-        move();
 
         //move backward
 
