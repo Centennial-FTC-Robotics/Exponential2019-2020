@@ -15,9 +15,6 @@ public class BetterControls extends LinearOpMode {
     private DcMotor upright;
     private DcMotor backright;
 
-    private Servo intakeLeft;
-    private Servo intakeRight;
-
     //double MIN_POSITION = 0;
     //double MAX_POSITION = 1;
 
@@ -69,9 +66,6 @@ public class BetterControls extends LinearOpMode {
         backright = hardwareMap.dcMotor.get("backRight");
         upright = hardwareMap.dcMotor.get("frontRight");
 
-        intakeLeft = hardwareMap.servo.get("intakeLeft");
-        intakeRight = hardwareMap.servo.get("intakeRight");
-
         upleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -117,17 +111,6 @@ public class BetterControls extends LinearOpMode {
                 upright.setPower(0);
                 backright.setPower(0);
             }
-
-            //probably need to change the positions
-            /*if(gamepad1.x){
-                //open intake
-                intakeLeft.setPosition(0);
-                intakeRight.setPosition(0);
-            } else if (gamepad1.b){
-                //close intake
-                intakeLeft.setPosition(0.5);
-                intakeRight.setPosition(0.5);
-            }*/
         }
     }
 }
