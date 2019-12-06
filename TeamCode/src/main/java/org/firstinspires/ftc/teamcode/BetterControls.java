@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import java.sql.Driver;
 
@@ -66,6 +65,7 @@ public class BetterControls extends LinearOpMode {
         backright = hardwareMap.dcMotor.get("backRight");
         upright = hardwareMap.dcMotor.get("frontRight");
 
+
         upleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -111,6 +111,8 @@ public class BetterControls extends LinearOpMode {
                 upright.setPower(0);
                 backright.setPower(0);
             }
+
+            //probably need to change the positions
         }
     }
 }

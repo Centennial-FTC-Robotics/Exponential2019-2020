@@ -31,17 +31,21 @@ public class SomeAutonomousPath extends Exponential_Methods {
         waitForStart();
         initVuforia();
         initTfod();
-
+        telemetry.addData("in run op mode", "");
+        telemetry.update();
         findAndGetSkystone();
 
     }
 
     public void findAndGetSkystone() {
         //testing github
-        move(24, 0, .5); //go forward 2 feet
-        turnRelative(45);
+        telemetry.addData("infindnandgetsttkyyststone", "");
+        telemetry.update();
+        move(30, 0, .5); //go forward 2 feet
+        turnRelative(50);
         moveBackRightUntilCenter();
-
+        move(12 * Math.sqrt(2), 0, .25);
+        turnRelative(360);
     }
     /*public void findAndGetSkystone() {
         boolean left = false;
@@ -113,11 +117,11 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                frontLeft.setPower(-.05);
-                frontRight.setPower(0);
-                backLeft.setPower(0);
-                backRight.setPower(-.05);
-                //setPowerDriveMotors(.05, -.05, 0, -.05); //going right
+                frontLeft.setPower(0);
+                frontRight.setPower(-.1);
+                backLeft.setPower(-.1);
+                backRight.setPower(0);
+                //setPowerDriveMotors(.05, -.05, 0, -.05);
                 if (tfod != null) {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
@@ -144,7 +148,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
     }
 
     public boolean getInCenter(float center) {
-        return center + 50 > MIDDLE_SCREEN && MIDDLE_SCREEN > center - 50;
+        return center + 200 > MIDDLE_SCREEN && MIDDLE_SCREEN > center - 200;
     }
 
     public boolean getInRight(float center) {

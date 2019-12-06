@@ -4,30 +4,44 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Autonomous(group = "Autonomous", name = "Intake Tester")
-public class Tester extends LinearOpMode {
+public class Tester extends Exponential_Methods {
 
 
     public void runOpMode() throws InterruptedException {
-
-        Servo servoLeft = hardwareMap.servo.get("intakeServoLeft");
-        Servo servoRight = hardwareMap.servo.get("intakeServoRight");
-
-
+        super.runOpMode();
+        initializeIMU();
+        //DistanceSensor sensorDistance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         waitForStart();
-            servoLeft.setPosition(0);
+        while(opModeIsActive()){
+            //telemetry.addData("distance", sensorDistance.getDistance(DistanceUnit.INCH));
+
+            turnAbsolute(90);
             sleep(1000);
-            telemetry.addData("Position", servoLeft.getPosition());
+            move(12,0,0.2);
+            sleep(1000);
+            move(0,12,0.2);
+            sleep(  1000);
+            move(-12,0,0.2);
+            sleep(1000);
+            move(0,-12,0.2);
+            sleep(1000);
+            move(12,12,0);
+            sleep(1000);
+            move(-12,-12,0);
+            sleep(1000);
+            turnAbsolute(0);
+
             telemetry.update();
-            servoLeft.setPosition(0);
-            sleep(1000);
-            servoLeft.setPosition(.4);
-            sleep(1000);
-            servoLeft.setPosition(.8);
+
+        }
 
 
     }
