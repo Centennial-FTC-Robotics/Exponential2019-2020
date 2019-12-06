@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-@Autonomous(group = "Autonomous", name = "SomeAutonomousPath")
-public class SomeAutonomousPath extends Exponential_Methods {
+@Autonomous(group = "Autonomous", name = "LeftCornerAutoPath")
+public class LeftCornerAutoPath extends Exponential_Methods {
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
@@ -41,77 +41,16 @@ public class SomeAutonomousPath extends Exponential_Methods {
         //testing github
         telemetry.addData("infindnandgetsttkyyststone", "");
         telemetry.update();
-        move(40, 0, .5); //go forward 2 feet
-        turnRelative(50);
-        moveBackRightUntilCenter();
-        move(12 * Math.sqrt(2), 0, .25);
+        move(30, 0, .5); //go forward 2 feet
         turnRelative(-50);
+        moveBackLeftUntilCenter();
+        move(12 * Math.sqrt(2), 0, .25);
+        turnRelative(50);
         move(-40, 0, .25);
-        move(0, 144, .5);
+        move(0, -144, .5);
     }
-    /*public void findAndGetSkystone() {
-        boolean left = false;
-        boolean center = false;
-        boolean right = false;
-        if (tfod != null) {
-            tfod.activate();
-        }
-        if (opModeIsActive()) {
 
-            while (!left && !center && !right) {
-            if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-
-                    telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-                    // step through the list of recognitions and display boundary info.
-
-                    int i = 0;
-                    telemetry.addData(String.format("updatedRecognitions size: (%d)", i), updatedRecognitions.size());
-                    for (Recognition recognition : updatedRecognitions) {
-                        if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                            float stoneMiddlePosition = (recognition.getTop() + recognition.getBottom()) / 2;
-                            center = getInCenter(stoneMiddlePosition);
-                            left = getInLeft(stoneMiddlePosition);
-                            right = getInRight(stoneMiddlePosition);
-
-                            telemetry.addData(String.format("stoneMiddlePosition (%d)", i), stoneMiddlePosition);
-                            telemetry.addData(String.format("leftBool (%b)", i), left);
-                            telemetry.addData(String.format("centerBool (%b)", i), center);
-                            telemetry.addData(String.format("rightBool (%b)", i), right);
-                        }
-
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-
-
-                    }
-                    telemetry.update();
-
-                }
-            }
-            }
-        }
-
-        if (left) {//turn left 45 deg, go right until skystone in middle, go forwards
-
-            move(24, 0, .5); //go forward 2 feet
-            turnRelative(45);
-            moveBackRightUntilCenter();
-        }
-
-        if (center) {
-
-        }
-
-        if (right) {
-
-        }
-    }*/
-
-    public void moveBackRightUntilCenter() {
+    public void moveBackLeftUntilCenter() {
         boolean center = false;
         if (tfod != null) {
             tfod.activate();
@@ -119,10 +58,14 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                frontLeft.setPower(0);
-                frontRight.setPower(-.1);
-                backLeft.setPower(-.1);
-                backRight.setPower(0);
+//                frontLeft.setPower(0);
+//                frontRight.setPower(-.1);
+//                backLeft.setPower(-.1);
+//                backRight.setPower(0);
+                frontLeft.setPower(-.1);
+                frontRight.setPower(0);
+                backLeft.setPower(0);
+                backRight.setPower(-.1);
                 //setPowerDriveMotors(.05, -.05, 0, -.05);
                 if (tfod != null) {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -145,16 +88,10 @@ public class SomeAutonomousPath extends Exponential_Methods {
         }
     }
 
-    public boolean getInLeft(float center) {
-        return center + 50 < MIDDLE_SCREEN;
-    }
 
     public boolean getInCenter(float center) {
         return center + 200 > MIDDLE_SCREEN && MIDDLE_SCREEN > center - 200;
     }
 
-    public boolean getInRight(float center) {
-        return center - 50 > MIDDLE_SCREEN;
-    }
 
 }
