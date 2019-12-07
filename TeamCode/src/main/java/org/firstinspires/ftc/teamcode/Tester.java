@@ -17,13 +17,10 @@ public class Tester extends Exponential_Methods {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         initializeIMU();
-        //DistanceSensor sensorDistance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         waitForStart();
         while(opModeIsActive()){
-            //telemetry.addData("distance", sensorDistance.getDistance(DistanceUnit.INCH));
-
-            turnAbsolute(90);
+            turnRelative(90);
             sleep(1000);
             move(12,0,0.2);
             sleep(1000);
