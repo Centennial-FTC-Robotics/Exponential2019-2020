@@ -36,6 +36,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         initializeIMU();
+        initVuforia();
+        initTfod();
     }
     //-------------- Initialization --------------
     public void initializeIMU() {
