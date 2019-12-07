@@ -33,7 +33,8 @@ public class SomeAutonomousPath extends Exponential_Methods {
         initTfod();
         telemetry.addData("in run op mode", "");
         telemetry.update();
-        findAndGetSkystone();
+        //findAndGetSkystone();
+        moveBackRightUntilCenter();
 
     }
 
@@ -41,8 +42,8 @@ public class SomeAutonomousPath extends Exponential_Methods {
         //testing github
         telemetry.addData("infindnandgetsttkyyststone", "");
         telemetry.update();
-        move(40, 0, .5); //go forward 2 feet
-        turnRelative(50);
+        move(36, 0, .5); //go forward 2 feet
+        turnRelative(45);
         moveBackRightUntilCenter();
         move(12 * Math.sqrt(2), 0, .25);
         turnRelative(-50);
@@ -119,9 +120,9 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                frontLeft.setPower(0);
-                frontRight.setPower(-.1);
-                backLeft.setPower(-.1);
+                frontLeft.setPower(.0);
+                frontRight.setPower(-.04);
+                backLeft.setPower(-.04);
                 backRight.setPower(0);
                 //setPowerDriveMotors(.05, -.05, 0, -.05);
                 if (tfod != null) {
