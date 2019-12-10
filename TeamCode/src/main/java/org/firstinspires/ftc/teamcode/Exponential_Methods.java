@@ -335,8 +335,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //-------------- Computer Vision --------------
 
-    public int grabSkystoneRed(){
-        turnRelative(45);
+    public void grabSkystone(String color){
+        int factor;
+        if(color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
+
+        turnRelative( factor * 45);
 
         boolean center = false;
         tfod.activate();
@@ -344,7 +350,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         int blocksMoved = 0;
         if (opModeIsActive()) {
             while (!center) {
-                move(-Math.sqrt(2)*4,Math.sqrt(2)*4,0.2);
+                move(-Math.sqrt(2)*4,factor * Math.sqrt(2)*4,0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 blocksMoved++;
                 sleep(500);
@@ -359,8 +365,18 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             }
             setPowerDriveMotors(0);
         }
-        turnRelative(-50);
-        return blocksMoved * 8;
+
+        //move forward, grab block, move back
+        move(12,0, 0.3);
+        sleep(500);
+        move(-12,0, 0.3);
+
+        //turns back
+        turnRelative(factor * -45);
+        int traveledSideways = blocksMoved * 8;
+        move(0,-factor * (40-traveledSideways),0.3);
+
+        //return blocksMoved * 8;
     }
 
 

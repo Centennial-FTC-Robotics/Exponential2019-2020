@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Trash;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 import java.util.List;
 
@@ -33,7 +34,10 @@ public class SomeAutonomousPath extends Exponential_Methods {
         //initTfod();
         telemetry.addData("in run op mode", "");
         telemetry.update();
-        findAndGetSkystone2();
+
+        move(12,0,0.5);
+        turnRelative(50);
+        grabSkystone("red");
 
     }
 
