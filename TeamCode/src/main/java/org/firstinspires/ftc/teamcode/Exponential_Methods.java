@@ -11,7 +11,10 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 
@@ -26,6 +29,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+    private static final int MIDDLE_SCREEN = 640;
 
 
     //limits
@@ -331,9 +335,36 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //-------------- Computer Vision --------------
 
-    public void findSkyStone(){
+    public int grabSkystoneRed(){
+        turnRelative(45);
 
+        boolean center = false;
+        tfod.activate();
+
+        int blocksMoved = 0;
+        if (opModeIsActive()) {
+            while (!center) {
+                move(-Math.sqrt(2)*4,Math.sqrt(2)*4,0.2);
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                blocksMoved++;
+                sleep(500);
+                if (updatedRecognitions != null) {
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                            float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
+                            center = stonePos + 300 > MIDDLE_SCREEN && MIDDLE_SCREEN > stonePos - 300;
+                        }
+                    }
+                }
+            }
+            setPowerDriveMotors(0);
+        }
+        turnRelative(-50);
+        return blocksMoved * 8;
     }
+
+
+
 
 
 
