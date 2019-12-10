@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Trash;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 import java.util.List;
 
@@ -33,16 +34,10 @@ public class SomeAutonomousPath extends Exponential_Methods {
         //initTfod();
         telemetry.addData("in run op mode", "");
         telemetry.update();
-        move(12,0,0.5);
-        int traveledSideways = grabSkystoneRed();
 
-        //grab and then move back
-        move(12,0,0.2);
-        sleep(500);
-        move(-12,0,0.3);
 
-        turnRelative(-50);
-        move(0,40-traveledSideways,0.3);
+        grabSkystone("red");
+
     }
 
     public void findAndGetSkystone() {
@@ -64,6 +59,67 @@ public class SomeAutonomousPath extends Exponential_Methods {
         move(-40, 0, .25);
         move(0, 144, .5);
     }
+    /*public void findAndGetSkystone() {
+        boolean left = false;
+        boolean center = false;
+        boolean right = false;
+        if (tfod != null) {
+            tfod.activate();
+        }
+        if (opModeIsActive()) {
+
+            while (!left && !center && !right) {
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+
+                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                    // step through the list of recognitions and display boundary info.
+
+                    int i = 0;
+                    telemetry.addData(String.format("updatedRecognitions size: (%d)", i), updatedRecognitions.size());
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                            float stoneMiddlePosition = (recognition.getTop() + recognition.getBottom()) / 2;
+                            center = getInCenter(stoneMiddlePosition);
+                            left = getInLeft(stoneMiddlePosition);
+                            right = getInRight(stoneMiddlePosition);
+
+                            telemetry.addData(String.format("stoneMiddlePosition (%d)", i), stoneMiddlePosition);
+                            telemetry.addData(String.format("leftBool (%b)", i), left);
+                            telemetry.addData(String.format("centerBool (%b)", i), center);
+                            telemetry.addData(String.format("rightBool (%b)", i), right);
+                        }
+
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+
+
+                    }
+                    telemetry.update();
+
+                }
+            }
+            }
+        }
+
+        if (left) {//turn left 45 deg, go right until skystone in middle, go forwards
+
+            move(24, 0, .5); //go forward 2 feet
+            turnRelative(45);
+            moveBackRightUntilCenter();
+        }
+
+        if (center) {
+
+        }
+
+        if (right) {
+
+        }
+    }*/
 
     public void moveBackRightUntilCenter() {
         boolean center = false;
@@ -101,6 +157,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
 
     public void findAndGetSkystone2() {
         move(12,0,0.5);
+        turnRelative(50);
         int traveledSideways = moveBackRight2();
 
         //grab and then move back
