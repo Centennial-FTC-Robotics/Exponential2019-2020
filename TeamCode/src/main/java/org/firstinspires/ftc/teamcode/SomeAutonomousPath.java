@@ -33,8 +33,16 @@ public class SomeAutonomousPath extends Exponential_Methods {
         //initTfod();
         telemetry.addData("in run op mode", "");
         telemetry.update();
-        findAndGetSkystone2();
+        move(12,0,0.5);
+        int traveledSideways = grabSkystoneRed();
 
+        //grab and then move back
+        move(12,0,0.2);
+        sleep(500);
+        move(-12,0,0.3);
+
+        turnRelative(-50);
+        move(0,40-traveledSideways,0.3);
     }
 
     public void findAndGetSkystone() {
@@ -93,7 +101,6 @@ public class SomeAutonomousPath extends Exponential_Methods {
 
     public void findAndGetSkystone2() {
         move(12,0,0.5);
-        turnRelative(50);
         int traveledSideways = moveBackRight2();
 
         //grab and then move back
