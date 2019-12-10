@@ -33,8 +33,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
         initTfod();
         telemetry.addData("in run op mode", "");
         telemetry.update();
-        //findAndGetSkystone();
-        moveBackRightUntilCenter();
+        findAndGetSkystone2();
 
     }
 
@@ -42,10 +41,17 @@ public class SomeAutonomousPath extends Exponential_Methods {
         //testing github
         telemetry.addData("infindnandgetsttkyyststone", "");
         telemetry.update();
-        move(36, 0, .5); //go forward 2 feet
-        turnRelative(45);
+        move(40, 0, .5); //go forward 2 feet (this isnt 2 feet i hope u know) - M
+        turnRelative(50);
         moveBackRightUntilCenter();
         move(12 * Math.sqrt(2), 0, .25);
+        /*
+        while(!hasBlock()){
+            setPowerDriveMotors(0.3);
+        }
+        setPowerDriveMotors(0);
+        */
+
         turnRelative(-50);
         move(-40, 0, .25);
         move(0, 144, .5);
@@ -120,9 +126,9 @@ public class SomeAutonomousPath extends Exponential_Methods {
         if (opModeIsActive()) {
 
             while (!center) {
-                frontLeft.setPower(.0);
-                frontRight.setPower(-.04);
-                backLeft.setPower(-.04);
+                frontLeft.setPower(0);
+                frontRight.setPower(-.1);
+                backLeft.setPower(-.1);
                 backRight.setPower(0);
                 //setPowerDriveMotors(.05, -.05, 0, -.05);
                 if (tfod != null) {
@@ -145,6 +151,46 @@ public class SomeAutonomousPath extends Exponential_Methods {
             setPowerDriveMotors(0);
         }
     }
+
+    public void findAndGetSkystone2() {
+        move(12,0,0.5);
+        turnRelative(50);
+        int traveledSideways = moveBackRight2();
+        
+        //grab and then move back
+        move(12,0,0.2);
+        sleep(500);
+        move(-12,0,0.3);
+
+        turnRelative(-50);
+        move(0,40-traveledSideways,0.3);
+    }
+
+
+    public int moveBackRight2(){
+        boolean center = false;
+        tfod.activate();
+
+        int blocksMoved = 0;
+        if (opModeIsActive()) {
+            while (!center) {
+                move(Math.sqrt(2)*4,Math.sqrt(2)*4,0.2);
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                blocksMoved++;
+                if (updatedRecognitions != null) {
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                            float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
+                            center = stonePos + 300 > MIDDLE_SCREEN && MIDDLE_SCREEN > stonePos - 300;
+                        }
+                    }
+                }
+            }
+            setPowerDriveMotors(0);
+        }
+        return blocksMoved * 8;
+    }
+
 
     public boolean getInLeft(float center) {
         return center + 50 < MIDDLE_SCREEN;

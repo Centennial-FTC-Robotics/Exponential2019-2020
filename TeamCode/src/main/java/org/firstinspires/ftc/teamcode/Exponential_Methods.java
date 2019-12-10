@@ -35,6 +35,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
+        initializeIMU();
+        initVuforia();
+        initTfod();
     }
     //-------------- Initialization --------------
     public void initializeIMU() {
@@ -221,8 +224,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double backLeft_encoder = encoderForward+encoderSideways;
         double backRight_encoder = encoderForward-encoderSideways;
 
-
-
         double frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
         double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
@@ -249,9 +250,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void turnRelative(double targetAngle) {
-        telemetry.addData("starting angle", getRotationinDimension(('z')));
-        telemetry.update();
-        turnAbsolute(0);
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
@@ -281,7 +279,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //position in inches
     //probably need to add negative signs and reverse stuff later when we actually have slides
-    //add a minimum limit if necessary
     public void extendSlidesTo(int position, float speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
