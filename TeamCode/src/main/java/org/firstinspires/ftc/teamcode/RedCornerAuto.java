@@ -15,8 +15,9 @@ public class RedCornerAuto extends Exponential_Methods {
 
         move(0, factor * 22.75, 0.5);
         int inches = grabSkystone("red");
-        
-        move(0,factor * (40-inches),0.3);
+
+        move(0,factor * (-inches),0.3);
+        move(0, factor * 22.75 * 5, .5);
 
     }
 }
