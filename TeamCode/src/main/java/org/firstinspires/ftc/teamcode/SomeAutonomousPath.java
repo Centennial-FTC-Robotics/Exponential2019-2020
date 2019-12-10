@@ -27,10 +27,10 @@ public class SomeAutonomousPath extends Exponential_Methods {
 
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
-        initializeIMU();
+        //initializeIMU();
         waitForStart();
-        initVuforia();
-        initTfod();
+        //initVuforia();
+        //initTfod();
         telemetry.addData("in run op mode", "");
         telemetry.update();
         findAndGetSkystone2();
@@ -156,7 +156,7 @@ public class SomeAutonomousPath extends Exponential_Methods {
         move(12,0,0.5);
         turnRelative(50);
         int traveledSideways = moveBackRight2();
-        
+
         //grab and then move back
         move(12,0,0.2);
         sleep(500);
@@ -174,9 +174,10 @@ public class SomeAutonomousPath extends Exponential_Methods {
         int blocksMoved = 0;
         if (opModeIsActive()) {
             while (!center) {
-                move(Math.sqrt(2)*4,Math.sqrt(2)*4,0.2);
+                move(-Math.sqrt(2)*4,Math.sqrt(2)*4,0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 blocksMoved++;
+                sleep(500);
                 if (updatedRecognitions != null) {
                     for (Recognition recognition : updatedRecognitions) {
                         if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
