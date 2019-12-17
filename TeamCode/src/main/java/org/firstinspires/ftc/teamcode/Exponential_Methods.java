@@ -319,6 +319,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         intakeRight.setPower(power);
     }
 
+    public void releaseStone(){
+        setIntakeWheels(-1);
+        setIntakeServosPosition(0.7);
+    }
+
+
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down){
         if(down)
