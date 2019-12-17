@@ -14,7 +14,7 @@ public class BlueCornerAuto extends Exponential_Methods {
         telemetry.update();
 
         move(0, factor * 22.75, 0.5);
-        int inches = grabSkystone("red");
+        int inches = grabSkystone("blue");
         move(0, factor * 22.75 * 5, .5);
 
     }

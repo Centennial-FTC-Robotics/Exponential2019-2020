@@ -30,7 +30,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
     private static final int MIDDLE_SCREEN = 640;
-
+    private static final int TOP_MIDDLE_SCREEN = 360;
 
     //limits
     public static final int slidesMax = 5; //set later
@@ -62,7 +62,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+                vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
     public void initTfod() {
@@ -357,9 +358,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
                 sleep(500);
                 if (updatedRecognitions != null) {
                     for (Recognition recognition : updatedRecognitions) {
+                        telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
                         if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                            float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
-                            center = stonePos + 300 > MIDDLE_SCREEN && MIDDLE_SCREEN > stonePos - 300;
+                            float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;
+
+                            //float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
+                            center = stonePos + 160 > TOP_MIDDLE_SCREEN && TOP_MIDDLE_SCREEN > stonePos - 160;
                         }
                     }
                 }
