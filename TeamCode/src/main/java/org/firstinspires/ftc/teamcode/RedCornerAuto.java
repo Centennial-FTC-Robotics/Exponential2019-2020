@@ -42,6 +42,6 @@ public class RedCornerAuto extends Exponential_Methods {
 */
 
 
-    
+
 
 }

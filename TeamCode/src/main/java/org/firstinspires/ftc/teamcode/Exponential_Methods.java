@@ -32,6 +32,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final int MIDDLE_SCREEN = 640;
     private static final int TOP_MIDDLE_SCREEN = 360;
 
+    private static final double TILE_LENGTH = 22.75;
     //limits
     public static final int slidesMax = 5; //set later
     public static final int slidesMin = 0; //set later
@@ -349,11 +350,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         else
             factor = -1;
 
-        move(0, factor * -22.75, 0.5); //move to corner
+        move(0, factor * -TILE_LENGTH, 0.5); //move to corner
         move(18,0,0.5); //move forward towards stones
 
         //BEGINNING OF ORIGINAL METHOD
-        move(22.75,0,0.5);
+        move(TILE_LENGTH,0,0.5);
 
         turnRelative( factor * 45);
 
@@ -389,21 +390,21 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         //turns back
         turnRelative(factor * -45);
-        move(-22.75, 0, .5);
+        move(-TILE_LENGTH, 0, .5);
 
         ////END OF ORIGINAL METHOD
         int inchesMoved = blocksMoved * 8;
 
         move(-18,0,0.5); //move back (can be cut out)
-        move(0,factor * (22.75*5 - inchesMoved), 0.5); //move through alliance bridge
-        move(4.75+22.75, 0, 0.5); //move to foundation
+        move(0,factor * (TILE_LENGTH*5 - inchesMoved), 0.5); //move through alliance bridge
+        move(4.75+TILE_LENGTH, 0, 0.5); //move to foundation
 
         releaseStone(); //drop stone out
 
         //moving foundation
         turnAbsolute(180); //turn around
         toggleHook(true); //grab foundation
-        move(4.75+22.75, factor * 14,0.5); //move to wall
+        move(4.75+TILE_LENGTH, factor * 14,0.5); //move to wall
         turnRelative(factor * 90);
         toggleHook(false);
 
