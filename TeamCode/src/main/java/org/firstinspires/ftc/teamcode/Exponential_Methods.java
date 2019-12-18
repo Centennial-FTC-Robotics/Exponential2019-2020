@@ -285,7 +285,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //position in inches
     //probably need to add negative signs and reverse stuff later when we actually have slides
-    public void extendSlidesTo(int position, float speed){
+    public void extendSlidesTo(int position, double speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -298,7 +298,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
                 && slideDown.getCurrentPosition() < slidesMax &&
                 slideUp.getCurrentPosition() > slidesMin &&
                 slideDown.getCurrentPosition() > slidesMin &&
-                (slideUp.isBusy() || slideDown.isBusy())){}
+                (slideUp.isBusy() || slideDown.isBusy())){
+            setSlidePower(speed);
+        }
         setSlidePower(0);
     }
 
@@ -350,12 +352,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         else
             factor = -1;
 
-//        move(0, factor * -TILE_LENGTH, 0.5); //move to corner
-//        move(18,0,0.5); //move forward towards stones
-
-        //BEGINNING OF ORIGINAL METHOD
-        move(TILE_LENGTH,0,0.5);
-
         turnRelative( factor * 45);
 
         boolean center = false;
@@ -390,26 +386,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         //turns back
         turnRelative(factor * -45);
-        move(-TILE_LENGTH, 0, .5);
 
         return blocksMoved * 8;
-        ////END OF ORIGINAL METHOD
-        /*int inchesMoved = blocksMoved * 8;
-
-        move(-18,0,0.5); //move back (can be cut out)
-        move(0,factor * (TILE_LENGTH*5 - inchesMoved), 0.5); //move through alliance bridge
-        move(4.75+TILE_LENGTH, 0, 0.5); //move to foundation
-
-        releaseStone(); //drop stone out
-
-        //moving foundation
-        turnAbsolute(180); //turn around
-        toggleHook(true); //grab foundation
-        move(4.75+TILE_LENGTH, factor * 14,0.5); //move to wall
-        turnRelative(factor * 90);
-        toggleHook(false);
-
-        move(28.875, 0, 0.5); //parks on tape*/
     }
 
 

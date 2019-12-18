@@ -30,7 +30,9 @@ public class RedCornerAuto extends Exponential_Methods {
           move(0, factor * (TILE_LENGTH * 5 - inchesMoved), 0.5); //move through alliance bridge
           move(4.75 + TILE_LENGTH, 0, 0.5); //move to foundation
 
+          extendSlidesTo(3,0.5); //placeholder value rn
           releaseStone(); //drop stone out
+          extendSlidesTo(0,0.5);
 
           //moving foundation
           turnAbsolute(180); //turn around
