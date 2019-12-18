@@ -343,15 +343,15 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //-------------- Computer Vision --------------
 
-    public void grabSkystone(String color){
+    public int grabSkystone(String color){
         int factor;
         if(color.equals("red"))
             factor = 1;
         else
             factor = -1;
 
-        move(0, factor * -TILE_LENGTH, 0.5); //move to corner
-        move(18,0,0.5); //move forward towards stones
+//        move(0, factor * -TILE_LENGTH, 0.5); //move to corner
+//        move(18,0,0.5); //move forward towards stones
 
         //BEGINNING OF ORIGINAL METHOD
         move(TILE_LENGTH,0,0.5);
@@ -392,8 +392,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         turnRelative(factor * -45);
         move(-TILE_LENGTH, 0, .5);
 
+        return blocksMoved * 8;
         ////END OF ORIGINAL METHOD
-        int inchesMoved = blocksMoved * 8;
+        /*int inchesMoved = blocksMoved * 8;
 
         move(-18,0,0.5); //move back (can be cut out)
         move(0,factor * (TILE_LENGTH*5 - inchesMoved), 0.5); //move through alliance bridge
@@ -408,7 +409,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         turnRelative(factor * 90);
         toggleHook(false);
 
-        move(28.875, 0, 0.5); //parks on tape
+        move(28.875, 0, 0.5); //parks on tape*/
     }
 
 
