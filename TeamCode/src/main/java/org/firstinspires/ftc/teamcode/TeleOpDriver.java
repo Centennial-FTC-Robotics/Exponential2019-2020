@@ -1,84 +1,75 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "TeleOp", group = "TeleOp")
 
-public class TeleOpDriver extends Exponential_Methods {
-    private double[] circle_to_taxicab(double circle_x, double circle_y) {
-        double[] answer = new double[2];
-        if (circle_x == 0.0)
-            answer[0] = 0.0;
-        else
-            answer[0] = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
+public class TeleOpDriver extends LinearOpMode {
+    private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
+        double[] answer = new double[4];
+        double x;
+        double y;
+
+        if (circle_x == 0.0) {
+            x = 0.0;
+        }else {
+            x = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
                     * (Math.abs(circle_x)) / (Math.abs(circle_x) + Math.abs(circle_y));
-        if (circle_y == 0.0)
-            answer[1] = 0.0;
-        else
-            answer[1] = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
-                    * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
-        return answer;
-    }
-
-    private void taxicab_method(double powerright, double powerup) {
-        double taxiright = circle_to_taxicab(powerright, powerup)[0];
-        double taxiup = circle_to_taxicab(powerright, powerup)[1];
-        frontLeft.setPower((-taxiright + taxiup));
-        backLeft.setPower((taxiright + taxiup));
-        frontRight.setPower((taxiright + taxiup));
-        backRight.setPower((-taxiright + taxiup));
-    }
-
-    private void brute_force_method(double powerright, double powerup) {
-        double magnitude = Math.sqrt(powerright * powerright + powerup * powerup);
-        if (magnitude > 1) {
-            frontLeft.setPower((-powerright + powerup) / magnitude);
-            backLeft.setPower((powerright + powerup) / magnitude);
-            frontRight.setPower((powerright + powerup) / magnitude);
-            backRight.setPower((-powerright + powerup) / magnitude);
-        } else {
-            frontLeft.setPower((-powerright + powerup));
-            backLeft.setPower((powerright + powerup));
-            frontRight.setPower((powerright + powerup));
-            backRight.setPower((-powerright + powerup));
         }
+        if (circle_y == 0.0) {
+            y = 0.0;
+        }else {
+            y = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
+                    * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
+        }
+        double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
+        if(sum >1){
+            answer[0]=(x+y+circle_rotate)/sum;
+            answer[1]=(-1*x+y+circle_rotate)/sum;
+            answer[2]=(x+y-circle_rotate)/sum;
+            answer[3]=(-1*x+y-circle_rotate)/sum;
+        } else {
+            sum=1;
+            answer[0]=(x+y+circle_rotate)/sum;
+            answer[1]=(-1*x+y+circle_rotate)/sum;
+            answer[2]=(x+y-circle_rotate)/sum;
+            answer[3]=(-1*x+y-circle_rotate)/sum;
+        }
+        return answer;
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-        super.runOpMode();
+        DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
+        DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
+        DcMotor backLeft = hardwareMap.dcMotor.get("backLeft");
+        DcMotor backRight = hardwareMap.dcMotor.get("backRight");
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
 
         while (opModeIsActive()) {
-            double powerright = gamepad1.right_stick_x;
-            double powerup = gamepad1.right_stick_y;
-            double rotate_counterclockwise = gamepad1.left_stick_x;
+
+
 
             double trigger_factor = 1.0 - gamepad1.left_trigger;
-            if (powerright != 0.0 || powerup != 0.0) {
+            double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .5*gamepad1.right_stick_x);
+            frontRight.setPower(trigger_factor*answer[0]);
+            backRight.setPower(trigger_factor*answer[1]);
+            backLeft.setPower(trigger_factor*answer[2]);
+            frontLeft.setPower(trigger_factor*answer[3]);
 
-                // change this to adjust top speed
-                double adjustable_move_factor = 1.0;
 
-                // Comment either taxicab or brute_force out
-                taxicab_method(adjustable_move_factor * trigger_factor * powerright, adjustable_move_factor * trigger_factor * powerup);
-                // brute_force_method(adjustable_move_factor * trigger_factor * powerright, adjustable_move_factor * trigger_factor * powerup);
-            } else if (rotate_counterclockwise != 0.0) {
-                // change this to adjust rotation speed
-                double adjustable_rotate_factor = .5;
-
-                frontLeft.setPower(adjustable_rotate_factor * trigger_factor * -rotate_counterclockwise);
-                backLeft.setPower(adjustable_rotate_factor * trigger_factor * -rotate_counterclockwise);
-                frontRight.setPower(adjustable_rotate_factor * trigger_factor * rotate_counterclockwise);
-                backRight.setPower(adjustable_rotate_factor * trigger_factor * rotate_counterclockwise);
-            } else {
-                frontLeft.setPower(0);
-                backLeft.setPower(0);
-                frontRight.setPower(0);
-                backRight.setPower(0);
-            }
-
+            /*
             //slides
             setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
 
@@ -111,7 +102,7 @@ public class TeleOpDriver extends Exponential_Methods {
             if(gamepad2.x){
                 //intake servos release stone
                 setIntakeServosPosition(0.7); //set later BY MANUALLY TESTING HAHAHAHA
-            }
+            }*/
         }
     }
 
