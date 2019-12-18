@@ -34,11 +34,10 @@ public class TeleOpDriver extends LinearOpMode {
             answer[2]=(x+y-circle_rotate)/sum;
             answer[3]=(-1*x+y-circle_rotate)/sum;
         } else {
-            sum=1;
-            answer[0]=(x+y+circle_rotate)/sum;
-            answer[1]=(-1*x+y+circle_rotate)/sum;
-            answer[2]=(x+y-circle_rotate)/sum;
-            answer[3]=(-1*x+y-circle_rotate)/sum;
+            answer[0]=(x+y+circle_rotate);
+            answer[1]=(-1*x+y+circle_rotate);
+            answer[2]=(x+y-circle_rotate);
+            answer[3]=(-1*x+y-circle_rotate);
         }
         return answer;
     }
