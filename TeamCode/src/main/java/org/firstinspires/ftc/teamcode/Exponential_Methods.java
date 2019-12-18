@@ -30,8 +30,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
     private static final int MIDDLE_SCREEN = 640;
+    private static final int TOP_MIDDLE_SCREEN = 360;
 
-
+    private static final double TILE_LENGTH = 22.75;
     //limits
     public static final int slidesMax = 5; //set later
     public static final int slidesMin = 0; //set later
@@ -62,7 +63,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+                vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
     public void initTfod() {
@@ -283,7 +285,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //position in inches
     //probably need to add negative signs and reverse stuff later when we actually have slides
-    public void extendSlidesTo(int position, float speed){
+    public void extendSlidesTo(int position, double speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -296,7 +298,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
                 && slideDown.getCurrentPosition() < slidesMax &&
                 slideUp.getCurrentPosition() > slidesMin &&
                 slideDown.getCurrentPosition() > slidesMin &&
-                (slideUp.isBusy() || slideDown.isBusy())){}
+                (slideUp.isBusy() || slideDown.isBusy())){
+            setSlidePower(speed);
+        }
         setSlidePower(0);
     }
 
@@ -318,6 +322,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         intakeLeft.setPower(power);
         intakeRight.setPower(power);
     }
+
+    public void releaseStone(){
+        setIntakeWheels(-1);
+        setIntakeServosPosition(0.7);
+    }
+
 
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down){
@@ -341,7 +351,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             factor = 1;
         else
             factor = -1;
-        move(22.75,0,0.5);
 
         turnRelative( factor * 45);
 
@@ -357,9 +366,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
                 sleep(500);
                 if (updatedRecognitions != null) {
                     for (Recognition recognition : updatedRecognitions) {
+                        telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
                         if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                            float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
-                            center = stonePos + 300 > MIDDLE_SCREEN && MIDDLE_SCREEN > stonePos - 300;
+                            float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;
+
+                            //float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
+                            center = stonePos + 160 > TOP_MIDDLE_SCREEN && TOP_MIDDLE_SCREEN > stonePos - 160;
                         }
                     }
                 }
@@ -374,7 +386,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         //turns back
         turnRelative(factor * -45);
-        move(-22.75, 0, .5);
+
         return blocksMoved * 8;
     }
 
