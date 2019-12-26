@@ -393,7 +393,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return blocksMoved * 8;
     }
 
-    public void run(String color) {
+    public void cornerAuto(String color) {
         int factor;
         if (color.equals("red"))
             factor = 1;

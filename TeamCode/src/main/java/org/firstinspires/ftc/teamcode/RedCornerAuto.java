@@ -9,7 +9,8 @@ public class RedCornerAuto extends Exponential_Methods {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         waitForStart();
-        run("red");
+        while(opModeIsActive())
+            cornerAuto("red");
         /*while(opModeIsActive())
             run("red");*/
     }
