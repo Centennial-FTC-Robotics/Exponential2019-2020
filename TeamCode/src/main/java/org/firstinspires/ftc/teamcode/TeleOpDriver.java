@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "TeleOp", group = "TeleOp")
 
-public class TeleOpDriver extends LinearOpMode {
+public class TeleOpDriver extends Exponential_Methods {
     private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -44,16 +44,6 @@ public class TeleOpDriver extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
-        DcMotor backLeft = hardwareMap.dcMotor.get("backLeft");
-        DcMotor backRight = hardwareMap.dcMotor.get("backRight");
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
 
         while (opModeIsActive()) {
