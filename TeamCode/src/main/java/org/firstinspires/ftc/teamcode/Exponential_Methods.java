@@ -33,6 +33,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final int TOP_MIDDLE_SCREEN = 360;
 
     private static final double TILE_LENGTH = 22.75;
+    private static final double ROBOT_LENGTH = 18;
+    private static final double BLOCK_LENGTH = 8;
+    private static final double FOUNDATION_WIDTH = 18.5;
     //limits
     public static final int slidesMax = 5; //set later
     public static final int slidesMin = 0; //set later
@@ -391,7 +394,62 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return blocksMoved * 8;
     }
 
+    public void run(String color) {
+        int factor;
+        if (color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
 
+        //coordinates are for red side, they represent the location of the bottom left point of the robot from our POV
+        // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
+        //figure out what was going on
+
+        //learn to use constants margaret jesus christ
+
+        move(0, factor * -TILE_LENGTH, 0.5); //move to corner //(0, 0)
+        move(18, 0, 0.5); //move forward towards stones //(0, 18)
+        int inchesMoved = grabSkystone(color); //(x, 18)
+
+        move(-18, 0, 0.5); //move back (can be cut out) //(x, 0)
+        move(0, factor * (TILE_LENGTH * 5 - inchesMoved), 0.5); //(move through alliance bridge // 5  tiles, 0)
+        move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
+
+        extendSlidesTo(3,0.5); //placeholder value rn
+        releaseStone(); //drop stone out
+        extendSlidesTo(0,0.5);
+
+        //moving foundation
+        turnAbsolute(180); //turn around
+        toggleHook(true); //grab foundation
+        move(TILE_LENGTH * 2 - ROBOT_LENGTH, factor * 14, 0.5); //move to wall // (6 tiles - 14, 0)
+        turnRelative(factor * 90);
+        toggleHook(false);
+
+        //robot currently facing sideways
+        //middle of robot will hopefully be on tape this way
+        //move(3 * TILE_LENGTH + ROBOT_LENGTH / 2 - 14, 0, 0.5); //parks on tape // (3 tiles - half of robot length, 0)
+
+        //to try to get the second block
+        move((TILE_LENGTH * 6 - 14 + BLOCK_LENGTH * 3) * factor,0 ,.5); //move to second set of blocks // (3 blocks, 0)
+        turnAbsolute(0); //turn back forwards
+        move(18,0,0.5); //move forward to block // (3 blocks, 18)
+        inchesMoved = grabSkystone(color); //grabbed block // (3 blocks + x, 18)
+        move(-18, 0, .5); //move back // (3 blocks + x, 0)
+        turnAbsolute(-90 * factor); //turn left, then move backwards
+
+        //moving to the edge of the foundation ((backwards))
+        // (6 blocks - foundation width, 0)
+        move(-1 * (6 * TILE_LENGTH - FOUNDATION_WIDTH - (BLOCK_LENGTH * 3 + inchesMoved)),0 ,.5);
+
+        //copied code idk why we need to extend but i trust you
+        extendSlidesTo(3, .5);
+        releaseStone();
+        extendSlidesTo(0, 0.5);
+
+        //moving back to tape
+        move (TILE_LENGTH * 6 - FOUNDATION_WIDTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2), 0, 0.5); // (3 blocks - robot length / 2, 0);
+    }
 
 
 
