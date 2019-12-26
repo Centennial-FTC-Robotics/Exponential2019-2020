@@ -256,7 +256,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             telemetry.update();
         }
         setPowerDriveMotors(0);
-        frontLeft.setMode();
     }
 
     public void turnRelative(double targetAngle) {
@@ -335,10 +334,14 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down){
-        if(down)
-            hookServo.setPosition(1);
-        else
-            hookServo.setPosition(0);
+        if(down) {
+            hookServoLeft.setPosition(1);
+            hookServoRight.setPosition(1);
+        }
+        else{
+            hookServoLeft.setPosition(0);
+            hookServoRight.setPosition(0);
+        }
     }
 
     //servos that clamp
