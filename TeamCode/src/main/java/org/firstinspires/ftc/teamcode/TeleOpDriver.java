@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "TeleOp", group = "TeleOp")
 
-public class TeleOpDriver extends Exponential_Methods {
+public class TeleOpDriver extends LinearOpMode {
     private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -29,13 +29,13 @@ public class TeleOpDriver extends Exponential_Methods {
         }
         double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
         if(sum >1){
-            answer[0]=(x+y+circle_rotate)/sum;
-            answer[1]=(-1*x+y+circle_rotate)/sum;
+            answer[0]=(-x+y+circle_rotate)/sum;
+            answer[1]=(1*x+y+circle_rotate)/sum;
             answer[2]=(x+y-circle_rotate)/sum;
             answer[3]=(-1*x+y-circle_rotate)/sum;
         } else {
-            answer[0]=(x+y+circle_rotate);
-            answer[1]=(-1*x+y+circle_rotate);
+            answer[0]=(-x+y+circle_rotate);
+            answer[1]=(1*x+y+circle_rotate);
             answer[2]=(x+y-circle_rotate);
             answer[3]=(-1*x+y-circle_rotate);
         }
@@ -44,14 +44,33 @@ public class TeleOpDriver extends Exponential_Methods {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // super.runOpMode();
+
+        DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
+        DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
+        DcMotor backLeft = hardwareMap.dcMotor.get("backLeft");
+        DcMotor backRight = hardwareMap.dcMotor.get("backRight");
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         waitForStart();
 
         while (opModeIsActive()) {
 
+            double trigger_factor = 1;
+            //double trigger_factor = 1.0 - gamepad1.left_trigger;
+            double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .8*gamepad1.right_stick_x);
+            if(gamepad1.left_bumper){
+                trigger_factor = .5;
+            }
+            if (gamepad1.right_bumper){
+                trigger_factor = .25;
+            }
 
-
-            double trigger_factor = 1.0 - gamepad1.left_trigger;
-            double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .5*gamepad1.right_stick_x);
             frontRight.setPower(trigger_factor*answer[0]);
             backRight.setPower(trigger_factor*answer[1]);
             backLeft.setPower(trigger_factor*answer[2]);
