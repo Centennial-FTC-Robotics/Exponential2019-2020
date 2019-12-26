@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(group = "Autonomous", name = "RedCornerAuto")
@@ -43,8 +42,4 @@ public class RedCornerAuto extends Exponential_Methods {
 
           move(28.875, 0, 0.5); //parks on tape
       }
-
-
-
-
 }
