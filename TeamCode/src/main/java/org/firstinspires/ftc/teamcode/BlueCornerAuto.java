@@ -9,7 +9,8 @@ public class BlueCornerAuto extends Exponential_Methods {
         super.runOpMode();
         waitForStart();
 
-        run("blue");
+        while(opModeIsActive())
+            cornerAuto("blue");
 
     }
 }
