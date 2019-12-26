@@ -256,7 +256,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             telemetry.update();
         }
         setPowerDriveMotors(0);
-        frontLeft.setMode();
     }
 
     public void turnRelative(double targetAngle) {
