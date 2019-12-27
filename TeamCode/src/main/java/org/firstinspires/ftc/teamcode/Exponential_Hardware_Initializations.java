@@ -44,24 +44,24 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
-        intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
-        intakeServoRight = hardwareMap.servo.get("intakeServoRight");
+        // intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
+        // intakeServoRight = hardwareMap.servo.get("intakeServoRight");
 
-        //hookServoLeft = hardwareMap.servo.get("hookServoLeft");
-        //hookServoRight = hardwareMap.servo.get("hookServoRight");
+        // hookServoLeft = hardwareMap.servo.get("hookServoLeft");
+        // hookServoRight = hardwareMap.servo.get("hookServoRight");
 
-        //intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-        //intakeRight = hardwareMap.dcMotor.get("intakeRight");
-        slideUp = hardwareMap.dcMotor.get("slideRight");
-        slideDown = hardwareMap.dcMotor.get("slideLeft");
+        // intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+        // intakeRight = hardwareMap.dcMotor.get("intakeRight");
+        // slideUp = hardwareMap.dcMotor.get("slideRight");
+        // slideDown = hardwareMap.dcMotor.get("slideLeft");
 
 
-        //sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
-        //sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
+        // sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
+        // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         driveMotors[0] = frontLeft;
         driveMotors[1] = frontRight;
@@ -73,10 +73,10 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        //intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 }

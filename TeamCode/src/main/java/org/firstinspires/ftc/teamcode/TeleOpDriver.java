@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "TeleOp", group = "TeleOp")
+@TeleOp(name = "TeleOp, USE THIS ONE", group = "TeleOp")
 
-public class TeleOpDriver extends LinearOpMode {
+public class TeleOpDriver extends Exponential_Methods {
     private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -29,34 +29,27 @@ public class TeleOpDriver extends LinearOpMode {
         }
         double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
         if(sum >1){
-            answer[0]=(-x+y+circle_rotate)/sum;
-            answer[1]=(x+y+circle_rotate)/sum;
-            answer[2]=(-x+y-circle_rotate)/sum;
-            answer[3]=(x+y-circle_rotate)/sum;
+            answer[0]=(x+y+circle_rotate)/sum;
+            answer[1]=(-x+y+circle_rotate)/sum;
+            answer[2]=(x+y-circle_rotate)/sum;
+            answer[3]=(-x+y-circle_rotate)/sum;
         } else {
-            answer[0]=(-x+y+circle_rotate);
-            answer[1]=(x+y+circle_rotate);
-            answer[2]=(-x+y-circle_rotate);
-            answer[3]=(x+y-circle_rotate);
+            answer[0]=(x+y+circle_rotate);
+            answer[1]=(-x+y+circle_rotate);
+            answer[2]=(x+y-circle_rotate);
+            answer[3]=(-x+y-circle_rotate);
         }
         return answer;
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-        // super.runOpMode();
+        super.runOpMode();
 
-        DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
-        DcMotor backLeft = hardwareMap.dcMotor.get("backLeft");
-        DcMotor backRight = hardwareMap.dcMotor.get("backRight");
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        for(DcMotor motor : driveMotors){
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
         waitForStart();
 
         while (opModeIsActive()) {
