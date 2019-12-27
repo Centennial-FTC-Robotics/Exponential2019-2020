@@ -68,8 +68,6 @@ public class TeleOpDriver extends Exponential_Methods {
             backRight.setPower(trigger_factor*answer[1]);
             backLeft.setPower(trigger_factor*answer[2]);
             frontLeft.setPower(trigger_factor*answer[3]);
-
-
             /*
             //slides
             setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
