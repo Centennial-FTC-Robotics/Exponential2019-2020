@@ -30,14 +30,14 @@ public class TeleOpDriver extends LinearOpMode {
         double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
         if(sum >1){
             answer[0]=(-x+y+circle_rotate)/sum;
-            answer[1]=(1*x+y+circle_rotate)/sum;
-            answer[2]=(x+y-circle_rotate)/sum;
-            answer[3]=(-1*x+y-circle_rotate)/sum;
+            answer[1]=(x+y+circle_rotate)/sum;
+            answer[2]=(-x+y-circle_rotate)/sum;
+            answer[3]=(x+y-circle_rotate)/sum;
         } else {
             answer[0]=(-x+y+circle_rotate);
-            answer[1]=(1*x+y+circle_rotate);
-            answer[2]=(x+y-circle_rotate);
-            answer[3]=(-1*x+y-circle_rotate);
+            answer[1]=(x+y+circle_rotate);
+            answer[2]=(-x+y-circle_rotate);
+            answer[3]=(x+y-circle_rotate);
         }
         return answer;
     }
