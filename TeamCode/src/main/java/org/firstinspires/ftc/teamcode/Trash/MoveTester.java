@@ -15,12 +15,14 @@ public class MoveTester extends Exponential_Methods {
 
         waitForStart();
         while(opModeIsActive()) {
-            sideways+=gamepad1.left_stick_x;
-            forwards+=gamepad1.left_stick_y;
+            if(gamepad1.left_stick_x!=0||gamepad1.left_stick_y!=0) {
+                sideways += gamepad1.left_stick_x;
+                forwards += -1*gamepad1.left_stick_y;
+                wait(400);
+            }
             telemetry.addData("forwards", forwards);
             telemetry.addData("sideways", sideways);
             telemetry.update();
-            sleep(400);
             if(gamepad1.a){
                 move(forwards, sideways, .5);
             }

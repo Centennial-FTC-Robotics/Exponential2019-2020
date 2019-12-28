@@ -266,7 +266,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double currentAngle;
         int direction;
         double turnRate;
-        double P = 0.001; //set later
+        double P = 0.01; //set later
         double tolerance = 4; //set later
         double maxSpeed = 0.4; //set later
         double minSpeed = 0.01; //set later
@@ -280,7 +280,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             telemetry.addData("error",error);
             telemetry.addData("turnRate", turnRate);
             telemetry.update();
-            setPowerDriveMotors((float) (turnRate * direction), -(float) (turnRate * direction));
+            setPowerDriveMotors(-(float) (turnRate * direction), (float) (turnRate * direction));
         }
         while(opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
