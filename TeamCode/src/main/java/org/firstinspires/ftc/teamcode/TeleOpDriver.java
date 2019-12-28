@@ -100,7 +100,8 @@ public class TeleOpDriver extends Exponential_Methods {
 
             if(gamepad2.x){
                 //intake servos release stone
-                setIntakeServosPosition(0.7); //set later BY MANUALLY TESTING HAHAHAHA
+                intakeServoRight.setPosition(.7);
+                intakeServoLeft.setPosition(.65);
             }
         }
     }
