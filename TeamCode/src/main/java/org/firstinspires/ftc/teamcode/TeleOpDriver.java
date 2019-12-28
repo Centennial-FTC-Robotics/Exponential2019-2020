@@ -68,40 +68,40 @@ public class TeleOpDriver extends Exponential_Methods {
             backRight.setPower(trigger_factor*answer[1]);
             backLeft.setPower(trigger_factor*answer[2]);
             frontLeft.setPower(trigger_factor*answer[3]);
-            /*
+
             //slides
-            setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
+            // setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
 
             //hook down
-            if(gamepad1.x)
-                toggleHook(true);
+            //if(gamepad1.x)
+                //toggleHook(true);
 
             //hook up
-            if(gamepad1.b)
-                toggleHook(false);
+            //if(gamepad1.b)
+                //toggleHook(false);
 
             //slide speed reduced to 1/2
-            if(gamepad2.left_bumper)
-                setSlidePower(slideUp.getPower() / 2);
+            //if(gamepad2.left_bumper)
+                //setSlidePower(slideUp.getPower() / 2);
 
             //slide speed reduced to 1/4
-            if(gamepad2.right_bumper)
-                setSlidePower(slideUp.getPower() / 4);
+            //if(gamepad2.right_bumper)
+                //setSlidePower(slideUp.getPower() / 4);
 
             //intake wheels
-            double intakePower = 0.9; //set later
-            setIntakeWheels(intakePower * gamepad2.left_trigger);
-            setIntakeWheels(0.25 * intakePower * gamepad2.right_trigger);
+            //double intakePower = 0.9; //set later
+            //setIntakeWheels(intakePower * gamepad2.left_trigger);
+            //setIntakeWheels(0.25 * intakePower * gamepad2.right_trigger);
 
             if(gamepad2.b){
-                //intake servos clamp stone
-                setIntakeServosPosition(1); //set later
+                intakeServoLeft.setPosition(.92);
+                intakeServoRight.setPosition(.95);
             }
 
             if(gamepad2.x){
                 //intake servos release stone
                 setIntakeServosPosition(0.7); //set later BY MANUALLY TESTING HAHAHAHA
-            }*/
+            }
         }
     }
 

@@ -10,7 +10,7 @@ public class RotateTester extends Exponential_Methods{
         double rotateAngle = 0;
         while(opModeIsActive()){
             if(gamepad1.left_stick_x!=0.0){
-                rotateAngle+=10*gamepad1.left_stick_x;
+                rotateAngle+=(int)(10*gamepad1.left_stick_x);
                 sleep(400);
             }
             telemetry.addData("Angle", rotateAngle);
@@ -19,7 +19,7 @@ public class RotateTester extends Exponential_Methods{
                 turnRelative(rotateAngle);
             }
             if(gamepad1.b){
-                turnRelative(rotateAngle);
+                turnAbsolute(rotateAngle);
             }
         }
     }

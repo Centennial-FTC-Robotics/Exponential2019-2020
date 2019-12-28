@@ -44,8 +44,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
-        // intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
-        // intakeServoRight = hardwareMap.servo.get("intakeServoRight");
+        intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
+        intakeServoRight = hardwareMap.servo.get("intakeServoRight");
 
         // hookServoLeft = hardwareMap.servo.get("hookServoLeft");
         // hookServoRight = hardwareMap.servo.get("hookServoRight");
@@ -60,6 +60,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
+        intakeServoRight.setDirection(Servo.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
