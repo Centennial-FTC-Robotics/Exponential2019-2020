@@ -82,7 +82,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     //-------------- Basic --------------
 
     public int convertInchToEncoder(double inches){
-        double conversion = 31.01439480317557;
+        double conversion = 43.4653423;
         int encoderValue = (int) Math.round(conversion * inches);
         return encoderValue;
     }
@@ -216,10 +216,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     public void move(double inchesForward, double inchesSideways, double maxPower){
         inchesForward*=-1;
-        double p = 1.0/800;
+        double p = 1.0/1200;
         double i;
         double d;
-        double inchesTolerance = 0.5;
+        double inchesTolerance = 0.3;
         double max_positive = maxPower;
         double min_negative = -maxPower;
 
