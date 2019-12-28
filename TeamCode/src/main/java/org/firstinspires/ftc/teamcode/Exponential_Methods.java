@@ -37,8 +37,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final double BLOCK_LENGTH = 8;
     private static final double FOUNDATION_WIDTH = 18.5;
     //limits
-    public static final int slidesMax = 5; //set later
-    public static final int slidesMin = 0; //set later
+    public static final int slidesMax = 2500; //set later
+    public static final int slidesMin = -500; //set later
 
     @Override
     public void runOpMode() throws InterruptedException {
