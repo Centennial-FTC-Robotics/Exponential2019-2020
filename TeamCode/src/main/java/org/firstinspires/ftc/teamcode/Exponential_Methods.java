@@ -292,15 +292,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         setPowerDriveMotors(0);
     }
 
-    //position in inches
-    public void extendSlidesTo(int position, double speed){
+    public void extendSlidesEncoder(int upVal, int downVal, double speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        int encoderVal = convertInchToEncoderSlides(position);
-
-        slideUp.setTargetPosition(encoderVal);
-        slideDown.setTargetPosition(encoderVal);
+        slideUp.setTargetPosition(upVal);
+        slideDown.setTargetPosition(downVal);
 
         while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
                 && slideDown.getCurrentPosition() < slidesMax &&
@@ -310,7 +307,26 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
             setSlidePower(speed);
         }
         setSlidePower(0);
+
+        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+
+    //position in inches
+    //PROBABLY DOESNT WORK
+    public void extendSlidesTo(int position, double speed){
+        int encoderVal = convertInchToEncoderSlides(position);
+        extendSlidesEncoder(encoderVal, encoderVal, speed);
+    }
+
+    //distance in inches
+    public void extendSlidesBy(int distance, double speed){
+        int encoderVal = convertInchToEncoderSlides(distance);
+        extendSlidesEncoder(encoderVal + slideUp.getCurrentPosition(),
+                encoderVal + slideDown.getCurrentPosition(), speed);
+    }
+
 
     //Positive = extend, negative = retract
     public void setSlidePower(double power){
@@ -332,8 +348,18 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void releaseStone(){
-        setIntakeWheels(-1);
+        setIntakeWheels(0);
         setIntakeServosPosition(0.7);
+    }
+
+    public void intakeStone(){
+        setIntakeWheels(0.7);
+        setIntakeServosPosition(1);
+    }
+
+    public void clampStone(){
+        setIntakeWheels(0);
+        setIntakeServosPosition(1);
     }
 
 
@@ -371,6 +397,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
+            intakeStone();
             while (!center) {
                 move(-Math.sqrt(2)*4,factor * Math.sqrt(2)*4,0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -389,6 +416,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
                 }
             }
             setPowerDriveMotors(0);
+            clampStone();
         }
 
         //move forward, grab block, move back
@@ -413,7 +441,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
         //figure out what was going on
 
-        //learn to use constants margaret jesus christ
+        //ok, yuhwan
 
         move(0, factor * -TILE_LENGTH, 0.5); //move to corner //(0, 0)
         move(18, 0, 0.5); //move forward towards stones //(0, 18)
@@ -421,11 +449,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         move(-18, 0, 0.5); //move back (can be cut out) //(x, 0)
         move(0, factor * (TILE_LENGTH * 5 - inchesMoved), 0.5); //(move through alliance bridge // 5  tiles, 0)
+
+        extendSlidesBy(3,0.5); //move slides up to be able to go close to foudndation
         move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
 
-        extendSlidesTo(3,0.5); //placeholder value rn
         releaseStone(); //drop stone out
-        extendSlidesTo(0,0.5);
 
         //moving foundation
         turnAbsolute(180); //turn around
@@ -438,6 +466,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         //middle of robot will hopefully be on tape this way
         //move(3 * TILE_LENGTH + ROBOT_LENGTH / 2 - 14, 0, 0.5); //parks on tape // (3 tiles - half of robot length, 0)
 
+        extendSlidesBy(-3,0.5); //move slides back down
+
         //to try to get the second block
         move((TILE_LENGTH * 6 - 14 + BLOCK_LENGTH * 3) * factor,0 ,.5); //move to second set of blocks // (3 blocks, 0)
         turnAbsolute(0); //turn back forwards
@@ -446,17 +476,20 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         move(-18, 0, .5); //move back // (3 blocks + x, 0)
         turnAbsolute(-90 * factor); //turn left, then move backwards
 
+        //move slides up to be able to move close to foundation to drop
+        extendSlidesBy(3, .5);
+
         //moving to the edge of the foundation ((backwards))
         // (6 blocks - foundation width, 0)
         move(-1 * (6 * TILE_LENGTH - FOUNDATION_WIDTH - (BLOCK_LENGTH * 3 + inchesMoved)),0 ,.5);
 
-        //copied code idk why we need to extend but i trust you
-        extendSlidesTo(3, .5);
         releaseStone();
-        extendSlidesTo(0, 0.5);
 
         //moving back to tape
         move (TILE_LENGTH * 6 - FOUNDATION_WIDTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2), 0, 0.5); // (3 blocks - robot length / 2, 0);
+
+        //move slides back down (not necessary but good to have)
+        extendSlidesBy(-3, 0.5);
     }
 
 
