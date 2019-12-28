@@ -75,8 +75,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        // intakeLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // intakeRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         slideUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

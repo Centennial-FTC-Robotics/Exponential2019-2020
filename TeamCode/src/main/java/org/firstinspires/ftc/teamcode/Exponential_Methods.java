@@ -87,6 +87,15 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return encoderValue;
     }
 
+    public int convertInchToEncoderSlides(double inches){
+        double circumference = 3.613;
+        double encoderToIn  = 537.6;
+        double conversion = encoderToIn / circumference;
+        int encoderValue = (int) Math.round(conversion * inches);
+        return encoderValue;
+    }
+
+
     public double getAngleDist(double targetAngle, double currentAngle) {
         double angleDifference = currentAngle - targetAngle;
         if (Math.abs(angleDifference) > 180) {
@@ -156,10 +165,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public boolean hasBlock(){
-        if(sensorDistance.getDistance(DistanceUnit.INCH) < 1){
-            return true;
-        }
-        return false;
+        return sensorDistance.getDistance(DistanceUnit.INCH) < 1;
     }
 
 
@@ -287,12 +293,11 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     //position in inches
-    //probably need to add negative signs and reverse stuff later when we actually have slides
     public void extendSlidesTo(int position, double speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        int encoderVal = position; //CONVERSION?
+        int encoderVal = convertInchToEncoderSlides(position);
 
         slideUp.setTargetPosition(encoderVal);
         slideDown.setTargetPosition(encoderVal);
