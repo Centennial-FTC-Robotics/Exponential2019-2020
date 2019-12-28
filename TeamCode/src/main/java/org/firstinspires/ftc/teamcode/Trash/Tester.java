@@ -20,14 +20,23 @@ public class Tester extends Exponential_Methods {
 
         waitForStart();
         while(opModeIsActive()){
+            telemetry.addData("i am here", 0);
+            setSlidePower(0.2);
+            sleep(2000);
+            setSlidePower(-0.2);
+            sleep(2000);
+            setSlidePower(0);
 
+            telemetry.addData("let there be light", 0);
+            extendSlidesTo(4,0.2);
+            /*
             //Encoders
             telemetry.addData("front left", frontLeft.getCurrentPosition());
             telemetry.addData("front right", frontRight.getCurrentPosition());
             telemetry.addData("back right", backRight.getCurrentPosition());
             telemetry.addData("back left", backLeft.getCurrentPosition());
             telemetry.update();
-
+            */
 
             /*
             //Intake
