@@ -212,7 +212,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         for(DcMotor motor : driveMotors){
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    }
+    } 
 
     public void move(double inchesForward, double inchesSideways, double maxPower){
         inchesForward*=-1;
