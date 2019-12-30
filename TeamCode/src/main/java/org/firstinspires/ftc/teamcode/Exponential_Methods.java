@@ -36,6 +36,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final double ROBOT_LENGTH = 18;
     private static final double BLOCK_LENGTH = 8;
     private static final double FOUNDATION_WIDTH = 18.5;
+    private static final double FOUNDATION_AWAY_FROM_WALL = 4;
     //limits
     public static final int slidesMax = 2500; //set later
     public static final int slidesMin = -500; //set later
@@ -397,8 +398,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
+            intakeStone();
             while (!center) {
-                move(-Math.sqrt(2)*4,factor * Math.sqrt(2)*4,0.2);
+                move(factor * Math.sqrt(2)*4,-Math.sqrt(2)*4,0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 blocksMoved++;
                 sleep(500);
@@ -415,14 +417,13 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
                 }
             }
             setPowerDriveMotors(0);
+            clampStone();
         }
 
         //move forward, grab block, move back
-        intakeStone();
-        move(12,0, 0.3);
-        clampStone();
+        move(0,12, 0.3);
         sleep(500);
-        move(-12,0, 0.3);
+        move(0,-12, 0.3);
 
         //turns back
         turnRelative(factor * -45);
@@ -430,7 +431,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return blocksMoved * 8;
     }
 
-    public void cornerAuto(String color) {
+    //-------------- Autonomous Paths --------------
+
+    public void cornerAuto(String color, boolean second) { // starts on second tile from the side
         int factor;
         if (color.equals("red"))
             factor = 1;
@@ -443,53 +446,117 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         //ok, yuhwan
 
-        move(0, factor * -TILE_LENGTH, 0.5); //move to corner //(0, 0)
-        move(18, 0, 0.5); //move forward towards stones //(0, 18)
-        int inchesMoved = grabSkystone(color); //(x, 18)
+        // ROBOT DISTANCE AWAY FROM BLOCK
+        // this variable determines how far away from the block we want the robot when using grabSkystone
+        // using this variable, calculate the distance the robot must travel to get the middle of stone exactly
+        // in robot's field of sight
+        double observingDistance = 12;
+        // these two variables are separate for code clarity
+        // idk what I would name a variable that represents both of these values
+        double observingDistanceX = observingDistance / Math.sqrt(2);
+        double observingDistanceY = observingDistance / Math.sqrt(2);
 
-        move(-18, 0, 0.5); //move back (can be cut out) //(x, 0)
-        move(0, factor * (TILE_LENGTH * 5 - inchesMoved), 0.5); //(move through alliance bridge // 5  tiles, 0)
+        // (1 tile, 0)
 
+        move(-factor * (TILE_LENGTH - observingDistanceX), 0, 0.5); //move to corner //(observing distance x, 0)
+        move(0, 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, 0.5); //move forward towards stones //(obs. dist. x, 2 tiles - robot length - observing dist. y)
+        int inchesMoved = grabSkystone(color); //(x, 2 tiles - robot length - observing dist. y)
+
+        move(0, -1 * (2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY), 0.5); //move back (can be cut out) //(x + obs. dist. x, 0)
+        move(factor * (TILE_LENGTH * 5 - inchesMoved - observingDistanceX), 0, 0.5); //(move through alliance bridge // (5 tiles, 0)
+        //TODO: determine if i want to move alignToFoundationEdge at this stage, along with 5 tiles
+        //TODO: determine if i want to make (2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY) its own variable
+        //TODO: check if there's any more minus robot lengths i have to do, factors should be correct but idk
         extendSlidesBy(3,0.5); //move slides up to be able to go close to foudndation
-        move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
+        //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
+        move(0, TILE_LENGTH * 2 - ROBOT_LENGTH, 0.5); //move to foundation // (5 tiles, 2 tiles - robot length)
 
         releaseStone(); //drop stone out
 
         //moving foundation
+
+        //moving forwards & backwards so corner of robot doesn't hit foundation
+        move(0, -6, .5); // (5 tiles, 2 tiles - robot length - 6 inches)
         turnAbsolute(180); //turn around
+        double alignToFoundationEdge = TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_AWAY_FROM_WALL;
+        //tile length - robot length - found. away from wall: aligns robot to the very edge of the foundation
+        move(factor * -alignToFoundationEdge, -6, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
         toggleHook(true); //grab foundation
-        move(TILE_LENGTH * 2 - ROBOT_LENGTH, factor * 14, 0.5); //move to wall // (6 tiles - 14, 0)
+
+        //moving robot away from any edge to try to stop conflicts from foundation turning, magic number away: 8
+
+        //move to wall // (6 tiles - robot length - foundation width - 8, 8)
+        move(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), TILE_LENGTH * 2 - ROBOT_LENGTH - 8, 0.5);
         turnRelative(factor * 90);
+        //moving foundation all the way to corner
+        move(-8, -8, .5); // (6 tiles - robot length - foundation width, 0)
         toggleHook(false);
 
-        //robot currently facing sideways
-        //middle of robot will hopefully be on tape this way
-        //move(3 * TILE_LENGTH + ROBOT_LENGTH / 2 - 14, 0, 0.5); //parks on tape // (3 tiles - half of robot length, 0)
-
+        double tempPosition = 6 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_WIDTH;
         extendSlidesBy(-3,0.5); //move slides back down
 
-        //to try to get the second block
-        move((TILE_LENGTH * 6 - 14 + BLOCK_LENGTH * 3) * factor,0 ,.5); //move to second set of blocks // (3 blocks, 0)
-        turnAbsolute(0); //turn back forwards
-        move(18,0,0.5); //move forward to block // (3 blocks, 18)
-        inchesMoved = grabSkystone(color); //grabbed block // (3 blocks + x, 18)
-        move(-18, 0, .5); //move back // (3 blocks + x, 0)
-        turnAbsolute(-90 * factor); //turn left, then move backwards
+        if (!second) { //if don't want second block
 
-        //move slides up to be able to move close to foundation to drop
-        extendSlidesBy(3, .5);
+            // robot currently facing sideways
+            // middle of robot will hopefully be on tape this way
+            move(0, tempPosition - (3 * TILE_LENGTH - ROBOT_LENGTH / 2), 0.5); //parks on tape // (3 tiles - half of robot length, 0)
 
-        //moving to the edge of the foundation ((backwards))
-        // (6 blocks - foundation width, 0)
-        move(-1 * (6 * TILE_LENGTH - FOUNDATION_WIDTH - (BLOCK_LENGTH * 3 + inchesMoved)),0 ,.5);
+        } else { // if want second block
 
+            //to try to get the second block
+            move(0, tempPosition - 3 * BLOCK_LENGTH - observingDistanceX,.5); //move to second set of blocks // (3 blocks + obs. dist. x, 0)
+            turnAbsolute(0); //turn back forwards
+            move(0,2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY,0.5); //move forward to block // (3 blocks + obs. dist. x, 2 tiles - robot length - obs. dist. y)
+            inchesMoved = grabSkystone(color); //grabbed block // (3 blocks + x, robot length)
+            move(0, -1 * 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, .5); //move back // (3 blocks + x + obs. dist. x, 0)
+            turnAbsolute(90 * factor); //turn towards foundation, then move forwards
+
+            //move slides up to be able to move close to foundation to drop
+            extendSlidesBy(3, .5);
+
+            //moving to the edge of the foundation
+            // (6 blocks - foundation  - robot length, 0)
+            move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - (BLOCK_LENGTH * 3 + inchesMoved + observingDistanceX) ,.5);
+
+            releaseStone();
+
+            //moving backwards towards tape
+            move(0, -1 * (TILE_LENGTH * 6 - FOUNDATION_WIDTH - ROBOT_LENGTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2)), 0.5); // (3 blocks - half of robot length, 0);
+
+            //move slides back down (not necessary but good to have)
+            extendSlidesBy(-3, 0.5);
+        }
+    }
+
+    public void bridgeAuto(String color) { // we shouldn't get second block for bridge autonomous, will not move foundation
+        int factor;
+        if (color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
+
+        double observingDistance = 12;
+        double observingDistanceX = observingDistance / Math.sqrt(2);
+        double observingDistanceY = observingDistance / Math.sqrt(2);
+
+        // (2 tiles, 0)
+        move(-factor * (2 * TILE_LENGTH - 3 * BLOCK_LENGTH - observingDistanceX), 0, .5); // (3 blocks + obs. dist. x, 0)
+        move(0, 2 * TILE_LENGTH - observingDistanceY - ROBOT_LENGTH, .5); // (3 blocks + obs. dist. x, 2 tiles - obs. dist. y - robot length)
+        int inchesMoved = grabSkystone(color); // (3 blocks + obs. dist. x + x, 2 blocks - obs. dist. y)
+
+        move(factor * (4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved)), 0, .5); // (4.5 tiles, 2 tiles - obs. dist. y - robot length)
+
+        extendSlidesBy(3,0.5);
+        move(0, observingDistanceY, .5); // (4.5 tiles, 2 tiles - robot length)
         releaseStone();
+        extendSlidesBy(-3,0.5);
 
-        //moving back to tape
-        move (TILE_LENGTH * 6 - FOUNDATION_WIDTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2), 0, 0.5); // (3 blocks - robot length / 2, 0);
+        //moves robot to the middle of the second tile
+        move(0, -1 * (TILE_LENGTH - ROBOT_LENGTH) / 2, .5); // (4.5 tiles, centered on second tile)
 
-        //move slides back down (not necessary but good to have)
-        extendSlidesBy(-3, 0.5);
+        move(-factor * (4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2 ), 0, .5); // (3 tiles - half robot, centered on second tile)
+
+
     }
 
 
