@@ -1,24 +1,28 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 
 import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 
-public abstract class Exponential_Methods extends  Exponential_Hardware_Initializations {
+public abstract class Exponential_Methods extends Exponential_Hardware_Initializations {
 
     //tensor flow and vuforia stuff
     private static final String VUFORIA_KEY = "AQmuIUP/////AAAAGR6dNDzwEU07h7tcmZJ6YVoz5iaF8njoWsXQT5HnCiI/oFwiFmt4HHTLtLcEhHCU5ynokJgYSvbI32dfC2rOvqmw81MMzknAwxKxMitf8moiK62jdqxNGADODm/SUvu5a5XrAnzc7seCtD2/d5bAIv1ZuseHcK+oInFHZTi+3BvhbUyYNvnVb0tQEAv8oimzjiQW18dSUcEcB/d6QNGDvaDHpxuRCJXt8U3ShJfBWWQEex0Vp6rrb011z8KxU+dRMvGjaIy+P2p5GbWXGJn/yJS9oxuwDn3zU6kcQoAwI7mUgAw5zBGxxM+P35DoDqiOja6ST6HzDszHxClBm2dvTRP7C4DEj0gPkhX3LtBgdolt";
@@ -48,6 +52,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         initVuforia();
         initTfod();
     }
+
     //-------------- Initialization --------------
     public void initializeIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -68,7 +73,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
-                vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
     public void initTfod() {
@@ -82,15 +87,15 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //-------------- Basic --------------
 
-    public int convertInchToEncoder(double inches){
+    public int convertInchToEncoder(double inches) {
         double conversion = 43.4653423;
         int encoderValue = (int) Math.round(conversion * inches);
         return encoderValue;
     }
 
-    public int convertInchToEncoderSlides(double inches){
+    public int convertInchToEncoderSlides(double inches) {
         double circumference = 3.613;
-        double encoderToIn  = 537.6;
+        double encoderToIn = 537.6;
         double conversion = encoderToIn / circumference;
         int encoderValue = (int) Math.round(conversion * inches);
         return encoderValue;
@@ -131,17 +136,17 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return driveMotors[0].isBusy() || driveMotors[1].isBusy() || driveMotors[2].isBusy() || driveMotors[3].isBusy();
     }
 
-    public void waitForMotors(){
-        while(motorsBusy() && opModeIsActive()){
+    public void waitForMotors() {
+        while (motorsBusy() && opModeIsActive()) {
         }
     }
 
-    public void resetDriveMotorEncoders(){
-        for(DcMotor motor : driveMotors)
+    public void resetDriveMotorEncoders() {
+        for (DcMotor motor : driveMotors)
             resetMotorEncoder(motor);
     }
 
-    public void resetOrientation(){
+    public void resetOrientation() {
         updateOrientation();
         initialHeading = orientation.firstAngle;
         initialRoll = orientation.secondAngle;
@@ -165,21 +170,21 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         return 0;
     }
 
-    public boolean hasBlock(){
+    public boolean hasBlock() {
         return sensorDistance.getDistance(DistanceUnit.INCH) < 1;
     }
 
 
     //-------------- Movement --------------
 
-    public void setPowerDriveMotors (double frontRight, double backRight, double backLeft, double frontLeft){
+    public void setPowerDriveMotors(double frontRight, double backRight, double backLeft, double frontLeft) {
         super.frontRight.setPower(frontRight);
         super.frontLeft.setPower(frontLeft);
         super.backLeft.setPower(backLeft);
         super.backRight.setPower(backRight);
     }
 
-    public void setPowerDriveMotors(float leftSpeed, float rightSpeed){
+    public void setPowerDriveMotors(float leftSpeed, float rightSpeed) {
         frontLeft.setPower(Range.clip(leftSpeed, -1, 1));
         backLeft.setPower(Range.clip(leftSpeed, -1, 1));
         frontRight.setPower(Range.clip(rightSpeed, -1, 1));
@@ -187,19 +192,19 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     }
 
     public void setPowerDriveMotors(double power) {
-        for (DcMotor motor: driveMotors) {
+        for (DcMotor motor : driveMotors) {
             motor.setPower(power);
         }
     }
 
     //distance in inches
-    public void oldMove(double forward, double right, double power){
+    public void oldMove(double forward, double right, double power) {
 
-        for(DcMotor motor : driveMotors) {
+        for (DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        for(DcMotor motor : driveMotors) {
+        for (DcMotor motor : driveMotors) {
             motor.setPower(power);
         }
 
@@ -210,20 +215,21 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         frontLeft.setTargetPosition(forwardVal + rightVal);
         frontRight.setTargetPosition(forwardVal - rightVal);
-        backLeft.setTargetPosition(forwardVal - rightVal );
+        backLeft.setTargetPosition(forwardVal - rightVal);
         backRight.setTargetPosition(forwardVal + rightVal);
 
 
         setPowerDriveMotors(0);
         //return motors to original runmode
-        for(DcMotor motor : driveMotors){
+        for (DcMotor motor : driveMotors) {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    } 
+    }
 
-    public void move(double inchesForward, double inchesSideways, double maxPower){
-        inchesForward*=-1;
-        double p = 1.0/1200;
+    public void move(double inchesForward, double inchesSideways, double maxPower) {
+        double accelerationLimit = .004;
+        inchesForward *= -1;
+        double p = 1.0 / 1200;
         double i;
         double d;
         double inchesTolerance = 0.3;
@@ -231,36 +237,53 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double min_negative = -maxPower;
 
         double encoderForward = convertInchToEncoder(inchesForward);
-        double encoderSideways = 1.2*convertInchToEncoder(inchesSideways);
+        double encoderSideways = 0;
+        if (inchesSideways > 0) {
+            encoderSideways = convertInchToEncoder(.5 + inchesSideways);
+        } else if (inchesSideways < 0) {
+            encoderSideways = convertInchToEncoder(-.5 + inchesSideways);
+        }
         resetDriveMotorEncoders();
         double tolerance = convertInchToEncoder(inchesTolerance);
 
-        double frontLeft_encoder = encoderForward-encoderSideways;
-        double frontRight_encoder = encoderForward+encoderSideways;
-        double backLeft_encoder = encoderForward+encoderSideways;
-        double backRight_encoder = encoderForward-encoderSideways;
+        double frontLeft_encoder = encoderForward - encoderSideways;
+        double frontRight_encoder = encoderForward + encoderSideways;
+        double backLeft_encoder = encoderForward + encoderSideways;
+        double backRight_encoder = encoderForward - encoderSideways;
 
-        double frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
-        double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
-        double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
-        double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-
-        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
-            frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
-            frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
-            backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
-            backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
-
-            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
-            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
-            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
-            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-            telemetry.addData("frontLeft", frontLeft_displacement);
-            telemetry.addData("backLeft", backLeft_displacement);
-            telemetry.addData("frontRight", frontRight_displacement);
-            telemetry.addData("backRight", backRight_displacement);
-            telemetry.addData("tolerance", tolerance);
+        double frontLeft_displacement = frontLeft_encoder - frontLeft.getCurrentPosition();
+        double frontRight_displacement = frontRight_encoder - frontRight.getCurrentPosition();
+        double backLeft_displacement = backLeft_encoder - backLeft.getCurrentPosition();
+        double backRight_displacement = backRight_encoder - backRight.getCurrentPosition();
+        while (opModeIsActive() && (Math.abs(frontLeft_displacement) > tolerance || Math.abs(frontRight_displacement) > tolerance || Math.abs(backLeft_displacement) > tolerance || Math.abs(backRight_displacement) > tolerance)) {
+            telemetry.addData("frontLeft", Range.clip(p * frontLeft_displacement, min_negative, max_positive) - frontLeft.getPower());
+            telemetry.addData("frontRight", Range.clip(p * frontRight_displacement, min_negative, max_positive) - frontRight.getPower());
+            telemetry.addData("backLeft", Range.clip(p * backLeft_displacement, min_negative, max_positive) - backLeft.getPower());
+            telemetry.addData("backRight", Range.clip(p * backRight_displacement, min_negative, max_positive) - backRight.getPower());
             telemetry.update();
+            if (inchesSideways > 0) {
+                frontLeft.setPower(Range.clip(Range.clip(p * frontLeft_displacement, min_negative, max_positive) - frontLeft.getPower(), -accelerationLimit-.001, accelerationLimit) + frontLeft.getPower());
+                frontRight.setPower(Range.clip(Range.clip(p * frontRight_displacement, min_negative, max_positive) - frontRight.getPower(), -accelerationLimit-.001, accelerationLimit) + frontRight.getPower());
+                backLeft.setPower(Range.clip(Range.clip(p * backLeft_displacement, min_negative, max_positive) - backLeft.getPower(), -accelerationLimit-.001, accelerationLimit) + backLeft.getPower());
+                backRight.setPower(Range.clip(Range.clip(p * backRight_displacement, min_negative, max_positive) - backRight.getPower(), -accelerationLimit-.001, accelerationLimit) + backRight.getPower());
+            } else if (inchesSideways < 0) {
+                frontLeft.setPower(Range.clip(Range.clip(p * frontLeft_displacement, min_negative, max_positive) - frontLeft.getPower(), -accelerationLimit, accelerationLimit+.001) + frontLeft.getPower());
+                frontRight.setPower(Range.clip(Range.clip(p * frontRight_displacement, min_negative, max_positive) - frontRight.getPower(), -accelerationLimit, accelerationLimit+.001) + frontRight.getPower());
+                backLeft.setPower(Range.clip(Range.clip(p * backLeft_displacement, min_negative, max_positive) - backLeft.getPower(), -accelerationLimit, accelerationLimit+.001) + backLeft.getPower());
+                backRight.setPower(Range.clip(Range.clip(p * backRight_displacement, min_negative, max_positive) - backRight.getPower(), -accelerationLimit, accelerationLimit+.001) + backRight.getPower());
+            }
+
+
+            frontLeft_displacement = frontLeft_encoder - frontLeft.getCurrentPosition();
+            frontRight_displacement = frontRight_encoder - frontRight.getCurrentPosition();
+            backLeft_displacement = backLeft_encoder - backLeft.getCurrentPosition();
+            backRight_displacement = backRight_encoder - backRight.getCurrentPosition();
+            //telemetry.addData("frontLeft", frontLeft_displacement);
+            //telemetry.addData("backLeft", backLeft_displacement);
+            //telemetry.addData("frontRight", frontRight_displacement);
+            //telemetry.addData("backRight", backRight_displacement);
+            //telemetry.addData("tolerance", tolerance);
+            //telemetry.update();
         }
         setPowerDriveMotors(0);
     }
@@ -269,7 +292,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
-    public void turnAbsolute(double targetAngle){
+    public void turnAbsolute(double targetAngle) {
         double currentAngle;
         int direction;
         double turnRate;
@@ -279,32 +302,32 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double minSpeed = 0.01; //set later
         double error;
 
-        do{
+        do {
             currentAngle = getRotationinDimension('Z');
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
-            telemetry.addData("error",error);
+            telemetry.addData("error", error);
             telemetry.addData("turnRate", turnRate);
             telemetry.update();
             setPowerDriveMotors(-(float) (turnRate * direction), (float) (turnRate * direction));
         }
-        while(opModeIsActive() && error > tolerance);
+        while (opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
     }
 
-    public void extendSlidesEncoder(int upVal, int downVal, double speed){
+    public void extendSlidesEncoder(int upVal, int downVal, double speed) {
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         slideUp.setTargetPosition(upVal);
         slideDown.setTargetPosition(downVal);
 
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
+        while (opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
                 && slideDown.getCurrentPosition() < slidesMax &&
                 slideUp.getCurrentPosition() > slidesMin &&
                 slideDown.getCurrentPosition() > slidesMin &&
-                (slideUp.isBusy() || slideDown.isBusy())){
+                (slideUp.isBusy() || slideDown.isBusy())) {
             setSlidePower(speed);
         }
         setSlidePower(0);
@@ -316,13 +339,13 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
     //position in inches
     //PROBABLY DOESNT WORK
-    public void extendSlidesTo(int position, double speed){
+    public void extendSlidesTo(int position, double speed) {
         int encoderVal = convertInchToEncoderSlides(position);
         extendSlidesEncoder(encoderVal, encoderVal, speed);
     }
 
     //distance in inches
-    public void extendSlidesBy(int distance, double speed){
+    public void extendSlidesBy(int distance, double speed) {
         int encoderVal = convertInchToEncoderSlides(distance);
         extendSlidesEncoder(encoderVal + slideUp.getCurrentPosition(),
                 encoderVal + slideDown.getCurrentPosition(), speed);
@@ -330,68 +353,67 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
 
     //Positive = extend, negative = retract
-    public void setSlidePower(double power){
+    public void setSlidePower(double power) {
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
+        while (opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
                 && slideDown.getCurrentPosition() < slidesMax &&
                 slideUp.getCurrentPosition() > slidesMin &&
-                slideDown.getCurrentPosition() > slidesMin){
+                slideDown.getCurrentPosition() > slidesMin) {
             slideUp.setPower(power);
             slideDown.setPower(power);
         }
     }
 
     //Negative = backwards, positive = forwards
-    public void setIntakeWheels(double power){
+    public void setIntakeWheels(double power) {
         intakeLeft.setPower(power);
         intakeRight.setPower(power);
     }
 
-    public void releaseStone(){
+    public void releaseStone() {
         setIntakeWheels(0);
         setIntakeServosPosition(0.7);
     }
 
-    public void intakeStone(){
+    public void intakeStone() {
         setIntakeWheels(0.7);
         setIntakeServosPosition(1);
     }
 
-    public void clampStone(){
+    public void clampStone() {
         setIntakeWheels(0);
         setIntakeServosPosition(1);
     }
 
 
     //hook for moving foundation, true = down, false = up
-    public void toggleHook(boolean down){
-        if(down) {
+    public void toggleHook(boolean down) {
+        if (down) {
             hookServoLeft.setPosition(1);
             hookServoRight.setPosition(1);
-        }
-        else{
+        } else {
             hookServoLeft.setPosition(0);
             hookServoRight.setPosition(0);
         }
     }
 
     //servos that clamp
-    public void setIntakeServosPosition(double position){
+    public void setIntakeServosPosition(double position) {
         intakeServoLeft.setPosition(position);
         intakeServoRight.setPosition(position);
     }
 
     //-------------- Computer Vision --------------
 
-    public int grabSkystone(String color){
+    public int grabSkystone(String color) {
         int factor;
-        if(color.equals("red"))
+        if (color.equals("red"))
             factor = 1;
         else
             factor = -1;
 
-        turnRelative( factor * 45);
+        turnRelative(factor * 45);
 
         boolean center = false;
         tfod.activate();
@@ -400,7 +422,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         if (opModeIsActive()) {
             intakeStone();
             while (!center) {
-                move(factor * Math.sqrt(2)*4,-Math.sqrt(2)*4,0.2);
+                move(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, 0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 blocksMoved++;
                 sleep(500);
@@ -421,9 +443,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
 
         //move forward, grab block, move back
-        move(0,12, 0.3);
+        move(0, 12, 0.3);
         sleep(500);
-        move(0,-12, 0.3);
+        move(0, -12, 0.3);
 
         //turns back
         turnRelative(factor * -45);
@@ -467,7 +489,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         //TODO: determine if i want to move alignToFoundationEdge at this stage, along with 5 tiles
         //TODO: determine if i want to make (2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY) its own variable
         //TODO: check if there's any more minus robot lengths i have to do, factors should be correct but idk
-        extendSlidesBy(3,0.5); //move slides up to be able to go close to foudndation
+        extendSlidesBy(3, 0.5); //move slides up to be able to go close to foudndation
         //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
         move(0, TILE_LENGTH * 2 - ROBOT_LENGTH, 0.5); //move to foundation // (5 tiles, 2 tiles - robot length)
 
@@ -493,7 +515,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         toggleHook(false);
 
         double tempPosition = 6 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_WIDTH;
-        extendSlidesBy(-3,0.5); //move slides back down
+        extendSlidesBy(-3, 0.5); //move slides back down
 
         if (!second) { //if don't want second block
 
@@ -504,9 +526,9 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         } else { // if want second block
 
             //to try to get the second block
-            move(0, tempPosition - 3 * BLOCK_LENGTH - observingDistanceX,.5); //move to second set of blocks // (3 blocks + obs. dist. x, 0)
+            move(0, tempPosition - 3 * BLOCK_LENGTH - observingDistanceX, .5); //move to second set of blocks // (3 blocks + obs. dist. x, 0)
             turnAbsolute(0); //turn back forwards
-            move(0,2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY,0.5); //move forward to block // (3 blocks + obs. dist. x, 2 tiles - robot length - obs. dist. y)
+            move(0, 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, 0.5); //move forward to block // (3 blocks + obs. dist. x, 2 tiles - robot length - obs. dist. y)
             inchesMoved = grabSkystone(color); //grabbed block // (3 blocks + x, robot length)
             move(0, -1 * 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, .5); //move back // (3 blocks + x + obs. dist. x, 0)
             turnAbsolute(90 * factor); //turn towards foundation, then move forwards
@@ -516,7 +538,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
             //moving to the edge of the foundation
             // (6 blocks - foundation  - robot length, 0)
-            move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - (BLOCK_LENGTH * 3 + inchesMoved + observingDistanceX) ,.5);
+            move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - (BLOCK_LENGTH * 3 + inchesMoved + observingDistanceX), .5);
 
             releaseStone();
 
@@ -546,20 +568,18 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         move(factor * (4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved)), 0, .5); // (4.5 tiles, 2 tiles - obs. dist. y - robot length)
 
-        extendSlidesBy(3,0.5);
+        extendSlidesBy(3, 0.5);
         move(0, observingDistanceY, .5); // (4.5 tiles, 2 tiles - robot length)
         releaseStone();
-        extendSlidesBy(-3,0.5);
+        extendSlidesBy(-3, 0.5);
 
         //moves robot to the middle of the second tile
         move(0, -1 * (TILE_LENGTH - ROBOT_LENGTH) / 2, .5); // (4.5 tiles, centered on second tile)
 
-        move(-factor * (4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2 ), 0, .5); // (3 tiles - half robot, centered on second tile)
+        move(-factor * (4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2), 0, .5); // (3 tiles - half robot, centered on second tile)
 
 
     }
-
-
 
 
 }
