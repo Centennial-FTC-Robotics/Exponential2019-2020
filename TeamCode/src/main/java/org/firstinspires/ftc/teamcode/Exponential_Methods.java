@@ -221,7 +221,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     } 
 
-    public void move(double inchesForward, double inchesSideways, double maxPower){
+    public void move(double inchesSideways, double inchesForward, double maxPower){
         inchesForward*=-1;
         double p = 1.0/1200;
         double i;
