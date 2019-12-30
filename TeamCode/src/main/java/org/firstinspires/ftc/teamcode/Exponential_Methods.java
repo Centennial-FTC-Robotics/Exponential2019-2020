@@ -397,7 +397,6 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
-            intakeStone();
             while (!center) {
                 move(-Math.sqrt(2)*4,factor * Math.sqrt(2)*4,0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -416,11 +415,12 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
                 }
             }
             setPowerDriveMotors(0);
-            clampStone();
         }
 
         //move forward, grab block, move back
+        intakeStone();
         move(12,0, 0.3);
+        clampStone();
         sleep(500);
         move(-12,0, 0.3);
 
