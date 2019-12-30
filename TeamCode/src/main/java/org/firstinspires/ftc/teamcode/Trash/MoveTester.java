@@ -12,7 +12,8 @@ public class MoveTester extends Exponential_Methods {
         super.runOpMode();
         double sideways = 0;
         double forwards = 0;
-
+        telemetry.addData("It got up here", "hello");
+        telemetry.update();
         waitForStart();
         while(opModeIsActive()) {
             if(gamepad1.left_stick_x!=0||gamepad1.left_stick_y!=0) {

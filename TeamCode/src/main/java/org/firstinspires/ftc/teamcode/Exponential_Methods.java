@@ -230,7 +230,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double min_negative = -maxPower;
 
         double encoderForward = convertInchToEncoder(inchesForward);
-        double encoderSideways = convertInchToEncoder(inchesSideways);
+        double encoderSideways = 1.2*convertInchToEncoder(inchesSideways);
         resetDriveMotorEncoders();
         double tolerance = convertInchToEncoder(inchesTolerance);
 
