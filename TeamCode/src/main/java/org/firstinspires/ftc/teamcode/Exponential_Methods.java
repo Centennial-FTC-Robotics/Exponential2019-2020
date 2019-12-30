@@ -456,6 +456,8 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         double observingDistanceX = observingDistance / Math.sqrt(2);
         double observingDistanceY = observingDistance / Math.sqrt(2);
 
+        // (1 tile, 0)
+
         move(-factor * (TILE_LENGTH - observingDistanceX), 0, 0.5); //move to corner //(observing distance x, 0)
         move(0, 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, 0.5); //move forward towards stones //(obs. dist. x, 2 tiles - robot length - observing dist. y)
         int inchesMoved = grabSkystone(color); //(x, 2 tiles - robot length - observing dist. y)
@@ -497,7 +499,7 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
 
             // robot currently facing sideways
             // middle of robot will hopefully be on tape this way
-            move(0, tempPosition - (2 * TILE_LENGTH + ROBOT_LENGTH / 2), 0.5); //parks on tape // (3 tiles - half of robot length, 0)
+            move(0, tempPosition - (3 * TILE_LENGTH - ROBOT_LENGTH / 2), 0.5); //parks on tape // (3 tiles - half of robot length, 0)
 
         } else { // if want second block
 
@@ -526,13 +528,35 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         }
     }
 
-    public void bridgeAuto(String color) { // we shouldn't get second block for bridge autonomous
+    public void bridgeAuto(String color) { // we shouldn't get second block for bridge autonomous, will not move foundation
         int factor;
         if (color.equals("red"))
             factor = 1;
         else
             factor = -1;
-        
+
+        double observingDistance = 12;
+        double observingDistanceX = observingDistance / Math.sqrt(2);
+        double observingDistanceY = observingDistance / Math.sqrt(2);
+
+        // (2 tiles, 0)
+        move(-factor * (2 * TILE_LENGTH - 3 * BLOCK_LENGTH - observingDistanceX), 0, .5); // (3 blocks + obs. dist. x, 0)
+        move(0, 2 * TILE_LENGTH - observingDistanceY - ROBOT_LENGTH, .5); // (3 blocks + obs. dist. x, 2 tiles - obs. dist. y - robot length)
+        int inchesMoved = grabSkystone(color); // (3 blocks + obs. dist. x + x, 2 blocks - obs. dist. y)
+
+        move(factor * (4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved)), 0, .5); // (4.5 tiles, 2 tiles - obs. dist. y - robot length)
+
+        extendSlidesBy(3,0.5);
+        move(0, observingDistanceY, .5); // (4.5 tiles, 2 tiles - robot length)
+        releaseStone();
+        extendSlidesBy(-3,0.5);
+
+        //moves robot to the middle of the second tile
+        move(0, -1 * (TILE_LENGTH - ROBOT_LENGTH) / 2, .5); // (4.5 tiles, centered on second tile)
+
+        move(-factor * (4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2 ), 0, .5); // (3 tiles - half robot, centered on second tile)
+
+
     }
 
 
