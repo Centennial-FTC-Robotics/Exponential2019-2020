@@ -47,11 +47,11 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
         intakeServoRight = hardwareMap.servo.get("intakeServoRight");
 
-        // hookServoLeft = hardwareMap.servo.get("hookServoLeft");
-        // hookServoRight = hardwareMap.servo.get("hookServoRight");
+        hookServoLeft = hardwareMap.servo.get("hookServoLeft");
+        hookServoRight = hardwareMap.servo.get("hookServoRight");
 
-        // intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-        // intakeRight = hardwareMap.dcMotor.get("intakeRight");
+        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
+        intakeRight = hardwareMap.dcMotor.get("intakeRight");
         slideUp = hardwareMap.dcMotor.get("slideRight");
         slideDown = hardwareMap.dcMotor.get("slideLeft");
 
@@ -61,6 +61,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         intakeServoRight.setDirection(Servo.Direction.REVERSE);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        hookServoRight.setDirection(Servo.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         slideUp.setDirection(DcMotorSimple.Direction.REVERSE);

@@ -38,8 +38,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     private static final double FOUNDATION_WIDTH = 18.5;
     private static final double FOUNDATION_AWAY_FROM_WALL = 4;
     //limits
-    public static final int slidesMax = 2500; //set later
-    public static final int slidesMin = -500; //set later
+    public static final int slideUpMax = 1500;
+    public static final int slideDownMax = 3250;
+    public static final int slideUpMin = -500;
+    public static final int slideDownMin = -350;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -300,10 +302,10 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
         slideUp.setTargetPosition(upVal);
         slideDown.setTargetPosition(downVal);
 
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
-                && slideDown.getCurrentPosition() < slidesMax &&
-                slideUp.getCurrentPosition() > slidesMin &&
-                slideDown.getCurrentPosition() > slidesMin &&
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slideUpMax
+                && slideDown.getCurrentPosition() < slideDownMin &&
+                slideUp.getCurrentPosition() > slideUpMin &&
+                slideDown.getCurrentPosition() > slideDownMin &&
                 (slideUp.isBusy() || slideDown.isBusy())){
             setSlidePower(speed);
         }
@@ -333,13 +335,15 @@ public abstract class Exponential_Methods extends  Exponential_Hardware_Initiali
     public void setSlidePower(double power){
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
-                && slideDown.getCurrentPosition() < slidesMax &&
-                slideUp.getCurrentPosition() > slidesMin &&
-                slideDown.getCurrentPosition() > slidesMin){
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slideUpMax
+                && slideDown.getCurrentPosition() < slideDownMax &&
+                slideUp.getCurrentPosition() > slideUpMin &&
+                slideDown.getCurrentPosition() > slideDownMin){
             slideUp.setPower(power);
             slideDown.setPower(power);
         }
+        slideUp.setPower(0);
+        slideDown.setPower(0);
     }
 
     //Negative = backwards, positive = forwards
