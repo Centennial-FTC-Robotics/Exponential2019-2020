@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@Autonomous(group = "Autonomous", name = "TESTING STUFF")
+@Autonomous(group = "TeleOp", name = "TESTING STUFF")
 public class Tester extends Exponential_Methods {
 
 
@@ -20,6 +20,20 @@ public class Tester extends Exponential_Methods {
 
         waitForStart();
         while(opModeIsActive()){
+
+            if(gamepad1.a)
+                toggleHook(true);
+            if(gamepad1.b)
+                toggleHook(false);
+
+            if(gamepad1.x)
+                setIntakeWheels(.5);
+
+            if(gamepad1.y)
+                setIntakeWheels(-.5);
+
+            /*
+            //Slides
             telemetry.addData("i am here", 0);
             setSlidePower(0.2);
             sleep(2000);
@@ -29,6 +43,8 @@ public class Tester extends Exponential_Methods {
 
             telemetry.addData("let there be light", 0);
             extendSlidesTo(4,0.2);
+
+             */
             /*
             //Encoders
             telemetry.addData("front left", frontLeft.getCurrentPosition());

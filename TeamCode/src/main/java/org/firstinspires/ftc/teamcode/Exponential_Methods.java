@@ -42,8 +42,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     private static final double FOUNDATION_WIDTH = 18.5;
     private static final double FOUNDATION_AWAY_FROM_WALL = 4;
     //limits
-    public static final int slidesMax = 2500; //set later
-    public static final int slidesMin = -500; //set later
+    public static final int slideUpMax = 1500;
+    public static final int slideDownMax = 3250;
+    public static final int slideUpMin = -500;
+    public static final int slideDownMin = -350;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -197,17 +199,150 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
     }
 
+    //distance in inches
+    public void oldMove(double forward, double right, double power) {
+
+        for (DcMotor motor : driveMotors) {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        for (DcMotor motor : driveMotors) {
+            motor.setPower(power);
+        }
+
+        waitForMotors();
+
+        int forwardVal = convertInchToEncoder(forward);
+        int rightVal = convertInchToEncoder(right);
+
+        frontLeft.setTargetPosition(forwardVal + rightVal);
+        frontRight.setTargetPosition(forwardVal - rightVal);
+        backLeft.setTargetPosition(forwardVal - rightVal);
+        backRight.setTargetPosition(forwardVal + rightVal);
+
+
+        setPowerDriveMotors(0);
+        //return motors to original runmode
+        for (DcMotor motor : driveMotors) {
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void move(double inchesSideways, double inchesForward, double maxPower){
+        double targetAngle = getRotationinDimension('Z');
+        double currentAngle;
+        int direction;
+        double turnRate;
+        double P = 0.015; //set later
+        double maxSpeed = 0.7; //set later
+        double minSpeed = 0.01; //set later
+        double error;
 
 
 
 
+
+
+
+
+
+        inchesForward = -inchesForward;
+        inchesSideways = getTransformedDistance(inchesSideways);
+
+        double p = 1.0/1200;
+        double i;
+        double d;
+        double inchesTolerance = 0.3;
+        double max_positive = maxPower;
+        double min_negative = -maxPower;
+
+        double encoderForward = convertInchToEncoder(inchesForward);
+        double encoderSideways = convertInchToEncoder(inchesSideways);
+        resetDriveMotorEncoders();
+        double tolerance = convertInchToEncoder(inchesTolerance);
+
+        double frontLeft_encoder = encoderForward-encoderSideways;
+        double frontRight_encoder = encoderForward+encoderSideways;
+        double backLeft_encoder = encoderForward+encoderSideways;
+        double backRight_encoder = encoderForward-encoderSideways;
+
+        double frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+        double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+        double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+        double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+
+        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
+            currentAngle = getRotationinDimension('Z');
+
+            error = getAngleDist(targetAngle, currentAngle);
+            direction = getAngleDir(targetAngle, currentAngle);
+            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
+
+
+
+
+
+            if(Math.abs(frontRight_displacement)<convertInchToEncoder(1)){
+                frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
+                frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
+                backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
+                backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
+            }
+
+
+
+            frontLeft.setPower(+direction*turnRate+Range.clip(p*frontLeft_displacement, min_negative, max_positive));
+            frontRight.setPower(direction*turnRate+Range.clip(p*frontRight_displacement, min_negative, max_positive));
+            backLeft.setPower(+direction*turnRate+Range.clip(p*backLeft_displacement, min_negative, max_positive));
+            backRight.setPower(direction*turnRate+Range.clip(p*backRight_displacement, min_negative, max_positive));
+
+            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+            telemetry.addData("frontLeft", frontLeft_displacement);
+            telemetry.addData("backLeft", backLeft_displacement);
+            telemetry.addData("frontRight", frontRight_displacement);
+            telemetry.addData("backRight", backRight_displacement);
+            telemetry.addData("tolerance", tolerance);
+            telemetry.update();
+        }
+        setPowerDriveMotors(0);
+        turnAbsolute(targetAngle);
+    }
+    public static double getTransformedDistance(double inches) {  // leave this as a separate method, ENCAPSULATION ! !
+        double m = .866279;
+        double b = .0775;
+
+        // inverse of equation y = mx + b: y = (1/m)(x - b)
+        return (1 / m) * (inches - b);
+    }
 
     public void turnRelative(double targetAngle) {
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
     public void turnAbsolute(double targetAngle) {
+        double currentAngle;
+        int direction;
+        double turnRate;
+        double P = 0.01; //set later
+        double tolerance = 4; //set later
+        double maxSpeed = 0.4; //set later
+        double minSpeed = 0.01; //set later
+        double error;
 
+        do {
+            currentAngle = getRotationinDimension('Z');
+            error = getAngleDist(targetAngle, currentAngle);
+            direction = getAngleDir(targetAngle, currentAngle);
+            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
+            telemetry.addData("error", error);
+            telemetry.addData("turnRate", turnRate);
+            telemetry.update();
+            setPowerDriveMotors(-(float) (turnRate * direction), (float) (turnRate * direction));
+        }
+        while (opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
     }
 
@@ -218,11 +353,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideUp.setTargetPosition(upVal);
         slideDown.setTargetPosition(downVal);
 
-        while (opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
-                && slideDown.getCurrentPosition() < slidesMax &&
-                slideUp.getCurrentPosition() > slidesMin &&
-                slideDown.getCurrentPosition() > slidesMin &&
-                (slideUp.isBusy() || slideDown.isBusy())) {
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slideUpMax
+                && slideDown.getCurrentPosition() < slideDownMin &&
+                slideUp.getCurrentPosition() > slideUpMin &&
+                slideDown.getCurrentPosition() > slideDownMin &&
+                (slideUp.isBusy() || slideDown.isBusy())){
             setSlidePower(speed);
         }
         setSlidePower(0);
@@ -251,13 +386,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void setSlidePower(double power) {
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (opModeIsActive() && slideUp.getCurrentPosition() < slidesMax
-                && slideDown.getCurrentPosition() < slidesMax &&
-                slideUp.getCurrentPosition() > slidesMin &&
-                slideDown.getCurrentPosition() > slidesMin) {
+
+        while(opModeIsActive() && slideUp.getCurrentPosition() < slideUpMax
+                && slideDown.getCurrentPosition() < slideDownMax &&
+                slideUp.getCurrentPosition() > slideUpMin &&
+                slideDown.getCurrentPosition() > slideDownMin){
             slideUp.setPower(power);
             slideDown.setPower(power);
         }
+        slideUp.setPower(0);
+        slideDown.setPower(0);
     }
 
     //Negative = backwards, positive = forwards
@@ -316,7 +454,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         int blocksMoved = 0;
         if (opModeIsActive()) {
             intakeStone();
-            while (!center) {
+            while (!center && blocksMoved < 3) {  // should move 3 blocks at max, otherwise vision doesn't work, move on
                 move(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, 0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 blocksMoved++;
@@ -375,29 +513,30 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         // (1 tile, 0)
 
+        double forwardToGetStone = 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY;
         move(-factor * (TILE_LENGTH - observingDistanceX), 0, 0.5); //move to corner //(observing distance x, 0)
-        move(0, 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, 0.5); //move forward towards stones //(obs. dist. x, 2 tiles - robot length - observing dist. y)
+        move(0, forwardToGetStone, 0.5); //move forward towards stones //(obs. dist. x, forwardToGetStone)
         int inchesMoved = grabSkystone(color); //(x, 2 tiles - robot length - observing dist. y)
 
-        move(0, -1 * (2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY), 0.5); //move back (can be cut out) //(x + obs. dist. x, 0)
-        move(factor * (TILE_LENGTH * 5 - inchesMoved - observingDistanceX), 0, 0.5); //(move through alliance bridge // (5 tiles, 0)
-        //TODO: determine if i want to move alignToFoundationEdge at this stage, along with 5 tiles
-        //TODO: determine if i want to make (2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY) its own variable
-        //TODO: check if there's any more minus robot lengths i have to do, factors should be correct but idk
+        move(0, -forwardToGetStone, 0.5); //move back (can be cut out) //(x + obs. dist. x, 0)
+
+        double alignToFoundationEdge = TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_AWAY_FROM_WALL;
+
+        move(factor * (TILE_LENGTH * 5 - inchesMoved - observingDistanceX + alignToFoundationEdge) , 0, 0.5); //(move through alliance bridge // (5 tiles + alignToFoundationEdge, 0)
+
         extendSlidesBy(3, 0.5); //move slides up to be able to go close to foudndation
         //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
-        move(0, TILE_LENGTH * 2 - ROBOT_LENGTH, 0.5); //move to foundation // (5 tiles, 2 tiles - robot length)
+        move(0, TILE_LENGTH * 2 - ROBOT_LENGTH, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
 
         releaseStone(); //drop stone out
 
         //moving foundation
 
         //moving forwards & backwards so corner of robot doesn't hit foundation
-        move(0, -6, .5); // (5 tiles, 2 tiles - robot length - 6 inches)
+        move(0, -6, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length - 6 inches)
         turnAbsolute(180); //turn around
-        double alignToFoundationEdge = TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_AWAY_FROM_WALL;
         //tile length - robot length - found. away from wall: aligns robot to the very edge of the foundation
-        move(factor * -alignToFoundationEdge, -6, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        move(0, -6, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
         toggleHook(true); //grab foundation
 
         //moving robot away from any edge to try to stop conflicts from foundation turning, magic number away: 8
@@ -423,9 +562,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             //to try to get the second block
             move(0, tempPosition - 3 * BLOCK_LENGTH - observingDistanceX, .5); //move to second set of blocks // (3 blocks + obs. dist. x, 0)
             turnAbsolute(0); //turn back forwards
-            move(0, 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, 0.5); //move forward to block // (3 blocks + obs. dist. x, 2 tiles - robot length - obs. dist. y)
+            move(0, forwardToGetStone, 0.5); //move forward to block // (3 blocks + obs. dist. x, forwardToGetStone)
             inchesMoved = grabSkystone(color); //grabbed block // (3 blocks + x, robot length)
-            move(0, -1 * 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY, .5); //move back // (3 blocks + x + obs. dist. x, 0)
+            move(0, -forwardToGetStone, .5); //move back // (3 blocks + x + obs. dist. x, 0)
             turnAbsolute(90 * factor); //turn towards foundation, then move forwards
 
             //move slides up to be able to move close to foundation to drop
@@ -456,21 +595,25 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double observingDistanceX = observingDistance / Math.sqrt(2);
         double observingDistanceY = observingDistance / Math.sqrt(2);
 
+        double forwardToGetStone = 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY;
+
         // (2 tiles, 0)
         move(-factor * (2 * TILE_LENGTH - 3 * BLOCK_LENGTH - observingDistanceX), 0, .5); // (3 blocks + obs. dist. x, 0)
-        move(0, 2 * TILE_LENGTH - observingDistanceY - ROBOT_LENGTH, .5); // (3 blocks + obs. dist. x, 2 tiles - obs. dist. y - robot length)
-        int inchesMoved = grabSkystone(color); // (3 blocks + obs. dist. x + x, 2 blocks - obs. dist. y)
+        move(0, forwardToGetStone, .5); // (3 blocks + obs. dist. x, forwardToGetStone)
+        int inchesMoved = grabSkystone(color); // (3 blocks + obs. dist. x + x, forwardToGetStone)
 
-        move(factor * (4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved)), 0, .5); // (4.5 tiles, 2 tiles - obs. dist. y - robot length)
+        move(factor * (4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved)), 0, .5); // (4.5 tiles, forwardToGetStone)
 
         extendSlidesBy(3, 0.5);
         move(0, observingDistanceY, .5); // (4.5 tiles, 2 tiles - robot length)
         releaseStone();
-        extendSlidesBy(-3, 0.5);
-
         //moves robot to the middle of the second tile
         move(0, -1 * (TILE_LENGTH - ROBOT_LENGTH) / 2, .5); // (4.5 tiles, centered on second tile)
+        extendSlidesBy(-3, 0.5);
+
         move(-factor * (4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2), 0, .5); // (3 tiles - half robot, centered on second tile)
+
+
     }
 
 
