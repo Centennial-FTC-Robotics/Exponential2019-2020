@@ -366,6 +366,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
 
         while(opModeIsActive() && slideUp.isBusy() || slideDown.isBusy()) {
+            currentPos = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
             if (currentPos > slideMax) {
                 if (power > 0) {
                     slideUp.setPower(-power);
@@ -397,8 +398,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
         setSlidePower(0);
     }
-
-
 
     /*
     //Slides are PAINFUL
