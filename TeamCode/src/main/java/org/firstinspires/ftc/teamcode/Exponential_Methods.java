@@ -197,122 +197,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
     }
 
-    //distance in inches
-    public void oldMove(double forward, double right, double power) {
-
-        for (DcMotor motor : driveMotors) {
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        for (DcMotor motor : driveMotors) {
-            motor.setPower(power);
-        }
-
-        waitForMotors();
-
-        int forwardVal = convertInchToEncoder(forward);
-        int rightVal = convertInchToEncoder(right);
-
-        frontLeft.setTargetPosition(forwardVal + rightVal);
-        frontRight.setTargetPosition(forwardVal - rightVal);
-        backLeft.setTargetPosition(forwardVal - rightVal);
-        backRight.setTargetPosition(forwardVal + rightVal);
 
 
-        setPowerDriveMotors(0);
-        //return motors to original runmode
-        for (DcMotor motor : driveMotors) {
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-    }
-
-    public void move(double inchesForward, double inchesSideways, double maxPower) {
-        double accelerationLimit = .004;
-        inchesForward *= -1;
-        double p = 1.0 / 1200;
-        double i;
-        double d;
-        double inchesTolerance = 0.3;
-        double max_positive = maxPower;
-        double min_negative = -maxPower;
-
-        double encoderForward = convertInchToEncoder(inchesForward);
-        double encoderSideways = 0;
-        if (inchesSideways > 0) {
-            encoderSideways = convertInchToEncoder(.5 + inchesSideways);
-        } else if (inchesSideways < 0) {
-            encoderSideways = convertInchToEncoder(-.5 + inchesSideways);
-        }
-        resetDriveMotorEncoders();
-        double tolerance = convertInchToEncoder(inchesTolerance);
-
-        double frontLeft_encoder = encoderForward - encoderSideways;
-        double frontRight_encoder = encoderForward + encoderSideways;
-        double backLeft_encoder = encoderForward + encoderSideways;
-        double backRight_encoder = encoderForward - encoderSideways;
-
-        double frontLeft_displacement = frontLeft_encoder - frontLeft.getCurrentPosition();
-        double frontRight_displacement = frontRight_encoder - frontRight.getCurrentPosition();
-        double backLeft_displacement = backLeft_encoder - backLeft.getCurrentPosition();
-        double backRight_displacement = backRight_encoder - backRight.getCurrentPosition();
-        while (opModeIsActive() && (Math.abs(frontLeft_displacement) > tolerance || Math.abs(frontRight_displacement) > tolerance || Math.abs(backLeft_displacement) > tolerance || Math.abs(backRight_displacement) > tolerance)) {
-            telemetry.addData("frontLeft", Range.clip(p * frontLeft_displacement, min_negative, max_positive) - frontLeft.getPower());
-            telemetry.addData("frontRight", Range.clip(p * frontRight_displacement, min_negative, max_positive) - frontRight.getPower());
-            telemetry.addData("backLeft", Range.clip(p * backLeft_displacement, min_negative, max_positive) - backLeft.getPower());
-            telemetry.addData("backRight", Range.clip(p * backRight_displacement, min_negative, max_positive) - backRight.getPower());
-            telemetry.update();
-            if (inchesSideways > 0) {
-                frontLeft.setPower(Range.clip(Range.clip(p * frontLeft_displacement, min_negative, max_positive) - frontLeft.getPower(), -accelerationLimit-.001, accelerationLimit) + frontLeft.getPower());
-                frontRight.setPower(Range.clip(Range.clip(p * frontRight_displacement, min_negative, max_positive) - frontRight.getPower(), -accelerationLimit-.001, accelerationLimit) + frontRight.getPower());
-                backLeft.setPower(Range.clip(Range.clip(p * backLeft_displacement, min_negative, max_positive) - backLeft.getPower(), -accelerationLimit-.001, accelerationLimit) + backLeft.getPower());
-                backRight.setPower(Range.clip(Range.clip(p * backRight_displacement, min_negative, max_positive) - backRight.getPower(), -accelerationLimit-.001, accelerationLimit) + backRight.getPower());
-            } else if (inchesSideways < 0) {
-                frontLeft.setPower(Range.clip(Range.clip(p * frontLeft_displacement, min_negative, max_positive) - frontLeft.getPower(), -accelerationLimit, accelerationLimit+.001) + frontLeft.getPower());
-                frontRight.setPower(Range.clip(Range.clip(p * frontRight_displacement, min_negative, max_positive) - frontRight.getPower(), -accelerationLimit, accelerationLimit+.001) + frontRight.getPower());
-                backLeft.setPower(Range.clip(Range.clip(p * backLeft_displacement, min_negative, max_positive) - backLeft.getPower(), -accelerationLimit, accelerationLimit+.001) + backLeft.getPower());
-                backRight.setPower(Range.clip(Range.clip(p * backRight_displacement, min_negative, max_positive) - backRight.getPower(), -accelerationLimit, accelerationLimit+.001) + backRight.getPower());
-            }
 
 
-            frontLeft_displacement = frontLeft_encoder - frontLeft.getCurrentPosition();
-            frontRight_displacement = frontRight_encoder - frontRight.getCurrentPosition();
-            backLeft_displacement = backLeft_encoder - backLeft.getCurrentPosition();
-            backRight_displacement = backRight_encoder - backRight.getCurrentPosition();
-            //telemetry.addData("frontLeft", frontLeft_displacement);
-            //telemetry.addData("backLeft", backLeft_displacement);
-            //telemetry.addData("frontRight", frontRight_displacement);
-            //telemetry.addData("backRight", backRight_displacement);
-            //telemetry.addData("tolerance", tolerance);
-            //telemetry.update();
-        }
-        setPowerDriveMotors(0);
-    }
 
     public void turnRelative(double targetAngle) {
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
     public void turnAbsolute(double targetAngle) {
-        double currentAngle;
-        int direction;
-        double turnRate;
-        double P = 0.01; //set later
-        double tolerance = 4; //set later
-        double maxSpeed = 0.4; //set later
-        double minSpeed = 0.01; //set later
-        double error;
 
-        do {
-            currentAngle = getRotationinDimension('Z');
-            error = getAngleDist(targetAngle, currentAngle);
-            direction = getAngleDir(targetAngle, currentAngle);
-            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
-            telemetry.addData("error", error);
-            telemetry.addData("turnRate", turnRate);
-            telemetry.update();
-            setPowerDriveMotors(-(float) (turnRate * direction), (float) (turnRate * direction));
-        }
-        while (opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
     }
 
@@ -575,10 +470,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         //moves robot to the middle of the second tile
         move(0, -1 * (TILE_LENGTH - ROBOT_LENGTH) / 2, .5); // (4.5 tiles, centered on second tile)
-
         move(-factor * (4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2), 0, .5); // (3 tiles - half robot, centered on second tile)
-
-
     }
 
 
