@@ -25,7 +25,7 @@ public class MoveTester extends Exponential_Methods {
             telemetry.addData("sideways", sideways);
             telemetry.update();
             if(gamepad1.a){
-                move(forwards, sideways, .5);
+                move(sideways, forwards, .5);
             }
         }
     }
