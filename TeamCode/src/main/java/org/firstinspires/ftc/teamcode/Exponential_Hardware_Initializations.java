@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -9,19 +10,15 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+//import org.firstinspires.ftc.robotcontroller.external.samples.SampleRevBlinkinLedDriver;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 public abstract class Exponential_Hardware_Initializations extends LinearOpMode {
-
-
-
-
-
-
 
     protected DcMotor frontLeft;
     protected DcMotor frontRight;
@@ -33,6 +30,12 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected Servo intakeServoRight;
     protected Servo hookServoLeft;
     protected Servo hookServoRight;
+
+    //protected RevBlinkinLedDriver blinkinLedDriver;
+    protected RevBlinkinLedDriver blinkin;
+    protected RevBlinkinLedDriver.BlinkinPattern pattern;
+    //protected DisplayKind displayKind;
+
     protected DcMotor slideUp;
     protected DcMotor slideDown;
     protected DcMotor[] driveMotors = new DcMotor[4];
@@ -53,6 +56,11 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         backRight = hardwareMap.dcMotor.get("backRight");
         intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
         intakeServoRight = hardwareMap.servo.get("intakeServoRight");
+
+        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
+        blinkin.setPattern(pattern);
+
 
         hookServoLeft = hardwareMap.servo.get("hookServoLeft");
         hookServoRight = hardwareMap.servo.get("hookServoRight");
