@@ -59,25 +59,25 @@ public class TeleOpDriver extends Exponential_Methods {
 
 
         int slidePosition = (slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2;
-        double pSlide = 1.0/1200; //makeshift value
-        double iSlide = 1.0/1000; //makeshift value
-        long area = 0;
-        ElapsedTime timer = new ElapsedTime();
+
         while (opModeIsActive()) {
             if(gamepad2.left_stick_y!=0){
+                slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 if(gamepad2.left_bumper){
-                    setSlidePower(.25*gamepad2.left_stick_y);
+                    setSlidePower(.25*.3*gamepad2.left_stick_y);
                 } else if (gamepad2.right_bumper){
-                    setSlidePower(.5*gamepad2.left_stick_y);
+                    setSlidePower(.5*.3*gamepad2.left_stick_y);
                 } else {
-                    setSlidePower(gamepad2.left_stick_y);
+                    setSlidePower(.3*gamepad2.left_stick_y);
                 }
                 slidePosition = (slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2;
-                area = 0;
             } else {
-                setSlidePower(.2+iSlide*area+pSlide*(slidePosition-(slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2));
+                slideUp.setTargetPosition(slidePosition);
+                slideDown.setTargetPosition(slidePosition);
+                slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            area+=timer.seconds()*(slidePosition-(slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2);
             double trigger_factor = 1;
             //double trigger_factor = 1.0 - gamepad1.left_trigger;
             double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .8*gamepad1.right_stick_x);
