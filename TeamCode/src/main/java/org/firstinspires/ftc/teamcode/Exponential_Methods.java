@@ -47,6 +47,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final int slideUpMin = -500;
     public static final int slideDownMin = -350;
 
+    public static final int slideMax = 3000;
+    public static final int slideMin = -400;
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -343,8 +346,60 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         setPowerDriveMotors(0);
     }
 
-    public void extendSlidesEncoder(int upVal, int downVal, double speed) {
+    public void setSlidePower(double power){
+        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        int currentPos = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
+
+        if(power == 0){
+            slideUp.setPower(0);
+            slideDown.setPower(0);
+        }
+
+        if(currentPos <= slideMax && currentPos >= slideMin){
+            slideUp.setPower(power);
+            slideDown.setPower(power);
+        }
+
+        while(opModeIsActive() && slideUp.isBusy() || slideDown.isBusy()) {
+            currentPos = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
+            if (currentPos > slideMax) {
+                if (power > 0) {
+                    slideUp.setPower(-power);
+                    slideDown.setPower(-power);
+                }
+            } else if (currentPos < slideMin) {
+                if (power < 0) {
+                    slideUp.setPower(power);
+                    slideDown.setPower(power);
+                }
+            } else {
+                slideUp.setPower(0);
+                slideDown.setPower(0);
+            }
+        }
+    }
+
+    public void extendSlidesBy(int inches, double speed){
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        int encoderVal = convertInchToEncoderSlides(inches);
+
+        slideUp.setTargetPosition(slideUp.getCurrentPosition() + encoderVal);
+        slideDown.setTargetPosition(slideDown.getCurrentPosition() + encoderVal);
+
+        setSlidePower(speed);
+
+        while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
+        setSlidePower(0);
+    }
+
+    /*
+    //Slides are PAINFUL
+    public void extendSlidesEncoder(int upVal, int downVal, double speed) {
+        slideUp.setMode(DcMotor.RunMode.RUN__POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         slideUp.setTargetPosition(upVal);
@@ -390,10 +445,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 slideDown.getCurrentPosition() > slideDownMin){
             slideUp.setPower(power);
             slideDown.setPower(power);
+            telemetry.addData("setslidepower", power);
         }
         slideUp.setPower(0);
         slideDown.setPower(0);
     }
+     */
 
     //Negative = backwards, positive = forwards
     public void setIntakeWheels(double power) {
