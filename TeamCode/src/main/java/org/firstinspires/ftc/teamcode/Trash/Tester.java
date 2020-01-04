@@ -18,9 +18,13 @@ public class Tester extends Exponential_Methods {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
+        telemetry.addData("left trog", gamepad2.left_trigger);
+        telemetry.addData("right trog", gamepad2.right_trigger);
+        telemetry.update();
+
         waitForStart();
         while(opModeIsActive()){
-
+            /*
             if(gamepad1.a)
                 toggleHook(true);
             if(gamepad1.b)
@@ -31,6 +35,7 @@ public class Tester extends Exponential_Methods {
 
             if(gamepad1.y)
                 setIntakeWheels(-.5);
+            */
 
             /*
             //Slides
