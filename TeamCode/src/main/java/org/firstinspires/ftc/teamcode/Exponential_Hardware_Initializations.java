@@ -16,6 +16,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 public abstract class Exponential_Hardware_Initializations extends LinearOpMode {
+
+
+
+
+
+
+
     protected DcMotor frontLeft;
     protected DcMotor frontRight;
     protected DcMotor backLeft;

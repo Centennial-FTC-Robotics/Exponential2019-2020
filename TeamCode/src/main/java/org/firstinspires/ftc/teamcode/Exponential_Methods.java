@@ -391,15 +391,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void extendSlidesBy(int inches, double speed){
-        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         int encoderVal = convertInchToEncoderSlides(inches);
 
         slideUp.setTargetPosition(slideUp.getCurrentPosition() + encoderVal);
         slideDown.setTargetPosition(slideDown.getCurrentPosition() + encoderVal);
+        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        //setSlidePower(speed);
 
-        setSlidePower(speed);
         while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
         setSlidePower(0);
     }
