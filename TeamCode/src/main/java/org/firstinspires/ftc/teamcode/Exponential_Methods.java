@@ -48,7 +48,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final int slideUpMin = -500;
     public static final int slideDownMin = -350;
 
-    public static final int slideMax = 2300;
+    public static final int slideMax = 2200;
     public static final int slideMin = -400;
 
     @Override
@@ -400,7 +400,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideDown.setTargetPosition(slideDown.getCurrentPosition() + encoderVal);
 
         setSlidePower(speed);
-
         while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
         setSlidePower(0);
     }

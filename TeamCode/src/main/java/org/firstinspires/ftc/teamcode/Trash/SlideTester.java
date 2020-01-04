@@ -13,12 +13,12 @@ public class SlideTester extends Exponential_Methods {
 
         waitForStart();
         while(opModeIsActive()) {
-            telemetry.addData("stick", gamepad1.left_stick_y);
-            telemetry.addData("up", slideUp.getCurrentPosition());
-            telemetry.addData("down", slideDown.getCurrentPosition());
-            telemetry.update();
-
-            setSlidePower(0.3 * gamepad1.left_stick_y);
+            if(gamepad2.y){
+                extendSlidesBy(4, 0.3);
+            }
+            if(gamepad2.a){
+                extendSlidesBy(-4, 0.3); //change power later
+            }
 
 
         }

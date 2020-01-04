@@ -76,6 +76,10 @@ public class TeleOpDriver extends Exponential_Methods {
                 }
                 slidePosition = (slideDown.getCurrentPosition());
             } else {
+                if(slidePosition > slideMax)
+                    slidePosition = slideMax;
+                else if(slidePosition < slideMin)
+                    slidePosition = slideMin;
                 slideUp.setTargetPosition(slidePosition);
                 slideDown.setTargetPosition(slidePosition);
                 slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -125,10 +129,10 @@ public class TeleOpDriver extends Exponential_Methods {
 
             //Make slides go up 4 inches
             if(gamepad2.y){
-                extendSlidesBy(4, 0.3);
+                slidePosition += convertInchToEncoderSlides(4);
             }
             if(gamepad2.a){
-                extendSlidesBy(-4, 0.3); //change power later
+                slidePosition -= convertInchToEncoderSlides(4);
             }
 
             //Intake arm servos

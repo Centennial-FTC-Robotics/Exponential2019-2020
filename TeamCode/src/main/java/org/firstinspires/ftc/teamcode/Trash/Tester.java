@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Trash;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -11,19 +12,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@Autonomous(group = "TeleOp", name = "TESTING STUFF")
-public class Tester extends Exponential_Methods {
+@TeleOp(group = "TeleOp", name = "TESTING STUFF")
+public class Tester extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        super.runOpMode();
+        runOpMode();
 
-        telemetry.addData("left trog", gamepad2.left_trigger);
-        telemetry.addData("right trog", gamepad2.right_trigger);
-        telemetry.update();
 
         waitForStart();
         while(opModeIsActive()){
+
+            telemetry.addData("left trog", gamepad2.left_trigger);
+            telemetry.addData("right trog", gamepad2.right_trigger);
+            telemetry.update();
+
             /*
             if(gamepad1.a)
                 toggleHook(true);
