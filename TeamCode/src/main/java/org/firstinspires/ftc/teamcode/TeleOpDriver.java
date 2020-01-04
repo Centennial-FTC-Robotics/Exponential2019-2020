@@ -58,40 +58,47 @@ public class TeleOpDriver extends Exponential_Methods {
         waitForStart();
 
 
-        int slidePosition = (slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2;
+        int slidePosition = (slideDown.getCurrentPosition())/2;
 
         while (opModeIsActive()) {
+            telemetry.addData("Y Value", gamepad2.left_stick_y);
+            telemetry.addData("Position", slidePosition);
+            //telemetry.update();
             if(gamepad2.left_stick_y!=0){
                 slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 if(gamepad2.left_bumper){
-                    setSlidePower(.25*.3*gamepad2.left_stick_y);
+                    setSlidePower(.25*.3*-gamepad2.left_stick_y);
                 } else if (gamepad2.right_bumper){
-                    setSlidePower(.5*.3*gamepad2.left_stick_y);
+                    setSlidePower(.5*.3*-gamepad2.left_stick_y);
                 } else {
-                    setSlidePower(.3*gamepad2.left_stick_y);
+                    setSlidePower(.3*-gamepad2.left_stick_y);
                 }
-                slidePosition = (slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2;
+                slidePosition = (slideDown.getCurrentPosition());
             } else {
                 slideUp.setTargetPosition(slidePosition);
                 slideDown.setTargetPosition(slidePosition);
                 slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            double trigger_factor = 1;
-            //double trigger_factor = 1.0 - gamepad1.left_trigger;
+            telemetry.update();
+            double bumper_factor = 1;
+            double left_trigger_factor = gamepad1.left_trigger;
+            double right_trigger_factor = gamepad1.right_trigger;
+
+            //double bumper_factor = 1.0 - gamepad1.left_trigger;
             double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .8*gamepad1.right_stick_x);
             if(gamepad1.left_bumper){
-                trigger_factor = .5;
+                bumper_factor = .5;
             }
             if (gamepad1.right_bumper){
-                trigger_factor = .25;
+                bumper_factor = .25;
             }
 
-            frontRight.setPower(trigger_factor*answer[0]);
-            backRight.setPower(trigger_factor*answer[1]);
-            backLeft.setPower(trigger_factor*answer[2]);
-            frontLeft.setPower(trigger_factor*answer[3]);
+            frontRight.setPower(bumper_factor*answer[0]);
+            backRight.setPower(bumper_factor*answer[1]);
+            backLeft.setPower(bumper_factor*answer[2]);
+            frontLeft.setPower(bumper_factor*answer[3]);
 
             //slides
             // setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later

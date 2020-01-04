@@ -47,7 +47,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final int slideUpMin = -500;
     public static final int slideDownMin = -350;
 
-    public static final int slideMax = 3000;
+    public static final int slideMax = 2300;
     public static final int slideMin = -400;
 
     @Override
@@ -285,7 +285,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
 
-            if(Math.abs(frontRight_displacement)<convertInchToEncoder(1)){
+            if(Math.abs(frontRight_displacement)<convertInchToEncoder(2)){
                 frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
                 frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
                 backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
@@ -347,6 +347,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void setSlidePower(double power){
+        telemetry.addData("power",power);
+        // telemetry.update();
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -378,6 +380,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 slideUp.setPower(0);
                 slideDown.setPower(0);
             }
+        }
+
+        if(!opModeIsActive()){
+            slideUp.setPower(0);
+            slideDown.setPower(0);
         }
     }
 
