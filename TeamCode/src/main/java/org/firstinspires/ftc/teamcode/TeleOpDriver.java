@@ -49,8 +49,6 @@ public class TeleOpDriver extends Exponential_Methods {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-
-
         for(DcMotor motor : driveMotors){
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -78,6 +76,8 @@ public class TeleOpDriver extends Exponential_Methods {
                 slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
+
+            //Drivetrain
             double trigger_factor = 1;
             //double trigger_factor = 1.0 - gamepad1.left_trigger;
             double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .8*gamepad1.right_stick_x);
@@ -93,8 +93,6 @@ public class TeleOpDriver extends Exponential_Methods {
             backLeft.setPower(trigger_factor*answer[2]);
             frontLeft.setPower(trigger_factor*answer[3]);
 
-            //slides
-            // setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
             //hook down
             //if(gamepad1.x)
                 //toggleHook(true);
@@ -116,6 +114,15 @@ public class TeleOpDriver extends Exponential_Methods {
             //setIntakeWheels(intakePower * gamepad2.left_trigger);
             //setIntakeWheels(0.25 * intakePower * gamepad2.right_trigger);
 
+            //Make slides go up 4 inches
+            if(gamepad2.y){
+                extendSlidesBy(4, 0.3);
+            }
+            if(gamepad2.a){
+                extendSlidesBy(-4, 0.3); //change power later
+            }
+
+            //Intake arm servos
             if(gamepad2.b){
                 intakeServoLeft.setPosition(.92);
                 intakeServoRight.setPosition(.95);
