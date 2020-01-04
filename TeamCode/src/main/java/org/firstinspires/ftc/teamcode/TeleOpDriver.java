@@ -118,11 +118,11 @@ public class TeleOpDriver extends Exponential_Methods {
             //if(gamepad2.right_bumper)
                 //setSlidePower(slideUp.getPower() / 4);
 
-            //intake wheels
-            //double intakePower = 0.9; //set later
-            //setIntakeWheels(intakePower * gamepad2.left_trigger);
-            //setIntakeWheels(0.25 * intakePower * gamepad2.right_trigger);
-
+            double intakePower = .9; //set later
+            setIntakeWheels(intakePower * gamepad2.left_trigger);
+            if(gamepad2.right_trigger!=0) {
+                setIntakeWheels(-.25 * intakePower * gamepad2.right_trigger);
+            }
             //Make slides go up 4 inches
             if(gamepad2.y){
                 extendSlidesBy(4, 0.3);
