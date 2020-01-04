@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
@@ -255,7 +256,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double p = 1.0/1200;
         double i;
         double d;
-        double inchesTolerance = 0.3;
+        double inchesTolerance = 1.2;
         double max_positive = maxPower;
         double min_negative = -maxPower;
 
@@ -273,7 +274,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-
+        ElapsedTime time = new ElapsedTime();
         while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
             currentAngle = getRotationinDimension('Z');
 
@@ -285,7 +286,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
 
-            if(Math.abs(frontRight_displacement)<convertInchToEncoder(2)){
+            if(time.seconds()>2){
                 frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
                 frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
                 backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
@@ -296,6 +297,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 backLeft.setPower(+direction * turnRate + Range.clip(p * backLeft_displacement, min_negative, max_positive));
                 backRight.setPower(direction * turnRate + Range.clip(p * backRight_displacement, min_negative, max_positive));
             }
+
             frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
             frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
             backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
