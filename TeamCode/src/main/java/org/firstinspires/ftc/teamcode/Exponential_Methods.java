@@ -373,8 +373,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 }
             } else if (currentPos < slideMin) {
                 if (power < 0) {
-                    slideUp.setPower(power);
-                    slideDown.setPower(power);
+                    slideUp.setPower(-power);
+                    slideDown.setPower(-power);
                 }
             } else {
                 slideUp.setPower(0);
