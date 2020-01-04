@@ -4,8 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 
 @TeleOp(name = "TeleOp, USE THIS ONE", group = "TeleOp")
 
@@ -46,14 +49,35 @@ public class TeleOpDriver extends Exponential_Methods {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
+
+
         for(DcMotor motor : driveMotors){
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         waitForStart();
 
-        while (opModeIsActive()) {
 
+        int slidePosition = (slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2;
+        double pSlide = 1.0/1200; //makeshift value
+        double iSlide = 1.0/1000; //makeshift value
+        long area = 0;
+        ElapsedTime timer = new ElapsedTime();
+        while (opModeIsActive()) {
+            if(gamepad2.left_stick_y!=0){
+                if(gamepad2.left_bumper){
+                    setSlidePower(.25*gamepad2.left_stick_y);
+                } else if (gamepad2.right_bumper){
+                    setSlidePower(.5*gamepad2.left_stick_y);
+                } else {
+                    setSlidePower(gamepad2.left_stick_y);
+                }
+                slidePosition = (slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2;
+                area = 0;
+            } else {
+                setSlidePower(.2+iSlide*area+pSlide*(slidePosition-(slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2));
+            }
+            area+=timer.seconds()*(slidePosition-(slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2);
             double trigger_factor = 1;
             //double trigger_factor = 1.0 - gamepad1.left_trigger;
             double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .8*gamepad1.right_stick_x);
@@ -71,7 +95,6 @@ public class TeleOpDriver extends Exponential_Methods {
 
             //slides
             // setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
-
             //hook down
             //if(gamepad1.x)
                 //toggleHook(true);
