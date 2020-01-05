@@ -10,20 +10,16 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+//import org.firstinspires.ftc.robotcontroller.external.samples.SampleRevBlinkinLedDriver;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 public abstract class Exponential_Hardware_Initializations extends LinearOpMode {
 
-
-
-
-
-
-    protected RevBlinkinLedDriver LED;
     protected DcMotor frontLeft;
     protected DcMotor frontRight;
     protected DcMotor backLeft;
@@ -34,6 +30,12 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected Servo intakeServoRight;
     protected Servo hookServoLeft;
     protected Servo hookServoRight;
+
+    //protected RevBlinkinLedDriver blinkinLedDriver;
+    protected RevBlinkinLedDriver blinkin;
+    protected RevBlinkinLedDriver.BlinkinPattern pattern;
+    //protected DisplayKind displayKind;
+
     protected DcMotor slideUp;
     protected DcMotor slideDown;
     protected DcMotor[] driveMotors = new DcMotor[4];
@@ -55,6 +57,11 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
         intakeServoRight = hardwareMap.servo.get("intakeServoRight");
 
+        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
+        blinkin.setPattern(pattern);
+
+
         hookServoLeft = hardwareMap.servo.get("hookServoLeft");
         hookServoRight = hardwareMap.servo.get("hookServoRight");
 
@@ -63,7 +70,6 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         slideUp = hardwareMap.dcMotor.get("slideRight");
         slideDown = hardwareMap.dcMotor.get("slideLeft");
 
-        LED = (RevBlinkinLedDriver) hardwareMap.get("RevBlinkinLedDriver");
 
         // sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
@@ -95,6 +101,5 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         slideUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        LED.
     }
 }
