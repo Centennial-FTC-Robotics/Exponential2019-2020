@@ -391,18 +391,26 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void extendSlidesBy(int inches, double speed){
-
-
+        if(inches<0) {
+            // inches += .5;
+        } else if (inches>0){
+            inches += .75;
+        }
+        telemetry.addData("Hi", 100);
+        telemetry.update();
         int encoderVal = convertInchToEncoderSlides(inches);
 
         slideUp.setTargetPosition(slideUp.getCurrentPosition() + encoderVal);
         slideDown.setTargetPosition(slideDown.getCurrentPosition() + encoderVal);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
+        slideDown.setPower(speed);
+        slideUp.setPower(speed);
         //setSlidePower(speed);
 
-        while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
+        while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){
+
+        }
         setSlidePower(0);
     }
 
@@ -487,8 +495,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down) {
         if (down) {
-            hookServoLeft.setPosition(1);
-            hookServoRight.setPosition(1);
+            hookServoLeft.setPosition(.6);
+            hookServoRight.setPosition(.6);
         } else {
             hookServoLeft.setPosition(0);
             hookServoRight.setPosition(0);

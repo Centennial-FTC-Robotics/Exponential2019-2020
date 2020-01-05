@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -22,7 +23,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
 
 
-
+    protected RevBlinkinLedDriver LED;
     protected DcMotor frontLeft;
     protected DcMotor frontRight;
     protected DcMotor backLeft;
@@ -62,6 +63,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         slideUp = hardwareMap.dcMotor.get("slideRight");
         slideDown = hardwareMap.dcMotor.get("slideLeft");
 
+        LED = (RevBlinkinLedDriver) hardwareMap.get("RevBlinkinLedDriver");
 
         // sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
@@ -93,5 +95,6 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         slideUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        LED.
     }
 }
