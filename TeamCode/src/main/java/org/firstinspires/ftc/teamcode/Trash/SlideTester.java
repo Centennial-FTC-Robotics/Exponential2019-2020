@@ -14,10 +14,10 @@ public class SlideTester extends Exponential_Methods {
         waitForStart();
         while(opModeIsActive()) {
             if(gamepad2.y){
-                extendSlidesBy(4, 0.3);
+                extendSlidesBy(4, 0.5);
             }
             if(gamepad2.a){
-                extendSlidesBy(-4, 0.3); //change power later
+                extendSlidesBy(-4, 0.5); //change power later
             }
 
 

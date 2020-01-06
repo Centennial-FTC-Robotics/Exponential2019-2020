@@ -59,7 +59,7 @@ public class TeleOpDriver extends Exponential_Methods {
 
 
         int slidePosition = (slideDown.getCurrentPosition())/2;
-
+        ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive()) {
             telemetry.addData("Y Value", gamepad2.left_stick_y);
             telemetry.addData("Position", slidePosition);
@@ -107,13 +107,15 @@ public class TeleOpDriver extends Exponential_Methods {
             //slides
             // setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
             //hook down
-            //if(gamepad1.x)
-                //toggleHook(true);
-
+            if(gamepad1.x&&timer.seconds()>.25) {
+                toggleHook(true);
+                timer = new ElapsedTime();
+            }
             //hook up
-            //if(gamepad1.b)
-                //toggleHook(false);
-
+            if(gamepad1.b&&timer.seconds()>.25) {
+                toggleHook(false);
+                timer = new ElapsedTime();
+            }
             //slide speed reduced to 1/2
             //if(gamepad2.left_bumper)
                 //setSlidePower(slideUp.getPower() / 2);
@@ -124,27 +126,32 @@ public class TeleOpDriver extends Exponential_Methods {
 
             double intakePower = .9; //set later
             setIntakeWheels(intakePower * gamepad2.left_trigger);
-            if(gamepad2.right_trigger!=0) {
+            if(gamepad2.right_trigger!=0&&timer.seconds()>.25) {
                 setIntakeWheels(-.25 * intakePower * gamepad2.right_trigger);
+                timer = new ElapsedTime();
             }
             //Make slides go up 4 inches
-            if(gamepad2.y){
+            if(gamepad2.y&&timer.seconds()>.25){
                 slidePosition += convertInchToEncoderSlides(4);
+                timer = new ElapsedTime();
             }
-            if(gamepad2.a){
-                slidePosition -= convertInchToEncoderSlides(4);
+            if(gamepad2.a&&timer.seconds()>.25){
+                slidePosition -= convertInchToEncoderSlides(-4);
+                timer = new ElapsedTime();
             }
 
             //Intake arm servos
-            if(gamepad2.b){
+            if(gamepad2.b&&timer.seconds()>.25){
                 intakeServoLeft.setPosition(.92);
                 intakeServoRight.setPosition(.95);
+                timer = new ElapsedTime();
             }
 
-            if(gamepad2.x){
+            if(gamepad2.x&&timer.seconds()>.25){
                 //intake servos release stone
                 intakeServoRight.setPosition(.7);
                 intakeServoLeft.setPosition(.65);
+                timer = new ElapsedTime();
             }
         }
     }
