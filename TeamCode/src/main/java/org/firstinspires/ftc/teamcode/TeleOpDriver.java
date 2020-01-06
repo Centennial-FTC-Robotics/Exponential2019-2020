@@ -104,15 +104,13 @@ public class TeleOpDriver extends Exponential_Methods {
             backLeft.setPower(bumper_factor*answer[2]);
             frontLeft.setPower(bumper_factor*answer[3]);
 
-            //slides
-            // setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
             //hook down
-            //if(gamepad1.x)
-                //toggleHook(true);
+            if(gamepad1.x)
+                toggleHook(true);
 
             //hook up
-            //if(gamepad1.b)
-                //toggleHook(false);
+            if(gamepad1.b)
+                toggleHook(false);
 
             //slide speed reduced to 1/2
             //if(gamepad2.left_bumper)
