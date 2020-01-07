@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Hardware;
 
+//@TeleOp(name = "Motor Tests", group = "TeleOp")
 // @TeleOp(name = "Motor Tests", group = "TeleOp")
 public class MotorTesting extends LinearOpMode {
     @Override
