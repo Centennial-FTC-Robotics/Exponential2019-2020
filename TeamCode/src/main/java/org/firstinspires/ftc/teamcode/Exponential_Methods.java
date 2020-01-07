@@ -390,19 +390,34 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
     }
 
+    public void setSlidesMinimum() {
+        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideUp.setTargetPosition(-400);
+        slideDown.setTargetPosition(-400);
+    }
+
     public void extendSlidesBy(int inches, double speed){
-
-
+        if(inches<0) {
+            // inches += .5;
+        } else if (inches>0){
+            inches += .75;
+        }
+        telemetry.addData("Hi", 100);
+        telemetry.update();
         int encoderVal = convertInchToEncoderSlides(inches);
 
         slideUp.setTargetPosition(slideUp.getCurrentPosition() + encoderVal);
         slideDown.setTargetPosition(slideDown.getCurrentPosition() + encoderVal);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
+        slideDown.setPower(speed);
+        slideUp.setPower(speed);
         //setSlidePower(speed);
 
-        while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
+        while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){
+
+        }
         setSlidePower(0);
     }
 
@@ -487,8 +502,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down) {
         if (down) {
-            hookServoLeft.setPosition(1);
-            hookServoRight.setPosition(1);
+            hookServoLeft.setPosition(.6);
+            hookServoRight.setPosition(.6);
         } else {
             hookServoLeft.setPosition(0);
             hookServoRight.setPosition(0);
@@ -580,17 +595,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double forwardToGetStone = 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY;
         move(-factor * (TILE_LENGTH - observingDistanceX), 0, 0.5); //move to corner //(observing distance x, 0)
         move(0, forwardToGetStone, 0.5); //move forward towards stones //(obs. dist. x, forwardToGetStone)
-        int inchesMoved = grabSkystone(color); //(x, 2 tiles - robot length - observing dist. y)
-
+        int inchesMoved = grabSkystone(color); //(obs.dist.x + x, forwardsToGetStone)
+        /*
         move(0, -forwardToGetStone, 0.5); //move back (can be cut out) //(x + obs. dist. x, 0)
-
+        */
         double alignToFoundationEdge = TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_AWAY_FROM_WALL;
-
-        move(factor * (TILE_LENGTH * 5 - inchesMoved - observingDistanceX + alignToFoundationEdge) , 0, 0.5); //(move through alliance bridge // (5 tiles + alignToFoundationEdge, 0)
-
+        turnRelative(-90 * factor);
+        move(0 , factor * (TILE_LENGTH * 5 - inchesMoved - observingDistanceX + alignToFoundationEdge), 0.5); //(move through alliance bridge // (5 tiles + alignToFoundationEdge, forwardsToGetStone)
+        turnRelative(90 * factor);
         extendSlidesBy(3, 0.5); //move slides up to be able to go close to foudndation
         //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
-        move(0, TILE_LENGTH * 2 - ROBOT_LENGTH, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        move(0, TILE_LENGTH * 2 - ROBOT_LENGTH - forwardToGetStone, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
 
         releaseStone(); //drop stone out
 
@@ -679,6 +694,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
     }
+
 
 
 }
