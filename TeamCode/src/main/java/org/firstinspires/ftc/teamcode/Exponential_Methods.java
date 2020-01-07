@@ -502,10 +502,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down) {
         if (down) {
-            hookServoLeft.setPosition(.6);
-            hookServoRight.setPosition(.6);
+            hookServoLeft.setPosition(.75);
+            hookServoRight.setPosition(.5);
         } else {
-            hookServoLeft.setPosition(0);
+            hookServoLeft.setPosition(0.1);
             hookServoRight.setPosition(0);
         }
     }

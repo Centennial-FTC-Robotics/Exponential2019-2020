@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 @TeleOp(group = "TeleOp", name = "TESTING STUFF")
-public class Tester extends LinearOpMode {
+public class Tester extends Exponential_Methods {
 
 
     public void runOpMode() throws InterruptedException {
@@ -23,9 +23,16 @@ public class Tester extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
 
-            telemetry.addData("left trog", gamepad2.left_trigger);
-            telemetry.addData("right trog", gamepad2.right_trigger);
+            int pos = 0;
+            telemetry.addData("pos", pos);
             telemetry.update();
+
+            pos += gamepad1.left_stick_x * .1;
+
+            if(gamepad1.a){
+                hookServoRight.setPosition(pos);
+                hookServoLeft.setPosition(pos);
+            }
 
             /*
             if(gamepad1.a)
