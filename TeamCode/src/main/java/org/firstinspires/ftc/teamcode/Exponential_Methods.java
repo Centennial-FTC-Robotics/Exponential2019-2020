@@ -256,7 +256,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double p = 1.0/1200;
         double i;
         double d;
-        double inchesTolerance = 1.2;
+        double inchesTolerance = .3;
         double max_positive = maxPower;
         double min_negative = -maxPower;
 
