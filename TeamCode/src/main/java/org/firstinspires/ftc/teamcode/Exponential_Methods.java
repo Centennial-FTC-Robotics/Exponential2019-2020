@@ -256,7 +256,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double p = 1.0/1200;
         double i;
         double d;
-        double inchesTolerance = 1.2;
+        double inchesTolerance = .4;
         double max_positive = maxPower;
         double min_negative = -maxPower;
 
@@ -551,13 +551,13 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 }
             }
             setPowerDriveMotors(0);
-            clampStone();
         }
 
         //move forward, grab block, move back
-        move(0, 12, 0.3);
+        move(0, 20, 0.3);
+        clampStone();
         sleep(500);
-        move(0, -12, 0.3);
+        move(0, -20, 0.3);
 
         //turns back
         turnRelative(factor * -45);
@@ -608,7 +608,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // extendSlidesBy(3, 0.5); //move slides up to be able to go close to foudndation
 
         //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
-        move(0, TILE_LENGTH * 2 - ROBOT_LENGTH - forwardToGetStone, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        move(0, TILE_LENGTH * 2/* - ROBOT_LENGTH TODO see if this stays*/ - forwardToGetStone, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
 
         releaseStone(); //drop stone out
 
@@ -625,7 +625,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         //move to wall // (6 tiles - robot length - foundation width - 8, 8)
         move(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), TILE_LENGTH * 2 - ROBOT_LENGTH - 8, 0.5);
-        turnRelative(factor * 90);
+        turnRelative(factor * -90);
         //moving foundation all the way to corner
         move(-8, -8, .5); // (6 tiles - robot length - foundation width, 0)
         toggleHook(false);
