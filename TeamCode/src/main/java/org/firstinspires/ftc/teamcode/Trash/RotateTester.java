@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@TeleOp(name = "RotateTester", group = "TeleOp")
+// @TeleOp(name = "RotateTester", group = "TeleOp")
 public class RotateTester extends Exponential_Methods {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();

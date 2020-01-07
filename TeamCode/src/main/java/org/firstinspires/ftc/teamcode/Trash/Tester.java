@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@TeleOp(group = "TeleOp", name = "TESTING STUFF")
+// @TeleOp(group = "TeleOp", name = "TESTING STUFF")
 public class Tester extends LinearOpMode {
 
 
