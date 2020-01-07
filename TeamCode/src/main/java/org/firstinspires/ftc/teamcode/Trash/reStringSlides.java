@@ -9,17 +9,8 @@ public class reStringSlides extends Exponential_Methods {
         waitForStart();
 
         while(opModeIsActive()){
-            
+            slideDown.setPower(gamepad1.left_stick_y);
+            slideUp.setPower(gamepad1.right_stick_y);
         }
-
-
-
-
-
-
-
-
-
-
     }
 }
