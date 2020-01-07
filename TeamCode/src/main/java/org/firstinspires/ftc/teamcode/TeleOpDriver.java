@@ -68,11 +68,11 @@ public class TeleOpDriver extends Exponential_Methods {
                 slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 if(gamepad2.left_bumper){
-                    setSlidePower(.25*.3*-gamepad2.left_stick_y);
+                    setSlidePower(.25*.5*-gamepad2.left_stick_y);
                 } else if (gamepad2.right_bumper){
-                    setSlidePower(.5*.3*-gamepad2.left_stick_y);
+                    setSlidePower(.5*.5*-gamepad2.left_stick_y);
                 } else {
-                    setSlidePower(.3*-gamepad2.left_stick_y);
+                    setSlidePower(.5*-gamepad2.left_stick_y);
                 }
                 slidePosition = (slideDown.getCurrentPosition());
             } else {
@@ -104,8 +104,6 @@ public class TeleOpDriver extends Exponential_Methods {
             backLeft.setPower(bumper_factor*answer[2]);
             frontLeft.setPower(bumper_factor*answer[3]);
 
-            //slides
-            // setSlidePower(Range.clip(gamepad2.left_stick_y,0,0.7)); //set max later
             //hook down
             if(gamepad1.x&&timer.seconds()>.25) {
                 toggleHook(true);
@@ -116,19 +114,11 @@ public class TeleOpDriver extends Exponential_Methods {
                 toggleHook(false);
                 timer = new ElapsedTime();
             }
-            //slide speed reduced to 1/2
-            //if(gamepad2.left_bumper)
-                //setSlidePower(slideUp.getPower() / 2);
-
-            //slide speed reduced to 1/4
-            //if(gamepad2.right_bumper)
-                //setSlidePower(slideUp.getPower() / 4);
 
             double intakePower = .9; //set later
             setIntakeWheels(intakePower * gamepad2.left_trigger);
-            if(gamepad2.right_trigger!=0&&timer.seconds()>.25) {
+            if(gamepad2.right_trigger!=0) {
                 setIntakeWheels(-.25 * intakePower * gamepad2.right_trigger);
-                timer = new ElapsedTime();
             }
             //Make slides go up 4 inches
             if(gamepad2.y&&timer.seconds()>.25){
@@ -136,7 +126,7 @@ public class TeleOpDriver extends Exponential_Methods {
                 timer = new ElapsedTime();
             }
             if(gamepad2.a&&timer.seconds()>.25){
-                slidePosition -= convertInchToEncoderSlides(-4);
+                slidePosition -= convertInchToEncoderSlides(4);
                 timer = new ElapsedTime();
             }
 
