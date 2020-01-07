@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@TeleOp(name = "MoveTester", group = "TeleOp")
+//@TeleOp(name = "MoveTester", group = "TeleOp")
 
 public class MoveTester extends Exponential_Methods {
     @Override

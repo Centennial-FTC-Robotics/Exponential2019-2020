@@ -542,7 +542,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                     for (Recognition recognition : updatedRecognitions) {
                         telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
                         if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                            float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;
+                            float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;  // vertical phone im pretty sure
 
                             //float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
                             center = stonePos + 160 > TOP_MIDDLE_SCREEN && TOP_MIDDLE_SCREEN > stonePos - 160;
