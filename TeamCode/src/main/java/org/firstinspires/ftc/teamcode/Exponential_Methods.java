@@ -49,7 +49,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final int slideDownMin = -350;
 
     public static final int slideMax = 2200;
-    public static final int slideMin = -400;
+    public static final int slideMin = -390;
 
     @Override
     public void runOpMode() throws InterruptedException {

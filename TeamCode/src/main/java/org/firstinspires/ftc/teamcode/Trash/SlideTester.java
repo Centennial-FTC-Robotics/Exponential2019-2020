@@ -10,7 +10,6 @@ public class SlideTester extends Exponential_Methods {
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
-
         waitForStart();
         while(opModeIsActive()) {
             if(gamepad2.y){
@@ -19,8 +18,6 @@ public class SlideTester extends Exponential_Methods {
             if(gamepad2.a){
                 extendSlidesBy(-4, 0.5); //change power later
             }
-
-
         }
     }
 }
