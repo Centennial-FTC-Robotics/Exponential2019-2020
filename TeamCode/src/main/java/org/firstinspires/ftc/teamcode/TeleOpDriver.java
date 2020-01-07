@@ -58,12 +58,14 @@ public class TeleOpDriver extends Exponential_Methods {
         waitForStart();
 
 
-        int slidePosition = (slideDown.getCurrentPosition())/2;
+        int slidePosition = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition())/2;
         ElapsedTime timer = new ElapsedTime();
+
         while (opModeIsActive()) {
-            telemetry.addData("Y Value", gamepad2.left_stick_y);
-            telemetry.addData("Position", slidePosition);
-            //telemetry.update();
+            telemetry.addData("SlideDown", slideDown.getCurrentPosition());
+            telemetry.addData("SlideUp", slideUp.getCurrentPosition());
+            telemetry.addData("SlidePosition", slidePosition);
+            telemetry.update();
             if(gamepad2.left_stick_y!=0){
                 slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -74,7 +76,7 @@ public class TeleOpDriver extends Exponential_Methods {
                 } else {
                     setSlidePower(.5*-gamepad2.left_stick_y);
                 }
-                slidePosition = (slideDown.getCurrentPosition());
+                slidePosition = (slideDown.getCurrentPosition() + slideUp.getCurrentPosition()) / 2;
             } else {
                 if(slidePosition > slideMax)
                     slidePosition = slideMax;
@@ -85,7 +87,6 @@ public class TeleOpDriver extends Exponential_Methods {
                 slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            telemetry.update();
             double bumper_factor = 1;
             double left_trigger_factor = gamepad1.left_trigger;
             double right_trigger_factor = gamepad1.right_trigger;

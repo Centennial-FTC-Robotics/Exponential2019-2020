@@ -13,20 +13,23 @@ public class TheoreticalSlides extends LinearOpMode {
         DcMotor slideUp; DcMotor slideDown;
         slideUp = hardwareMap.dcMotor.get("slideRight");
         slideDown = hardwareMap.dcMotor.get("slideLeft");
-        slideDown.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideUp.setDirection(DcMotorSimple.Direction.REVERSE);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         waitForStart();
         int position = (slideUp.getCurrentPosition()+slideDown.getCurrentPosition())/2;
         while(opModeIsActive()){
-            telemetry.addData("Y: ", gamepad2.left_stick_y);
+            telemetry.addData("Y: ", -1*gamepad2.left_stick_y);
+            telemetry.addData("Position", position);
+            telemetry.addData("LeftEncoder", slideDown.getCurrentPosition());
+            telemetry.addData("RightEncoder", slideUp.getCurrentPosition());
             telemetry.update();
             if(gamepad2.left_stick_y!=0){
                 position = (slideDown.getCurrentPosition()+slideUp.getCurrentPosition())/2;
                 slideDown.setTargetPosition(position);
                 slideUp.setTargetPosition(position);
-                slideUp.setPower(gamepad2.left_stick_y);
-                slideDown.setPower(gamepad2.left_stick_y);
+                slideUp.setPower(-.3*gamepad2.left_stick_y);
+                slideDown.setPower(-.3*gamepad2.left_stick_y);
             }
         }
     }

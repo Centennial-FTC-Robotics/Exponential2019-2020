@@ -81,7 +81,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         slideUp.setDirection(DcMotorSimple.Direction.REVERSE);
-        slideDown.setDirection(DcMotorSimple.Direction.REVERSE);
+        // slideDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
         driveMotors[0] = frontLeft;
         driveMotors[1] = frontRight;
