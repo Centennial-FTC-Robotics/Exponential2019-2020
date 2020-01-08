@@ -354,17 +354,15 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        int currentPos = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
+        int currentPos;
 
         if(power == 0){
             slideUp.setPower(0);
             slideDown.setPower(0);
         }
 
-        if(currentPos <= slideMax && currentPos >= slideMin){
-            slideUp.setPower(power);
-            slideDown.setPower(power);
-        }
+        slideUp.setPower(power);
+        slideDown.setPower(power);
 
         /*while(opModeIsActive() && (slideUp.getPower() != 0 || slideDown.getPower() != 0)) {
             currentPos = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
