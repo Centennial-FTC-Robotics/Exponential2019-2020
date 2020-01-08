@@ -366,7 +366,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             slideDown.setPower(power);
         }
 
-        while(opModeIsActive() && (slideUp.getPower() != 0 || slideDown.getPower() != 0)) {
+        /*while(opModeIsActive() && (slideUp.getPower() != 0 || slideDown.getPower() != 0)) {
             currentPos = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
             if (currentPos > slideMax) {
                 if (power > 0) {
@@ -378,11 +378,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                     slideUp.setPower(-power);
                     slideDown.setPower(-power);
                 }
-            } else {
-                slideUp.setPower(0);
-                slideDown.setPower(0);
             }
-        }
+        }*/
 
         if(!opModeIsActive()){
             slideUp.setPower(0);
