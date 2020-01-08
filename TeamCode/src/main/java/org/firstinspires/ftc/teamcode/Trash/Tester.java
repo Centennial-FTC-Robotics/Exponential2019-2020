@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-// @TeleOp(group = "TeleOp", name = "TESTING STUFF")
-public class Tester extends LinearOpMode {
+@Autonomous(group = "Autonomous", name = "TESTING STUFF")
+public class Tester extends Exponential_Methods {
 
 
     public void runOpMode() throws InterruptedException {
@@ -23,9 +23,9 @@ public class Tester extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
 
-            telemetry.addData("left trog", gamepad2.left_trigger);
-            telemetry.addData("right trog", gamepad2.right_trigger);
+            telemetry.addData("having a fun time", 0);
             telemetry.update();
+            bringSlidesDown();
 
             /*
             if(gamepad1.a)

@@ -238,7 +238,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         int direction;
         double turnRate;
         double P = 0.015; //set later
-        double maxSpeed = 0.7; //set later
+        double maxSpeed = 1; //set later
         double minSpeed = 0.01; //set later
         double error;
 
@@ -397,7 +397,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideDown.setTargetPosition(-400);
     }
 
-    public void extendSlidesBy(int inches, double speed){
+    public void extendSlidesBy(double inches, double speed){
         if(inches<0) {
             // inches += .5;
         } else if (inches>0){
@@ -516,6 +516,18 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeServoRight.setPosition(position);
     }
 
+    public void bringSlidesDown(){
+        extendSlidesBy(0.1,0.3);
+        setIntakeServosPosition(0);
+        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideUp.setTargetPosition(slideMin);
+        slideDown.setTargetPosition(slideMin);
+        while((slideUp.isBusy() || slideDown.isBusy()) && opModeIsActive()){}
+        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     //-------------- Computer Vision --------------
 
     public int grabSkystone(String color) {
@@ -554,10 +566,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
 
         //move forward, grab block, move back
-        move(0, 20, 0.3);
+        move(0, 18, 0.3);
         clampStone();
         sleep(500);
-        move(0, -20, 0.3);
+        move(0, -18, 0.3);
 
         //turns back
         turnRelative(factor * -45);
@@ -584,7 +596,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // this variable determines how far away from the block we want the robot when using grabSkystone
         // using this variable, calculate the distance the robot must travel to get the middle of stone exactly
         // in robot's field of sight
-        double observingDistance = 12;
+        double observingDistance = 6;
         // these two variables are separate for code clarity
         // idk what I would name a variable that represents both of these values
         double observingDistanceX = observingDistance / Math.sqrt(2);
