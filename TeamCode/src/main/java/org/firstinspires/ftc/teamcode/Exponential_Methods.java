@@ -366,7 +366,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             slideDown.setPower(power);
         }
 
-        while(opModeIsActive() && slideUp.isBusy() || slideDown.isBusy()) {
+        while(opModeIsActive() && (slideUp.getPower() != 0 || slideDown.getPower() != 0)) {
             currentPos = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
             if (currentPos > slideMax) {
                 if (power > 0) {
