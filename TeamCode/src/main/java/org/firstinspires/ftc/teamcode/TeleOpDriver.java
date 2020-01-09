@@ -70,26 +70,26 @@ public class TeleOpDriver extends Exponential_Methods {
                 slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 if(gamepad2.left_bumper){
-                    slideUp.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
-                    slideDown.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
+                    slideUp.setPower(.25*.5*-gamepad2.left_stick_y);
+                    slideDown.setPower(.25*.5*-gamepad2.left_stick_y);
                 } else if (gamepad2.right_bumper){
-                    slideUp.setPower(.25*.5*.5*.5*-gamepad2.left_stick_y);
-                    slideDown.setPower(.25*.5*.5*.5*-gamepad2.left_stick_y);
+                    slideUp.setPower(.5*.5*-gamepad2.left_stick_y);
+                    slideDown.setPower(.5*.5*-gamepad2.left_stick_y);
                 } else {
-                    slideUp.setPower((.25*.5*.5*-gamepad2.left_stick_y));
-                    slideDown.setPower((.25*.5*.5*-gamepad2.left_stick_y));
+                    slideUp.setPower((.5*-gamepad2.left_stick_y));
+                    slideDown.setPower((.5*-gamepad2.left_stick_y));
                 }
                 if(slidePosition > slideMax) {
                     if(gamepad2.left_stick_y>0){
-                        slideUp.setPower(.25*.5*.5*-gamepad2.left_stick_y);
-                        slideDown.setPower(.25*.5*.5*-gamepad2.left_stick_y);
+                        slideUp.setPower(.5*-gamepad2.left_stick_y);
+                        slideDown.setPower(.5*-gamepad2.left_stick_y);
                     } else {
                         setSlidePower(0);
                     }
                 } else if(slidePosition < slideMin)
                     if(gamepad2.left_stick_y>0){
-                        slideUp.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
-                        slideDown.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
+                        slideUp.setPower(.25*.5*-gamepad2.left_stick_y);
+                        slideDown.setPower(.25*.5*-gamepad2.left_stick_y);
                     } else {
                         setSlidePower(0);
                     }
