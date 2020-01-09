@@ -421,8 +421,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         else if(position < slideMin)
             position = slideMin;
 
-        slideUp.setTargetPosition(position);
-        slideDown.setTargetPosition(position);
+        slideUp.setTargetPosition(val);
+        slideDown.setTargetPosition(val);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setPower(speed);
@@ -432,7 +432,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             position = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
             telemetry.addData("position", position);
             telemetry.update();
-
         }
         setSlidePower(0);
     }
