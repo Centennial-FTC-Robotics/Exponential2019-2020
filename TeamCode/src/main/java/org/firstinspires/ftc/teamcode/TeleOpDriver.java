@@ -70,21 +70,29 @@ public class TeleOpDriver extends Exponential_Methods {
                 slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 if(gamepad2.left_bumper){
-                    setSlidePower(.25*.5*-gamepad2.left_stick_y);
+                    slideUp.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
+                    slideDown.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
                 } else if (gamepad2.right_bumper){
-                    setSlidePower(.5*.5*-gamepad2.left_stick_y);
+                    slideUp.setPower(.25*.5*.5*.5*-gamepad2.left_stick_y);
+                    slideDown.setPower(.25*.5*.5*.5*-gamepad2.left_stick_y);
                 } else {
-                    setSlidePower(.5*-gamepad2.left_stick_y);
+                    slideUp.setPower((.25*.5*.5*-gamepad2.left_stick_y));
+                    slideDown.setPower((.25*.5*.5*-gamepad2.left_stick_y));
                 }
                 if(slidePosition > slideMax) {
                     if(gamepad2.left_stick_y>0){
-                        setSlidePower(.25*.5*-gamepad2.left_stick_y);
+                        slideUp.setPower(.25*.5*.5*-gamepad2.left_stick_y);
+                        slideDown.setPower(.25*.5*.5*-gamepad2.left_stick_y);
                     } else {
                         setSlidePower(0);
                     }
-                }
-                else if(slidePosition < slideMin)
-                    slidePosition = slideMin;
+                } else if(slidePosition < slideMin)
+                    if(gamepad2.left_stick_y>0){
+                        slideUp.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
+                        slideDown.setPower(.25*.5*.25*.5*-gamepad2.left_stick_y);
+                    } else {
+                        setSlidePower(0);
+                    }
                 else
                     slidePosition = (slideDown.getCurrentPosition() + slideUp.getCurrentPosition()) / 2;
             } else {
@@ -94,6 +102,8 @@ public class TeleOpDriver extends Exponential_Methods {
                     slidePosition = slideMin;
                 slideUp.setTargetPosition(slidePosition);
                 slideDown.setTargetPosition(slidePosition);
+                slideUp.setPower(.3);
+                slideDown.setPower(.3);
                 slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
