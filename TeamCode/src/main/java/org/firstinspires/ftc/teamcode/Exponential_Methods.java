@@ -388,29 +388,50 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void setSlidesMinimum() {
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideUp.setTargetPosition(-400);
-        slideDown.setTargetPosition(-400);
+        slideUp.setTargetPosition(slideMin);
+        slideDown.setTargetPosition(slideMin);
     }
 
+    public void extendSlidesTo(int encoderPos){
+        if(encoderPos > slideMax)
+            encoderPos = slideMax;
+        else if(encoderPos < slideMin)
+            encoderPos = slideMin;
+
+        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideUp.setTargetPosition(encoderPos);
+        slideDown.setTargetPosition(encoderPos);
+
+        while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
+        setSlidePower(0);
+
+    }
+
+
     public void extendSlidesBy(double inches, double speed){
-        if(inches<0) {
-            // inches += .5;
-        } else if (inches>0){
-            inches += .75;
-        }
-        telemetry.addData("Hi", 100);
-        telemetry.update();
+
+        int position = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
         int encoderVal = convertInchToEncoderSlides(inches);
 
-        slideUp.setTargetPosition(slideUp.getCurrentPosition() + encoderVal);
-        slideDown.setTargetPosition(slideDown.getCurrentPosition() + encoderVal);
+        int val = position + encoderVal;
+
+        if(position > slideMax)
+            position = slideMax;
+        else if(position < slideMin)
+            position = slideMin;
+
+        slideUp.setTargetPosition(position);
+        slideDown.setTargetPosition(position);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setPower(speed);
         slideUp.setPower(speed);
-        //setSlidePower(speed);
 
         while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){
+            position = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
+            telemetry.addData("position", position);
+            telemetry.update();
 
         }
         setSlidePower(0);
@@ -484,7 +505,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void intakeStone() {
-        setIntakeWheels(0.7);
+        setIntakeWheels(0.8);
         setIntakeServosPosition(1);
     }
 
@@ -512,8 +533,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void bringSlidesDown(){
-        extendSlidesBy(0.1,0.3);
-        setIntakeServosPosition(0);
+        extendSlidesBy(0.3,0.3);
+        setIntakeServosPosition(0.8);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideUp.setTargetPosition(slideMin);
@@ -531,7 +552,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             factor = 1;
         else
             factor = -1;
-
         turnRelative(factor * 45);
 
         boolean center = false;
@@ -539,7 +559,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
-            intakeStone();
             while (!center && blocksMoved < 3) {  // should move 3 blocks at max, otherwise vision doesn't work, move on
                 move(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, 0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -561,6 +580,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
 
         //move forward, grab block, move back
+        intakeStone();
+
         move(0, 18, 0.3);
         clampStone();
         sleep(500);
@@ -580,6 +601,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             factor = 1;
         else
             factor = -1;
+
+        releaseStone();
+        setSlidesMinimum();
 
         //coordinates are for red side, they represent the location of the bottom left point of the robot from our POV
         // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
@@ -611,8 +635,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0 , factor * (TILE_LENGTH * 5 - inchesMoved - observingDistanceX + alignToFoundationEdge), 0.5); //(move through alliance bridge // (5 tiles + alignToFoundationEdge, forwardsToGetStone)
         turnRelative(90 * factor);
 
-        //TODO slides
-        // extendSlidesBy(3, 0.5); //move slides up to be able to go close to foudndation
+        extendSlidesBy(4, 0.5); //move slides up to be able to go close to foudndation
 
         //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
         move(0, TILE_LENGTH * 2/* - ROBOT_LENGTH TODO see if this stays*/ - forwardToGetStone, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
@@ -638,8 +661,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         toggleHook(false);
 
         double tempPosition = 6 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_WIDTH;
-        //TODO slides
-        //extendSlidesBy(-3, 0.5); //move slides back down
+        extendSlidesBy(-4, 0.5); //move slides back down
 
         if (!second) { //if don't want second block
 
@@ -659,7 +681,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             //move slides up to be able to move close to foundation to drop
             //TODO slides
-            //extendSlidesBy(3, .5);
+            extendSlidesBy(4, .5);
 
             //moving to the edge of the foundation
             // (6 blocks - foundation  - robot length, 0)
@@ -672,7 +694,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             //move slides back down (not necessary but good to have)
             //TODO slides
-            // extendSlidesBy(-3, 0.5);
+            extendSlidesBy(-4, 0.5);
         }
     }
 
@@ -683,7 +705,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         else
             factor = -1;
 
-        double observingDistance = 12;
+        releaseStone();
+        setSlidesMinimum();
+
+        double observingDistance = 6;
         double observingDistanceX = observingDistance / Math.sqrt(2);
         double observingDistanceY = observingDistance / Math.sqrt(2);
 
