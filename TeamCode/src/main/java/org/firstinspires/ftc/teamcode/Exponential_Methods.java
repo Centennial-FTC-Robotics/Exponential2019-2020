@@ -433,7 +433,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             telemetry.addData("position", position);
             telemetry.update();
         }
-        setSlidePower(0);
+        slideDown.setPower(0);
+        slideUp.setPower(0);
     }
 
     /*
