@@ -388,8 +388,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void setSlidesMinimum() {
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideUp.setTargetPosition(-400);
-        slideDown.setTargetPosition(-400);
+        slideUp.setTargetPosition(slideMin);
+        slideDown.setTargetPosition(slideMin);
     }
 
     public void extendSlidesBy(double inches, double speed){
@@ -484,7 +484,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void intakeStone() {
-        setIntakeWheels(0.7);
+        setIntakeWheels(0.8);
         setIntakeServosPosition(1);
     }
 
@@ -531,7 +531,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             factor = 1;
         else
             factor = -1;
-
         turnRelative(factor * 45);
 
         boolean center = false;
@@ -539,7 +538,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
-            intakeStone();
             while (!center && blocksMoved < 3) {  // should move 3 blocks at max, otherwise vision doesn't work, move on
                 move(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, 0.2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -561,6 +559,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
 
         //move forward, grab block, move back
+        intakeStone();
+
         move(0, 18, 0.3);
         clampStone();
         sleep(500);
@@ -580,6 +580,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             factor = 1;
         else
             factor = -1;
+
+        releaseStone();
+        setSlidesMinimum();
 
         //coordinates are for red side, they represent the location of the bottom left point of the robot from our POV
         // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
@@ -683,7 +686,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         else
             factor = -1;
 
-        double observingDistance = 12;
+        releaseStone();
+        setSlidesMinimum();
+
+        double observingDistance = 6;
         double observingDistanceX = observingDistance / Math.sqrt(2);
         double observingDistanceY = observingDistance / Math.sqrt(2);
 
