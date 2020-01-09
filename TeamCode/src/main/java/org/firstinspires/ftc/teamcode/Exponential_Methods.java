@@ -392,25 +392,46 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideDown.setTargetPosition(slideMin);
     }
 
+    public void extendSlidesTo(int encoderPos){
+        if(encoderPos > slideMax)
+            encoderPos = slideMax;
+        else if(encoderPos < slideMin)
+            encoderPos = slideMin;
+
+        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideUp.setTargetPosition(encoderPos);
+        slideDown.setTargetPosition(encoderPos);
+
+        while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
+        setSlidePower(0);
+
+    }
+
+
     public void extendSlidesBy(double inches, double speed){
-        if(inches<0) {
-            // inches += .5;
-        } else if (inches>0){
-            inches += .75;
-        }
-        telemetry.addData("Hi", 100);
-        telemetry.update();
+        
+        int position = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
         int encoderVal = convertInchToEncoderSlides(inches);
 
-        slideUp.setTargetPosition(slideUp.getCurrentPosition() + encoderVal);
-        slideDown.setTargetPosition(slideDown.getCurrentPosition() + encoderVal);
+        int val = position + encoderVal;
+
+        if(position > slideMax)
+            position = slideMax;
+        else if(position < slideMin)
+            position = slideMin;
+
+        slideUp.setTargetPosition(position);
+        slideDown.setTargetPosition(position);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setPower(speed);
         slideUp.setPower(speed);
-        //setSlidePower(speed);
 
         while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){
+            position = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
+            telemetry.addData("position", position);
+            telemetry.update();
 
         }
         setSlidePower(0);
@@ -512,8 +533,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void bringSlidesDown(){
-        extendSlidesBy(0.1,0.3);
-        setIntakeServosPosition(0);
+        extendSlidesBy(0.3,0.3);
+        setIntakeServosPosition(0.8);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideUp.setTargetPosition(slideMin);
