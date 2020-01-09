@@ -410,7 +410,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
     public void extendSlidesBy(double inches, double speed){
-        
+
         int position = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition()) /2;
         int encoderVal = convertInchToEncoderSlides(inches);
 
@@ -635,8 +635,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0 , factor * (TILE_LENGTH * 5 - inchesMoved - observingDistanceX + alignToFoundationEdge), 0.5); //(move through alliance bridge // (5 tiles + alignToFoundationEdge, forwardsToGetStone)
         turnRelative(90 * factor);
 
-        //TODO slides
-        // extendSlidesBy(3, 0.5); //move slides up to be able to go close to foudndation
+        extendSlidesBy(4, 0.5); //move slides up to be able to go close to foudndation
 
         //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
         move(0, TILE_LENGTH * 2/* - ROBOT_LENGTH TODO see if this stays*/ - forwardToGetStone, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
@@ -662,8 +661,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         toggleHook(false);
 
         double tempPosition = 6 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_WIDTH;
-        //TODO slides
-        //extendSlidesBy(-3, 0.5); //move slides back down
+        extendSlidesBy(-4, 0.5); //move slides back down
 
         if (!second) { //if don't want second block
 
@@ -683,7 +681,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             //move slides up to be able to move close to foundation to drop
             //TODO slides
-            //extendSlidesBy(3, .5);
+            extendSlidesBy(4, .5);
 
             //moving to the edge of the foundation
             // (6 blocks - foundation  - robot length, 0)
@@ -696,7 +694,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             //move slides back down (not necessary but good to have)
             //TODO slides
-            // extendSlidesBy(-3, 0.5);
+            extendSlidesBy(-4, 0.5);
         }
     }
 
