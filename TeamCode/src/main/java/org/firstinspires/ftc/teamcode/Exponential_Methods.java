@@ -450,7 +450,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideDown.setTargetPosition(slideMin);
     }
 
-    public void extendSlidesTo(int encoderPos){
+    public void extendSlidesTo(int encoderPos, double power){
         if(encoderPos > slideMax)
             encoderPos = slideMax;
         else if(encoderPos < slideMin)
@@ -460,9 +460,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideUp.setTargetPosition(encoderPos);
         slideDown.setTargetPosition(encoderPos);
-
+        slideUp.setPower(power);
+        slideDown.setPower(power);
         while(opModeIsActive() && (slideUp.isBusy() || slideDown.isBusy())){}
-        setSlidePower(0);
+        slideUp.setPower(0);
+        slideDown.setPower(0);
     }
 
 
@@ -592,15 +594,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void bringSlidesDown(){
-        extendSlidesBy(0.3,0.3);
+        extendSlidesBy(1,0.5);
         setIntakeServosPosition(0.8);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideUp.setTargetPosition(slideMin);
-        slideDown.setTargetPosition(slideMin);
+        extendSlidesTo(slideMin, 0.5);
         while((slideUp.isBusy() || slideDown.isBusy()) && opModeIsActive()){}
-        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     //-------------- Computer Vision --------------

@@ -19,7 +19,7 @@ public class SlideTester extends Exponential_Methods {
                 extendSlidesBy(-4, 0.5); //change power later
             }
             if(gamepad2.b){
-                extendSlidesTo(0);
+                extendSlidesTo(0, 0.5);
             }
         }
     }
