@@ -416,10 +416,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         int val = position + encoderVal;
 
-        if(position > slideMax)
-            position = slideMax;
-        else if(position < slideMin)
-            position = slideMin;
+        if(val > slideMax)
+            val = slideMax;
+        else if(val < slideMin)
+            val = slideMin;
 
         slideUp.setTargetPosition(val);
         slideDown.setTargetPosition(val);
