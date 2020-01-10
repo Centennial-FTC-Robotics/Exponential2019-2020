@@ -484,8 +484,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
         //figure out what was going on
 
-        //ok, yuhwan
-
         // ROBOT DISTANCE AWAY FROM BLOCK
         // this variable determines how far away from the block we want the robot when using grabSkystone
         // using this variable, calculate the distance the robot must travel to get the middle of stone exactly
@@ -562,7 +560,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             turnAbsolute(-90 * factor); //turn towards foundation, then move forwards
 
             //move slides up to be able to move close to foundation to drop
-            //TODO slides
             extendSlidesBy(6, .5);
 
             //moving to the edge of the foundation
@@ -571,12 +568,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             releaseStone();
 
+            extendSlidesBy(-6, 0.5);
+
             //moving backwards towards tape
             move(0, -1 * (TILE_LENGTH * 6 - FOUNDATION_WIDTH - ROBOT_LENGTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2)), 0.5); // (3 blocks - half of robot length, tile length);
 
-            //move slides back down (not necessary but good to have)
-            //TODO slides
-            extendSlidesBy(-6, 0.5);
         }
     }
 
