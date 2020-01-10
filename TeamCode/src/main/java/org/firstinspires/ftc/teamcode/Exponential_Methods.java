@@ -797,7 +797,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0, -1 * MIDDLE_OF_TILE, .5); // (4.5 tiles, centered on second tile)
         extendSlidesBy(-6, 0.5);
 
-        turnRelative(factor * 90);
+        turnAbsolute(factor * 90);
         move(0, 4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2, .5); // (3 tiles - half robot, centered on second tile)
 
     }
