@@ -341,7 +341,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         int direction;
         double turnRate;
         double P = 0.01; //set later
-        double tolerance = inchesTolerance; //set later
+        double tolerance = inputTolerance; //set later
         double maxSpeed = 0.4; //set later
         double minSpeed = 0.01; //set later
         double error;
