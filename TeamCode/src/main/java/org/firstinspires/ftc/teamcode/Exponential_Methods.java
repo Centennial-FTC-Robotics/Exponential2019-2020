@@ -786,16 +786,18 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0, forwardToGetStone, .5); // (3 blocks + obs. dist. x, forwardToGetStone)
         int inchesMoved = grabSkystone(color); // (3 blocks + obs. dist. x + x, forwardToGetStone)
 
-        move(factor * (4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved)), 0, .5); // (4.5 tiles, forwardToGetStone)
+        turnAbsolute(factor * -90);
+        move(0, 4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved), .5); // (4.5 tiles, forwardToGetStone)
 
         extendSlidesBy(6, 0.5);
+        turnAbsolute(0);
         move(0, observingDistanceY, .5); // (4.5 tiles, 2 tiles - robot length)
         releaseStone();
         //moves robot to the middle of the second tile
         move(0, -1 * MIDDLE_OF_TILE, .5); // (4.5 tiles, centered on second tile)
         extendSlidesBy(-6, 0.5);
 
-        turnRelative(factor * -90);
+        turnRelative(factor * 90);
         move(0, 4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2, .5); // (3 tiles - half robot, centered on second tile)
 
     }
