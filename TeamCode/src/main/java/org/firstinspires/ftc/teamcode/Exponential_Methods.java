@@ -235,77 +235,18 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
     }
 
-    public void move(double inchesSideways, double inchesForward, double maxPower){  // DON'T GET RID OF THIS ONE
-        double targetAngle = getRotationinDimension('Z');
-        double currentAngle;
-        int direction;
-        double turnRate;
-        double P = 0.015; //set later
-        double maxSpeed = 1; //set later
-        double minSpeed = 0.01; //set later
-        double error;
-
-        inchesForward = -inchesForward;
-        inchesSideways = getTransformedDistance(inchesSideways);
-
-        double p = 1.0/1200;
-        double i;
-        double d;
-        double inchesTolerance = .5;
-        double max_positive = maxPower;
-        double min_negative = -maxPower;
-
-        double encoderForward = convertInchToEncoder(inchesForward);
-        double encoderSideways = convertInchToEncoder(inchesSideways);
-        resetDriveMotorEncoders();
-        double tolerance = convertInchToEncoder(inchesTolerance);
-
-        double frontLeft_encoder = encoderForward-encoderSideways;
-        double frontRight_encoder = encoderForward+encoderSideways;
-        double backLeft_encoder = encoderForward+encoderSideways;
-        double backRight_encoder = encoderForward-encoderSideways;
-
-        double frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
-        double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
-        double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
-        double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-        ElapsedTime time = new ElapsedTime();
-        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
-            currentAngle = getRotationinDimension('Z');
-
-            error = getAngleDist(targetAngle, currentAngle);
-            direction = getAngleDir(targetAngle, currentAngle);
-            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
-
-            if(time.seconds()>2){
-                frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
-                frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
-                backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
-                backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
-            } else {
-                frontLeft.setPower(+direction * turnRate + Range.clip(p * frontLeft_displacement, min_negative, max_positive));
-                frontRight.setPower(direction * turnRate + Range.clip(p * frontRight_displacement, min_negative, max_positive));
-                backLeft.setPower(+direction * turnRate + Range.clip(p * backLeft_displacement, min_negative, max_positive));
-                backRight.setPower(direction * turnRate + Range.clip(p * backRight_displacement, min_negative, max_positive));
-            }
-
-            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
-            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
-            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
-            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-            telemetry.addData("frontLeft", frontLeft_displacement);
-            telemetry.addData("backLeft", backLeft_displacement);
-            telemetry.addData("frontRight", frontRight_displacement);
-            telemetry.addData("backRight", backRight_displacement);
-            telemetry.addData("tolerance", tolerance);
-            telemetry.update();
-        }
-        setPowerDriveMotors(0);
-        turnAbsolute(targetAngle);
+    public static final double DEFAULT_MOVE_TOLERANCE = .5; // SET DEFAULT TOLERANCE HERE
+    
+    public void move(double inchesSideways, double inchesForward, double maxPower){  
+        // this one just inputs the default value (.5) for tolerance
+        move(inchesSideways, inchesForard, maxPower, DEFAULT_MOVE_TOLERANCE);  
     }
 
+    public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
+        move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition;
+    }
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
-        double targetAngle = getRotationinDimension('Z');
+        double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
         double currentAngle;
         int direction;
         double turnRate;
@@ -385,12 +326,22 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
 
+    public static final double DEFAULT_ROTATE_TOLERANCE = 5; // SET DEFAULT ROTATE TOLERANCE HERE
+
     public void turnAbsolute(double targetAngle) {
+        // SAME AS THE OTHER MOVE METHOD, change the default value for tolerance here
+        turnAbsolute(targetAngle, DEFAULT_ROTATE_TOLERANCE);
+    }
+    
+    public void turnAbsoluteAddTolerance(double targetAngle, double toleranceAddition) {
+        turnAbsolute(targetAngle, DEFAULT_ROTATE_TOLERANCE + toleranceAddition);
+    }
+    public void turnAbsolute(double targetAngle, double inputTolerance) {
         double currentAngle;
         int direction;
         double turnRate;
         double P = 0.01; //set later
-        double tolerance = 5; //set later
+        double tolerance = inchesTolerance; //set later
         double maxSpeed = 0.4; //set later
         double minSpeed = 0.01; //set later
         double error;
@@ -408,6 +359,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         while (opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
     }
+    
 
     public void setSlidePower(double power){
         slideUp.setPower(power);
