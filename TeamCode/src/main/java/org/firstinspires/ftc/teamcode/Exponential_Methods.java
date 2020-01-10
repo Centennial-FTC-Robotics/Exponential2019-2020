@@ -470,7 +470,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- AUTONOMOUS PATHS -------------- (organization)
 
-    public void cornerAuto(String color, boolean second) { // starts on second tile from the side
+    public void cornerAuto(String color, boolean second, boolean secondTilePath) { // starts on second tile from the side
         int factor;
         if (color.equals("red"))
             factor = 1;
@@ -494,6 +494,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double observingDistanceX = observingDistance / Math.sqrt(2);
         double observingDistanceY = observingDistance / Math.sqrt(2);
 
+        double secondTile = TILE_LENGTH;
+        double offsetForFoundation = 0; // TO BE CHANGED IF NEED BE
         // (1 tile, 0)
 
         double forwardToGetStone = 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY;
@@ -503,8 +505,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         /*
         move(0, -forwardToGetStone, 0.5); //move back (can be cut out) //(x + obs. dist. x, 0)
         */
-        move(0, -forwardToGetStone + MIDDLE_OF_TILE, .5);  // (x + obs. dist. x, middle of tile)
-
+        if (!secondTilePath) {
+            move(0, -forwardToGetStone + MIDDLE_OF_TILE, .5);  // (x + obs. dist. x, middle of tile)
+        } else {
+            move(0, -forwardToGetStone + MIDDLE_OF_TILE + secondTile, .5);  // (x + obs. dist. x, middle of tile)
+        }
         double alignToFoundationEdge = TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_AWAY_FROM_WALL;
         turnAbsolute(factor * -90);
         // turnRelative(-90 * factor);
@@ -517,7 +522,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //move(TILE_LENGTH * 2 - ROBOT_LENGTH, 0, 0.5); //move to foundation // (6 tiles, tile - robot length)
         // TODO: change 2 if need be
         //move(0, TILE_LENGTH * 2/* - ROBOT_LENGTH TODO see if this stays*//* - forwardToGetStone*/ - 2 - MIDDLE_OF_TILE, 0.5); //move to foundation // (5 tiles + alignToFoundationEdge, 2 tiles - robot length - 2)
-        move(0, TILE_LENGTH * 2 - ROBOT_LENGTH - MIDDLE_OF_TILE, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        if (!secondTilePath) {
+            move(0, TILE_LENGTH * 2 - ROBOT_LENGTH - MIDDLE_OF_TILE + offsetForFoundation, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        } else {
+            move(0, TILE_LENGTH * 2 - ROBOT_LENGTH - MIDDLE_OF_TILE + offsetForFoundation - secondTile, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        }
         releaseStone(); //drop stone out
 
         //moving foundation
@@ -532,14 +541,18 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //moving robot away from any edge to try to stop conflicts from foundation turning, magic number away: 8
 
         //move to wall // (6 tiles - robot length - foundation width - 8, 8)
-        move(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), TILE_LENGTH * 2 - ROBOT_LENGTH - 8, 0.5);
+        move(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5);
+
         turnAbsolute(180 - 90 * factor);
         // turnRelative(factor * -90);
         //moving foundation all the way to corner
-        move(-8, -8, .5); // (6 tiles - robot length - foundation width, 0)
+        move( factor * -8, -8, .5); // (6 tiles - robot length - foundation width, 0)
         toggleHook(false);
-        move(MIDDLE_OF_TILE, 0, .5); //6 tiles - robot length - foundation width, middle of tile)
-
+        if (!secondTilePath) {
+            move(factor * MIDDLE_OF_TILE, 0, .5); //6 tiles - robot length - foundation width, middle of tile)
+        } else {
+            move(factor * (MIDDLE_OF_TILE + secondTile), 0, .5); //6 tiles - robot length - foundation width, middle of tile)
+        }
         double tempPosition = 6 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_WIDTH;
         extendSlidesBy(-6, 0.5); //move slides back down
 
@@ -554,9 +567,18 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             //to try to get the second block
             move(0, tempPosition - 3 * BLOCK_LENGTH - observingDistanceX, .5); //move to second set of blocks // (3 blocks + obs. dist. x, middle of tile)
             turnAbsolute(0); //turn back forwards
-            move(0, forwardToGetStone - MIDDLE_OF_TILE, 0.5); //move forward to block // (3 blocks + obs. dist. x, forwardToGetStone)
+            if (!secondTilePath) {
+                move(0, forwardToGetStone - MIDDLE_OF_TILE, 0.5); //move forward to block // (3 blocks + obs. dist. x, forwardToGetStone)
+            } else {
+                move(0, forwardToGetStone - MIDDLE_OF_TILE - secondTile, 0.5); //move forward to block // (3 blocks + obs. dist. x, forwardToGetStone)
+
+            }
             inchesMoved = grabSkystone(color); //grabbed block // (3 blocks + x, robot length)
-            move(0, -forwardToGetStone + MIDDLE_OF_TILE, .5); //move back // (3 blocks + x + obs. dist. x, middle of tile)
+            if (!secondTilePath) {
+                move(0, -forwardToGetStone + MIDDLE_OF_TILE, .5); //move back // (3 blocks + x + obs. dist. x, middle of tile)
+            } else {
+                move(0, -forwardToGetStone + MIDDLE_OF_TILE + secondTile, .5); //move back // (3 blocks + x + obs. dist. x, middle of tile)
+            }
             turnAbsolute(-90 * factor); //turn towards foundation, then move forwards
 
             //move slides up to be able to move close to foundation to drop

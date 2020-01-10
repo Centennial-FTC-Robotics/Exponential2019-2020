@@ -10,7 +10,7 @@ public class RedCornerAuto extends Exponential_Methods {
         super.runOpMode();
         waitForStart();
         while (opModeIsActive()) {
-            cornerAuto("red", false);
+            cornerAuto("red", false, false);
         }
     }
 
