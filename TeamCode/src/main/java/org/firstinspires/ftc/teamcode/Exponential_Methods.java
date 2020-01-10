@@ -408,11 +408,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         setIntakeWheels(0.8);
         setIntakeServosPosition(1);
     }
-
     public void clampStone() {
-        setIntakeWheels(0);
         setIntakeServosPosition(1);
     }
+    public void stopIntakeWheels() {  // COMBINE THESE INTO A NEW METHOD MAYBE
+        setIntakeWheels(0);
+    }
+    /*public void clampStone() {
+        setIntakeWheels(0);
+        setIntakeServosPosition(1);
+    }*/
 
     public void bringSlidesDown(){
         extendSlidesBy(4,0.5);
@@ -435,7 +440,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         int blocksMoved = 0;
         if (opModeIsActive()) {
             while (!center && blocksMoved < 3) {  // should move 3 blocks at max, otherwise vision doesn't work, move on
-                move(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, 0.2);
+                moveAddTolerance(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, .5, .2);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 blocksMoved++;
                 sleep(500);
@@ -459,7 +464,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         move(0, 14, 0.3);
         clampStone();
-        sleep(500);
+        sleep(250);
+        stopIntakeWheels();
+        sleep(250);
         move(0, -14, 0.3);
 
         //turns back
@@ -479,7 +486,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         //releaseStone();
         //setSlidesMinimum();
-        bringSlidesDown();
+        //TODO AHHHHHHHHHHHHHHH UNCOMMENT THIS LATER
+        /*bringSlidesDown();*/
         //coordinates are for red side, they represent the location of the bottom left point of the robot from our POV
         // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
         //figure out what was going on
@@ -495,20 +503,21 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double observingDistanceY = observingDistance / Math.sqrt(2);
 
         double secondTile = TILE_LENGTH;
-        double offsetForFoundation = 0; // TO BE CHANGED IF NEED BE
+        double offsetForFoundation = 3; // TO BE CHANGED IF NEED BE
         // (1 tile, 0)
 
         double forwardToGetStone = 2 * TILE_LENGTH - ROBOT_LENGTH - observingDistanceY;
-        move(-factor * (TILE_LENGTH - observingDistanceX), 0, 0.5); //move to corner //(observing distance x, 0)
-        move(0, forwardToGetStone, 0.5); //move forward towards stones //(obs. dist. x, forwardToGetStone)
+        moveAddTolerance(-factor * (TILE_LENGTH - observingDistanceX), 0, 0.5, .2); //move to corner //(observing distance x, 0)
+        moveAddTolerance(0, forwardToGetStone, 0.5, .1); //move forward towards stones //(obs. dist. x, forwardToGetStone)
         int inchesMoved = grabSkystone(color); //(obs.dist.x + x, forwardsToGetStone)
         /*
         move(0, -forwardToGetStone, 0.5); //move back (can be cut out) //(x + obs. dist. x, 0)
         */
-        if (!secondTilePath) {
-            move(0, -forwardToGetStone + MIDDLE_OF_TILE, .5);  // (x + obs. dist. x, middle of tile)
+        int dontRunIntoWall = 1;
+        if (!secondTilePath) { //MOVING BACK AFTER GETTING SKYSTONE
+            moveAddTolerance(0, -forwardToGetStone + MIDDLE_OF_TILE + dontRunIntoWall, .5, .2);  // (x + obs. dist. x, middle of tile)
         } else {
-            move(0, -forwardToGetStone + MIDDLE_OF_TILE + secondTile, .5);  // (x + obs. dist. x, middle of tile)
+            moveAddTolerance(0, -forwardToGetStone + MIDDLE_OF_TILE + dontRunIntoWall + secondTile, .5, .2);  // (x + obs. dist. x, middle of tile)
         }
         double alignToFoundationEdge = TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_AWAY_FROM_WALL;
         turnAbsolute(factor * -90);
@@ -535,18 +544,23 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0, -6, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length - 6 inches)
         turnAbsolute(180); //turn around
         //tile length - robot length - found. away from wall: aligns robot to the very edge of the foundation
-        move(0, -6, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        moveAddTolerance(0, -6, .5, .2); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
         toggleHook(true); //grab foundation
 
         //moving robot away from any edge to try to stop conflicts from foundation turning, magic number away: 8
 
         //move to wall // (6 tiles - robot length - foundation width - 8, 8)
-        move(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5);
+        //TODO: 19 is a sketchy ass value
+        moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
+        moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, .5, .2);
+        //moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5, .2);
 
         turnAbsolute(180 - 90 * factor);
         // turnRelative(factor * -90);
         //moving foundation all the way to corner
-        move( factor * -8, -8, .5); // (6 tiles - robot length - foundation width, 0)
+        moveAddTolerance(factor * -8, 0, .5, .2);
+        moveAddTolerance(0, -8, .5, .2);
+        //moveAddTolerance( factor * -8, -8, .5, .2); // (6 tiles - robot length - foundation width, 0)
         toggleHook(false);
         if (!secondTilePath) {
             move(factor * MIDDLE_OF_TILE, 0, .5); //6 tiles - robot length - foundation width, middle of tile)
