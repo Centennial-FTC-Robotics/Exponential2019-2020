@@ -45,12 +45,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public static final double MIDDLE_OF_TILE = (TILE_LENGTH - ROBOT_LENGTH) / 2;
 
-    //limits
-    public static final int slideUpMax = 1500;
-    public static final int slideDownMax = 3250;
-    public static final int slideUpMin = -500;
-    public static final int slideDownMin = -350;
-
     public static final int slideMax = 2200;
     public static final int slideMin = -390;
 
@@ -62,7 +56,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         initTfod();
     }
 
-    //-------------- Initialization --------------
+    //-------------- INITIALIZATION -------------- (organization)
     public void initializeIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -94,7 +88,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
-    //-------------- Basic --------------
+    //-------------- BASIC -------------- (organization)
 
     public int convertInchToEncoder(double inches) {
         double conversion = 43.4653423;
@@ -139,7 +133,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    //-------------- Status --------------
+    //-------------- STATUS -------------- (organization)
 
     public boolean motorsBusy() {
         return driveMotors[0].isBusy() || driveMotors[1].isBusy() || driveMotors[2].isBusy() || driveMotors[3].isBusy();
@@ -184,7 +178,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
 
-    //-------------- Movement --------------
+    //-------------- SET DRIVE MOTOR POWER -------------- (organization)
 
     public void setPowerDriveMotors(double frontRight, double backRight, double backLeft, double frontLeft) {
         super.frontRight.setPower(frontRight);
@@ -206,44 +200,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
     }
 
-    //distance in inches
-    public void oldMove(double forward, double right, double power) {
-
-        for (DcMotor motor : driveMotors) {
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        for (DcMotor motor : driveMotors) {
-            motor.setPower(power);
-        }
-
-        waitForMotors();
-
-        int forwardVal = convertInchToEncoder(forward);
-        int rightVal = convertInchToEncoder(right);
-
-        frontLeft.setTargetPosition(forwardVal + rightVal);
-        frontRight.setTargetPosition(forwardVal - rightVal);
-        backLeft.setTargetPosition(forwardVal - rightVal);
-        backRight.setTargetPosition(forwardVal + rightVal);
-
-
-        setPowerDriveMotors(0);
-        //return motors to original runmode
-        for (DcMotor motor : driveMotors) {
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-    }
+    //-------------- MOVEMENT -------------- (organization)
 
     public static final double DEFAULT_MOVE_TOLERANCE = .5; // SET DEFAULT TOLERANCE HERE
     
     public void move(double inchesSideways, double inchesForward, double maxPower){  
         // this one just inputs the default value (.5) for tolerance
-        move(inchesSideways, inchesForard, maxPower, DEFAULT_MOVE_TOLERANCE);  
+        move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE);
     }
 
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
-        move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition;
+        move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
     }
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
         double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
@@ -322,6 +289,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         return (1 / m) * (inches - b);
     }
 
+    //-------------- ROTATION -------------- (organization)
+
     public void turnRelative(double targetAngle) {
         turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
     }
@@ -359,20 +328,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         while (opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
     }
-    
+
+    //-------------- SLIDES -------------- (organization)
 
     public void setSlidePower(double power){
         slideUp.setPower(power);
         slideDown.setPower(power);
-    }
-
-    public void setSlidesMinimum() {
-        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideUp.setTargetPosition(slideMin);
-        slideDown.setTargetPosition(slideMin);
-        slideUp.setPower(.3);
-        slideDown.setPower(.3);
     }
 
     public void extendSlidesTo(int encoderPos, double power){
@@ -410,74 +371,13 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         slideUp.setPower(speed);
     }
 
-    /*
-    //Slides are PAINFUL
-    public void extendSlidesEncoder(int upVal, int downVal, double speed) {
-        slideUp.setMode(DcMotor.RunMode.RUN__POSITION);
-        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideUp.setTargetPosition(upVal);
-        slideDown.setTargetPosition(downVal);
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slideUpMax
-                && slideDown.getCurrentPosition() < slideDownMin &&
-                slideUp.getCurrentPosition() > slideUpMin &&
-                slideDown.getCurrentPosition() > slideDownMin &&
-                (slideUp.isBusy() || slideDown.isBusy())){
-            setSlidePower(speed);
-        }
-        setSlidePower(0);
-        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-    //position in inches
-    //PROBABLY DOESNT WORK
-    public void extendSlidesTo(int position, double speed) {
-        int encoderVal = convertInchToEncoderSlides(position);
-        extendSlidesEncoder(encoderVal, encoderVal, speed);
-    }
-    //distance in inches
-    public void extendSlidesBy(int distance, double speed) {
-        int encoderVal = convertInchToEncoderSlides(distance);
-        extendSlidesEncoder(encoderVal + slideUp.getCurrentPosition(),
-                encoderVal + slideDown.getCurrentPosition(), speed);
-    }
-    //Positive = extend, negative = retract
-    public void setSlidePower(double power) {
-        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while(opModeIsActive() && slideUp.getCurrentPosition() < slideUpMax
-                && slideDown.getCurrentPosition() < slideDownMax &&
-                slideUp.getCurrentPosition() > slideUpMin &&
-                slideDown.getCurrentPosition() > slideDownMin){
-            slideUp.setPower(power);
-            slideDown.setPower(power);
-            telemetry.addData("setslidepower", power);
-        }
-        slideUp.setPower(0);
-        slideDown.setPower(0);
-    }
-     */
+    //-------------- GADGETS  -------------- (organization)
 
     //Negative = backwards, positive = forwards
     public void setIntakeWheels(double power) {
         intakeLeft.setPower(power);
         intakeRight.setPower(power);
     }
-
-    public void releaseStone() {
-        setIntakeWheels(0);
-        setIntakeServosPosition(0.7);
-    }
-
-    public void intakeStone() {
-        setIntakeWheels(0.8);
-        setIntakeServosPosition(1);
-    }
-
-    public void clampStone() {
-        setIntakeWheels(0);
-        setIntakeServosPosition(1);
-    }
-
 
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down) {
@@ -497,19 +397,29 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeServoRight.setPosition(position);
     }
 
+    //-------------- AUTO AID METHODS  -------------- (organization)
+
+    public void releaseStone() {
+        setIntakeWheels(0);
+        setIntakeServosPosition(0.7);
+    }
+
+    public void intakeStone() {
+        setIntakeWheels(0.8);
+        setIntakeServosPosition(1);
+    }
+
+    public void clampStone() {
+        setIntakeWheels(0);
+        setIntakeServosPosition(1);
+    }
+
     public void bringSlidesDown(){
         extendSlidesBy(4,0.5);
         sleep(1000);
         setIntakeServosPosition(0.7); // changed to release stone servo position so camera can see block
-        slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideUp.setTargetPosition(slideMin);
-        slideDown.setTargetPosition(slideMin);
-        slideUp.setPower(.5);
-        slideDown.setPower(.5);
+        extendSlidesTo(slideMin, 0.5);
     }
-
-    //-------------- Computer Vision --------------
 
     public int grabSkystone(String color) {
         int factor;
@@ -558,7 +468,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         return blocksMoved * 8;
     }
 
-    //-------------- Autonomous Paths --------------
+    //-------------- AUTONOMOUS PATHS -------------- (organization)
 
     public void cornerAuto(String color, boolean second) { // starts on second tile from the side
         int factor;
