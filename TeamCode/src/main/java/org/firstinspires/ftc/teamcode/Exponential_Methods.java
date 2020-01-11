@@ -544,7 +544,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0, -6, .5); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length - 6 inches)
         turnAbsolute(180); //turn around
         //tile length - robot length - found. away from wall: aligns robot to the very edge of the foundation
-        moveAddTolerance(0, -6, .5, .2); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
+        moveAddTolerance(0, -6 - offsetForFoundation, .5, .2); // (5 tiles + alignToFoundationEdge, 2 tiles - robot length)
         toggleHook(true); //grab foundation
 
         //moving robot away from any edge to try to stop conflicts from foundation turning, magic number away: 8
@@ -552,7 +552,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //move to wall // (6 tiles - robot length - foundation width - 8, 8)
         //TODO: 19 is a sketchy ass value
         moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
-        moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, .5, .2);
+        moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation * 2, .5, .2);
         //moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5, .2);
 
         turnAbsolute(180 - 90 * factor);
