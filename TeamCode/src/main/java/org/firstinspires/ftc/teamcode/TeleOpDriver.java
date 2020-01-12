@@ -13,6 +13,9 @@ import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 @TeleOp(name = "TeleOp, USE THIS ONE", group = "TeleOp")
 
 public class TeleOpDriver extends Exponential_Methods {
+
+    public final static int SLIDE_MAX = slideMax - slideMin;
+    public final static int SLIDE_MIN = 0;
     private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -79,14 +82,14 @@ public class TeleOpDriver extends Exponential_Methods {
                     slideUp.setPower((.5*-gamepad2.left_stick_y));
                     slideDown.setPower((.5*-gamepad2.left_stick_y));
                 }
-                if(slidePosition > slideMax) {
+                if(slidePosition > SLIDE_MAX) {
                     if(gamepad2.left_stick_y>0){
                         slideUp.setPower(.5*-gamepad2.left_stick_y);
                         slideDown.setPower(.5*-gamepad2.left_stick_y);
                     } else {
                         setSlidePower(0);
                     }
-                } else if(slidePosition < slideMin)
+                } else if(slidePosition < SLIDE_MIN)
                     if(gamepad2.left_stick_y>0){
                         slideUp.setPower(.25*.5*-gamepad2.left_stick_y);
                         slideDown.setPower(.25*.5*-gamepad2.left_stick_y);
@@ -96,10 +99,10 @@ public class TeleOpDriver extends Exponential_Methods {
                 else
                     slidePosition = (slideDown.getCurrentPosition() + slideUp.getCurrentPosition()) / 2;
             } else {
-                if(slidePosition > slideMax)
-                    slidePosition = slideMax;
-                else if(slidePosition < slideMin)
-                    slidePosition = slideMin;
+                if(slidePosition > SLIDE_MAX)
+                    slidePosition = SLIDE_MAX;
+                else if(slidePosition < SLIDE_MIN)
+                    slidePosition = SLIDE_MIN;
                 slideUp.setTargetPosition(slidePosition);
                 slideDown.setTargetPosition(slidePosition);
                 slideUp.setPower(.3);

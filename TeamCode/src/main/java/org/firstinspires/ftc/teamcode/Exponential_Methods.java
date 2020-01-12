@@ -675,19 +675,23 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         sleep(milliseconds);
 
         double smashIntoFoundation = 4;
-        move(0, -47.25+ ROBOT_LENGTH - smashIntoFoundation, MAX_POWER);
+        double slowDownPos = 6;
+        move(0, -47.25+ ROBOT_LENGTH - smashIntoFoundation + slowDownPos, .5);
+        move(0,slowDownPos, 0.2);
         sleep(500);
         toggleHook(true);
         sleep(500);
 
-        move(0,TILE_LENGTH / 2, MAX_POWER);
+        move(0,TILE_LENGTH, MAX_POWER);
 
         turnAbsolute(factor * -90);
         bringSlidesDown();
+        sleep(500);
+        move(0,-6,0.4);
         toggleHook(false);
 
         move(factor * -TILE_LENGTH / 2,0, MAX_POWER);
-        move(0, 1.5 * TILE_LENGTH, MAX_POWER);
+        move(0, 1.25 * TILE_LENGTH, MAX_POWER);
 
     }
 
