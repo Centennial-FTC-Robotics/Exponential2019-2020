@@ -80,6 +80,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void initTfod() {
+
+
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
@@ -403,7 +405,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public void releaseStone() {
         intakeServoLeft.setPosition(.55);
+
         intakeServoRight.setPosition(.83);
+        //intakeServoRight.setPosition(.55);
         setIntakeWheels(0);
     }
 
@@ -442,37 +446,47 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         turnRelative(factor * 45);
 
         boolean center = false;
-        tfod.activate();
+
+        if (tfod != null) {
+            tfod.activate();
+        }
+
+        waitForStart();
+
         ElapsedTime timer  = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         timer.reset();
         //timer.startTime();
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
-            while (!center && blocksMoved < 3) {  // should move 3 blocks at max, otherwise vision doesn't work, move on
-                moveAddTolerance(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, .7, 1);
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                blocksMoved++;
-                //sleep(500);
-                while(timer.time() < 1500) {
-                    telemetry.addData("timer: %d", timer.time());
+            if (tfod != null) {
+                while (!center && blocksMoved < 3) {  // should move 3 blocks at max, otherwise vision doesn't work, move on
+                    moveAddTolerance(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, .7, 1);
+                    //List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    List<Recognition> updatedRecognitions = tfod.getRecognitions();
 
-                    if (updatedRecognitions != null) {
-                        for (Recognition recognition : updatedRecognitions) {
-                            telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
-                            if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                                float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;  // vertical phone im pretty sure
+                    blocksMoved++;
+                    //sleep(500);
+                    while (timer.time() < 3000) {
+                        telemetry.addData("timer: %d", timer.time());
 
-                                //float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
-                                center = TOP_MIDDLE_SCREEN + 160 > stonePos && stonePos > TOP_MIDDLE_SCREEN -160;
-                                //center = stonePos + 160 > TOP_MIDDLE_SCREEN && TOP_MIDDLE_SCREEN > stonePos - 160;
+                        if (updatedRecognitions != null) {
+                            for (Recognition recognition : updatedRecognitions) {
+                                telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
+                                if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                                    float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;  // vertical phone im pretty sure
+
+                                    //float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
+                                    center = TOP_MIDDLE_SCREEN + 160 > stonePos && stonePos > TOP_MIDDLE_SCREEN - 160;
+                                    //center = stonePos + 160 > TOP_MIDDLE_SCREEN && TOP_MIDDLE_SCREEN > stonePos - 160;
+                                }
                             }
                         }
-                    }
-                    telemetry.update();
+                        telemetry.update();
 
+                    }
+                    timer.reset();
                 }
-                timer.reset();
             }
             // setPowerDriveMotors(0);
         }
@@ -481,6 +495,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeStone();
 
         move(0, 14, 0.3);
+        clampStone();
+
+        sleep(250);
+        intakeStone();
         clampStone();
         sleep(250);
         stopIntakeWheels();
@@ -505,7 +523,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double MAX_POWER = 0.6;
 
         //TODO AHHHHHHHHHHHHHHH UNCOMMENT THIS LATER
-        //bringSlidesDown();
+        bringSlidesDown();
         //coordinates are for red side, they represent the location of the bottom left point of the robot from our POV
         // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
         //figure out what was going on
@@ -514,7 +532,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // this variable determines how far away from the block we want the robot when using grabSkystone
         // using this variable, calculate the distance the robot must travel to get the middle of stone exactly
         // in robot's field of sight
-        double observingDistance = 10;
+        double observingDistance = 13;
         // these two variables are separate for code clarity
         // idk what I would name a variable that represents both of these values
         double observingDistanceX = observingDistance / Math.sqrt(2);
