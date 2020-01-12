@@ -21,6 +21,9 @@ public class SlideTester extends Exponential_Methods {
             if(gamepad2.b){
                 extendSlidesBy(0, 0.5);
             }
+            if(gamepad2.x){
+                bringSlidesDown();
+            }
         }
     }
 }

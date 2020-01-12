@@ -9,8 +9,7 @@ public class RedBridgeAuto extends Exponential_Methods {
     public void runOpMode() throws InterruptedException { // starts on third tile from the left
         super.runOpMode();
         waitForStart();
-        while (opModeIsActive()) {
-            bridgeAuto("red");
-        }
+        bridgeAuto("red");
+
     }
 }

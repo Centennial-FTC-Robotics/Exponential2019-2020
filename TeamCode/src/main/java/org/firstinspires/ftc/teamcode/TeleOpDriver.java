@@ -153,15 +153,15 @@ public class TeleOpDriver extends Exponential_Methods {
 
             //Intake arm servos
             if(gamepad2.b&&timer.seconds()>.25){
-                intakeServoLeft.setPosition(.92);
-                intakeServoRight.setPosition(.95);
+                intakeServoLeft.setPosition(.62);
+                intakeServoRight.setPosition(.93);
                 timer = new ElapsedTime();
             }
 
             if(gamepad2.x&&timer.seconds()>.25){
                 //intake servos release stone
-                intakeServoRight.setPosition(.7);
-                intakeServoLeft.setPosition(.65);
+                intakeServoLeft.setPosition(.55);
+                intakeServoRight.setPosition(.83);
                 timer = new ElapsedTime();
             }
         }

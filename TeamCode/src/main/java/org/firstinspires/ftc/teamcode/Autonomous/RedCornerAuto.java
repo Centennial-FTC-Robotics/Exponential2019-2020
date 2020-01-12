@@ -9,9 +9,8 @@ public class RedCornerAuto extends Exponential_Methods {
     public void runOpMode() throws InterruptedException { // starts on second tile from the left
         super.runOpMode();
         waitForStart();
-        while (opModeIsActive()) {
-            cornerAuto("red", false, false);
-        }
+        cornerAuto("red", false, false);
+
     }
 
 }
