@@ -443,7 +443,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         boolean center = false;
         tfod.activate();
-        ElapsedTime timer  = new ElapsedTime();
+        ElapsedTime timer  = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        timer.reset();
+        //timer.startTime();
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
@@ -451,18 +453,26 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 moveAddTolerance(factor * Math.sqrt(2) * 4, -Math.sqrt(2) * 4, .7, 1);
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 blocksMoved++;
-                sleep(500);
-                if (updatedRecognitions != null) {
-                    for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
-                        if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
-                            float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;  // vertical phone im pretty sure
+                //sleep(500);
+                while(timer.time() < 1500) {
+                    telemetry.addData("timer: %d", timer.time());
 
-                            //float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
-                            center = stonePos + 160 > TOP_MIDDLE_SCREEN && TOP_MIDDLE_SCREEN > stonePos - 160;
+                    if (updatedRecognitions != null) {
+                        for (Recognition recognition : updatedRecognitions) {
+                            telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
+                            if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                                float stonePos = (recognition.getRight() + recognition.getLeft()) / 2;  // vertical phone im pretty sure
+
+                                //float stonePos = (recognition.getTop() + recognition.getBottom()) / 2;
+                                center = TOP_MIDDLE_SCREEN + 160 > stonePos && stonePos > TOP_MIDDLE_SCREEN -160;
+                                //center = stonePos + 160 > TOP_MIDDLE_SCREEN && TOP_MIDDLE_SCREEN > stonePos - 160;
+                            }
                         }
                     }
+                    telemetry.update();
+
                 }
+                timer.reset();
             }
             // setPowerDriveMotors(0);
         }
