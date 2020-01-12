@@ -587,8 +587,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         //move to wall // (6 tiles - robot length - foundation width - 8, 8)
         //TODO: 19 is a sketchy ass value
-        moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
+
         moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation * 2, .5, .2);
+        moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
+      
         //moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5, .2);
 
         turnAbsolute(180 - 90 * factor);
