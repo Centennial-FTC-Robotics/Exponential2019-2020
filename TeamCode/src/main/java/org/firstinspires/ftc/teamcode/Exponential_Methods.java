@@ -407,6 +407,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         setIntakeWheels(0);
     }
 
+    public void outwardsIntake() {
+        intakeServoLeft.setPosition(.25);
+        intakeServoRight.setPosition(.5);
+    }
     public void intakeStone() {
         setIntakeWheels(0.9);
         intakeServoLeft.setPosition(.6);
@@ -439,6 +443,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         boolean center = false;
         tfod.activate();
+        ElapsedTime timer  = new ElapsedTime();
 
         int blocksMoved = 0;
         if (opModeIsActive()) {
@@ -465,12 +470,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //move forward, grab block, move back
         intakeStone();
 
-        move(0, 14, 0.6);
+        move(0, 14, 0.3);
         clampStone();
         sleep(250);
         stopIntakeWheels();
         sleep(250);
-        move(0, -14, 0.6);
+        move(0, -14, 0.3);
 
         //turns back
         turnRelative(factor * -45);
@@ -627,6 +632,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         bringSlidesDown();
 
+        double secondTile = TILE_LENGTH;
+
         double observingDistance = 10;
         double observingDistanceX = observingDistance / Math.sqrt(2);
         double observingDistanceY = observingDistance / Math.sqrt(2);
@@ -638,16 +645,18 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0, forwardToGetStone, .5); // (3 blocks + obs. dist. x, forwardToGetStone)
         int inchesMoved = grabSkystone(color); // (3 blocks + obs. dist. x + x, forwardToGetStone)
 
+        move(0, TILE_LENGTH + MIDDLE_OF_TILE - forwardToGetStone, .5);
         turnAbsolute(factor * -90);
         move(0, 4 * TILE_LENGTH + TILE_LENGTH / 2 - (3 * BLOCK_LENGTH + observingDistanceX + inchesMoved), .5); // (4.5 tiles, forwardToGetStone)
 
-        extendSlidesBy(6, 0.5);
+        extendSlidesBy(8, 0.5);
         turnAbsolute(0);
-        move(0, observingDistanceY, .5); // (4.5 tiles, 2 tiles - robot length)
+        double moveForFoundation = 5;
+        move(0, moveForFoundation + MIDDLE_OF_TILE, .5); // (4.5 tiles, 2 tiles - robot length)
         releaseStone();
         //moves robot to the middle of the second tile
-        move(0, -1 * MIDDLE_OF_TILE, .5); // (4.5 tiles, centered on second tile)
-        extendSlidesBy(-6, 0.5);
+        move(0, -1 * moveForFoundation - MIDDLE_OF_TILE, .5); // (4.5 tiles, centered on second tile)
+        extendSlidesBy(-8, 0.5);
 
         turnAbsolute(factor * 90);
         move(0, 4.5 * TILE_LENGTH - 3 * TILE_LENGTH + ROBOT_LENGTH / 2, .5); // (3 tiles - half robot, centered on second tile)
@@ -682,4 +691,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     }
 
+    public void oneTileAuto(String color) { //STARTS ON THE MIDDLE OF THIRD TILE FROM THE SKYSTONES
+        int factor;
+        if (color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
+
+        bringSlidesDown();
+        move(factor * (TILE_LENGTH / 2), 0, .5);
+        outwardsIntake();
+        move(0, TILE_LENGTH + MIDDLE_OF_TILE - 2, .5);
+    }
 }
