@@ -406,8 +406,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void releaseStone() {
         intakeServoLeft.setPosition(.55);
 
-        intakeServoRight.setPosition(.83);
-        //intakeServoRight.setPosition(.55);
+        intakeServoRight.setPosition(.85);
         setIntakeWheels(0);
     }
 
@@ -422,7 +421,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
     public void clampStone() {
         intakeServoLeft.setPosition(.62);
-        intakeServoRight.setPosition(.93);
+        intakeServoRight.setPosition(.92);
     }
     public void stopIntakeWheels() {
         setIntakeWheels(0);
@@ -717,11 +716,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         turnAbsolute(factor * -90);
         bringSlidesDown();
         sleep(500);
-        move(0,-6,0.4);
+        move(0,-7,0.4);
         toggleHook(false);
 
         move(factor * (TILE_LENGTH / 4),0, MAX_POWER);
-        move(0, 1.25 * TILE_LENGTH, MAX_POWER);
+        move(0, 1.25 * TILE_LENGTH + 6, MAX_POWER);
 
     }
 
@@ -736,5 +735,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(factor * (TILE_LENGTH / 2), 0, .5);
         outwardsIntake();
         move(0, TILE_LENGTH + MIDDLE_OF_TILE - 2, .5);
+    }
+    public void oneTileSidewaysAuto(String color) {
+        int factor;
+        if (color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
+
+        bringSlidesDown();
+        move(factor * (TILE_LENGTH / 2), 0, .5);
+        outwardsIntake();
     }
 }

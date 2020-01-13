@@ -10,12 +10,12 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 
-@TeleOp(name = "TeleOp, USE THIS ONE", group = "TeleOp")
+@TeleOp(name = "teleop slides still up", group = "TeleOp")
 
-public class TeleOpDriver extends Exponential_Methods {
+public class TeleOpDriverSlidesStillUp extends Exponential_Methods {
 
-    public final static int SLIDE_MAX = slideMax - slideMin;
-    public final static int SLIDE_MIN = 0;
+    public final static int SLIDE_MAX = slideMax;
+    public final static int SLIDE_MIN = slideMin;
     private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -142,7 +142,7 @@ public class TeleOpDriver extends Exponential_Methods {
             double intakePower = .9; //set later
             setIntakeWheels(intakePower * gamepad2.left_trigger);
             if(gamepad2.right_trigger!=0) {
-                setIntakeWheels(-.5 * intakePower * gamepad2.right_trigger);
+                setIntakeWheels(-.25 * intakePower * gamepad2.right_trigger);
             }
             //Make slides go up 4 inches
             if(gamepad2.y&&timer.seconds()>.25){
