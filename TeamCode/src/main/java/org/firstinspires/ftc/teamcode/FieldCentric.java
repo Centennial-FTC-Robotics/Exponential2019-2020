@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 
-@TeleOp(name = "TeleOp, USE THIS ONE", group = "TeleOp")
+@TeleOp(name = "FieldCentric", group = "TeleOp")
 
-public class TeleOpDriver extends Exponential_Methods {
+public class FieldCentric extends Exponential_Methods {
 
     public final static int SLIDE_MAX = slideMax - slideMin;
     public final static int SLIDE_MIN = 0;
@@ -121,14 +121,30 @@ public class TeleOpDriver extends Exponential_Methods {
                 slidePosition -= convertInchToEncoderSlides(4);
                 timer = new ElapsedTime();
             }
-            //-----------------------------------SPEED------------------------------------
+            //-----------------------------------MOVEMENT/SPEED------------------------------------
 
             double bumper_factor = 1;
             double left_trigger_factor = gamepad1.left_trigger;
             double right_trigger_factor = gamepad1.right_trigger;
 
             //double bumper_factor = 1.0 - gamepad1.left_trigger;
-            double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, .8*gamepad1.right_stick_x);
+            double currentAngle = 0; //  TODO; FIND OUT HOW TO SET LATeR
+
+            //------FIELD CENTRIC-------
+            // THESE ANGLES ARE IN STANDARD POSITION. maybe non standard position works, but only if bearing bearing or std. std.
+            double inputX = gamepad1.left_stick_x;
+            double inputY = gamepad1.right_stick_y;
+            //gets the input angle. Adds pi to tangent if the x value of the angle is less than 0
+            double inputAngle = Math.atan(inputY / inputX) + inputX < 0 ? Math.PI : 0;
+            double inputMagnitude = Math.sqrt(inputX * inputX + inputY * inputY);
+
+            double angleDistance = inputAngle - currentAngle;
+            double angleOnRobot = currentAngle - angleDistance;  //angle of the movement relative to the robot's POV
+
+            double centricX = inputMagnitude * Math.cos(angleOnRobot);
+            double centricY = inputMagnitude * Math.sin(angleOnRobot);  //ask yuhwan for the picture if you want, it will not help
+
+            double[] answer = circle_to_taxicab(centricX, centricY, .8*gamepad1.right_stick_x);
             if(gamepad1.left_bumper){
                 bumper_factor = .5;
             }

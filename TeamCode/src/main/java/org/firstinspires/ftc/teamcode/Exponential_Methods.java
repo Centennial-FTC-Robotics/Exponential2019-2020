@@ -403,23 +403,23 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- AUTO AID METHODS  -------------- (organization)
 
-    public void releaseStone() {
+    public void releaseStone() { //Servos to open position
         intakeServoLeft.setPosition(.55);
 
         intakeServoRight.setPosition(.85);
         setIntakeWheels(0);
     }
 
-    public void outwardsIntake() {
+    public void outwardsIntake() { //moves intake servos all the way open
         intakeServoLeft.setPosition(.25);
         intakeServoRight.setPosition(.5);
     }
-    public void intakeStone() {
+    public void intakeStone() { //servos to a position to open, turns on intake wheels
         setIntakeWheels(0.9);
         intakeServoLeft.setPosition(.6);
         intakeServoRight.setPosition(.9);
     }
-    public void clampStone() {
+    public void clampStone() { //servos to close position
         intakeServoLeft.setPosition(.62);
         intakeServoRight.setPosition(.92);
     }
@@ -521,7 +521,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         double MAX_POWER = 0.6;
 
-        //TODO AHHHHHHHHHHHHHHH UNCOMMENT THIS LATER
         bringSlidesDown();
         //coordinates are for red side, they represent the location of the bottom left point of the robot from our POV
         // no matter what direction the robot is facing. done to hopefully reduce confusion cause fuck trying to
