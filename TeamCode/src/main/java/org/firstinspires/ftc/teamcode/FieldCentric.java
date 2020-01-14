@@ -128,7 +128,8 @@ public class FieldCentric extends Exponential_Methods {
             double right_trigger_factor = gamepad1.right_trigger;
 
             //double bumper_factor = 1.0 - gamepad1.left_trigger;
-            double currentAngle = 0; //  TODO; FIND OUT HOW TO SET LATeR
+            double currentAngle = getRotationinDimension('Z') + Math.PI / 2;
+            // double currentAngle = 0; //  TODO; FIND OUT HOW TO SET LATeR
 
             //------FIELD CENTRIC-------
             // THESE ANGLES ARE IN STANDARD POSITION. maybe non standard position works, but only if bearing bearing or std. std.

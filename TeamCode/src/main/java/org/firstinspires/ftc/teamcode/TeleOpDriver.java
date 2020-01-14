@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 
-@TeleOp(name = "TeleOp, USE THIS ONE", group = "TeleOp")
 
 public class TeleOpDriver extends Exponential_Methods {
 
@@ -54,10 +53,6 @@ public class TeleOpDriver extends Exponential_Methods {
 
 
 
-        for(DcMotor motor : driveMotors){
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
         waitForStart();
 
 
