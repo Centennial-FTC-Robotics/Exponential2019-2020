@@ -110,7 +110,7 @@ public class TeleOpMethods extends  Exponential_Methods{
             } else if(slidePosition < SLIDE_MIN)
                 if(gamepad2.left_stick_y>0){
                     slideUp.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
-                    slideDown.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
+                    slideDown.setPower(*SLIDE_FACTOR*-gamepad2.left_stick_y);
                 } else {
                     setSlidePower(0);
                 }
