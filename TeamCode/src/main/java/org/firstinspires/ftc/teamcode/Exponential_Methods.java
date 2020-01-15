@@ -205,7 +205,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //-------------- MOVEMENT -------------- (organization)
 
     public static final double DEFAULT_MOVE_TOLERANCE = .6; // SET DEFAULT TOLERANCE HERE
-    
+
+
     public void move(double inchesSideways, double inchesForward, double maxPower){  
         // this one just inputs the default value (.5) for tolerance
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE);
@@ -214,6 +215,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
     }
+
+
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
         double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
         double currentAngle;
@@ -250,6 +253,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
         ElapsedTime time = new ElapsedTime();
+
+
         while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
             currentAngle = getRotationinDimension('Z');
 
@@ -263,9 +268,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
                 backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
             } else {
-                frontLeft.setPower(+direction * turnRate + Range.clip(p * frontLeft_displacement, min_negative, max_positive));
+                frontLeft.setPower(-direction * turnRate + Range.clip(p * frontLeft_displacement, min_negative, max_positive));
                 frontRight.setPower(direction * turnRate + Range.clip(p * frontRight_displacement, min_negative, max_positive));
-                backLeft.setPower(+direction * turnRate + Range.clip(p * backLeft_displacement, min_negative, max_positive));
+                backLeft.setPower(-direction * turnRate + Range.clip(p * backLeft_displacement, min_negative, max_positive));
                 backRight.setPower(direction * turnRate + Range.clip(p * backRight_displacement, min_negative, max_positive));
             }
 

@@ -138,7 +138,7 @@ public class TeleOpMethods extends Exponential_Methods {
                 slidePosition = SLIDE_MIN;
             }
 
-            // tells the slides to hold their position
+            // tells the slides to hold the position that the slides were at when the user released the trigger
             slideUp.setTargetPosition(slidePosition);
             slideDown.setTargetPosition(slidePosition);
             slideUp.setPower(SLIDE_POWER);
@@ -147,16 +147,18 @@ public class TeleOpMethods extends Exponential_Methods {
             slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         if(gamepad2.y&&timer.seconds()>TIMER_INTERVAL){
+            // if button y is pressed, move slides up 4 inches
             slidePosition += convertInchToEncoderSlides(4);
             timer.reset();
         }
         if(gamepad2.a&&timer.seconds()>TIMER_INTERVAL){
+            // if button a is pressed, move slides down 4 inches
             slidePosition -= convertInchToEncoderSlides(4);
             timer.reset();
         }
     }
 
-    // toggles intake
+    // toggles intake wheels
     public void intakeMotors(){
         setIntakeWheels(INTAKE_MOTORS_INTAKE * gamepad2.left_trigger);
         if(gamepad2.right_trigger!=0) {
@@ -167,7 +169,7 @@ public class TeleOpMethods extends Exponential_Methods {
 
 
     // converts between the input of the trigger to the power of the motors
-    private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
+    public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
         double y;
