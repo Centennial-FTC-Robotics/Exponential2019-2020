@@ -45,26 +45,32 @@ public class TeleOpMethods extends  Exponential_Methods{
         double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, ROTATE_TO_MOVE_RATIO*gamepad1.right_stick_x);
         double factor = 1;
         if(gamepad1.left_bumper){
+            // if left bumper is pressed, reduce the motor speed
             factor = LEFT_BUMPER_TRIGGER_FACTOR;
         }
         if (gamepad1.right_bumper){
+            // if right bumper is pressed, reduce the motor speed
             factor = RIGHT_BUMPER_TRIGGER_FACTOR;
         }
+
 
         frontRight.setPower(factor*answer[0]);
         backRight.setPower(factor*answer[1]);
         backLeft.setPower(factor*answer[2]);
         frontLeft.setPower(factor*answer[3]);
     }
+
+
     public void intakeServos(){
         //Intake arm servos
         if(gamepad2.b){
+            // b button is pressed
             intakeServoLeft.setPosition(LEFT_SERVO_CLOSE_POSITION);
             intakeServoRight.setPosition(Right_SERVO_CLOSE_POSITION);
         }
 
         if(gamepad2.x){
-            //intake servos release stone
+            // x button is pressed
             intakeServoLeft.setPosition(LEFT_SERVO_OPEN_POSITION);
             intakeServoRight.setPosition(Right_SERVO_OPEN_POSITION);
         }
@@ -140,7 +146,7 @@ public class TeleOpMethods extends  Exponential_Methods{
 
 
 
-
+    // converts between the input of the 
     private double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;

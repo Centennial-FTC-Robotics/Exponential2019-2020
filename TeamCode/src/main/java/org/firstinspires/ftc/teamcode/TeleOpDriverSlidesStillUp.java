@@ -70,5 +70,4 @@ public class TeleOpDriverSlidesStillUp extends TeleOpMethods {
             timer.reset();
         }
     }
-    }
 }
