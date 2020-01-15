@@ -107,6 +107,15 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
 
+    /*
+    public int convertInchToEncoderOdom(double inches){
+        double conversion = 30498320948209384;
+        return (int) (conversion*inches);
+    }
+    */
+
+
+    
     public double getAngleDist(double targetAngle, double currentAngle) {
         double angleDifference = currentAngle - targetAngle;
         if (Math.abs(angleDifference) > 180) {
@@ -215,6 +224,78 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
     }
+
+
+
+    /*
+    public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
+        double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
+        double currentAngle;
+        int direction;
+        double turnRate;
+        // double P = 0.015; //set later
+        double P = .02; //set later
+        double maxSpeed = 1; //set later
+        double minSpeed = 0.03; //set later
+        double error;
+
+        inchesForward = -inchesForward;
+
+        double p = 1.0/800;
+        double i;
+        double d;
+        //double inchesTolerance = .5;
+        double max_positive = maxPower;
+        double min_negative = -maxPower;
+
+        double encoderForward = convertInchToEncoder(inchesForward);
+        double encoderSideways = convertInchToEncoder(inchesSideways);
+        odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        int displacementSideways = (int)encoderSideways;
+        int displacementForwards = (int)encoderForward;
+
+        double tolerance = convertInchToEncoder(inchesTolerance);
+
+
+
+        ElapsedTime time = new ElapsedTime();
+
+
+        while (opModeIsActive()&&Math.abs(displacementSideways)>tolerance&&Math.abs(displacementForwards)>tolerance){
+            currentAngle = getRotationinDimension('Z');
+
+            error = getAngleDist(targetAngle, currentAngle);
+            direction = getAngleDir(targetAngle, currentAngle);
+            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
+
+            if(time.seconds()>2){
+                frontLeft.setPower(p*displacementForwards-p*displacementSideways);
+                frontRight.setPower(p*displacementForwards+p*displacementSideways);
+                backLeft.setPower(p*displacementForwards-p*displacementSideways);
+                backRight.setPower(p*displacementForwards+p*displacementSideways);
+            } else {
+                frontLeft.setPower(-direction * turnRate + p*displacementForwards-p*displacementSideways);
+                frontRight.setPower(direction * turnRate + p*displacementForwards+p*displacementSideways);
+                backLeft.setPower(-direction * turnRate + p*displacementForwards-p*displacementSideways);
+                backRight.setPower(direction * turnRate + p*displacementForwards+p*displacementSideways);
+            }
+            displacementSideways = (int)encoderSideways-odoWheelSideways.getCurrentPosition();
+            displacementForwards = (int)encoderForward-odoWheelForwards.getCurrentPosition();
+        }
+        setPowerDriveMotors(0);
+        //TODO i got rid of rotate
+        //turnAbsolute(targetAngle);
+    }
+    */
+
+
+
+
+
+
 
 
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
