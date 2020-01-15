@@ -7,22 +7,33 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class FieldCentric extends TeleOpMethods {
     @Override
     public void driveTrain() {
-        double currentAngle = getRotationinDimension('Z') + Math.PI / 2;
+        double currentAngle = Math.PI*getRotationinDimension('Z')/180;
         // double currentAngle = 0; //  TODO; FIND OUT HOW TO SET LATeR
 
         //------FIELD CENTRIC-------
         // THESE ANGLES ARE IN STANDARD POSITION. maybe non standard position works, but only if bearing bearing or std. std.
         double inputX = gamepad1.left_stick_x;
-        double inputY = gamepad1.right_stick_y;
+        double inputY = -1*gamepad1.left_stick_y;
         //gets the input angle. Adds pi to tangent if the x value of the angle is less than 0
-        double inputAngle = Math.atan(inputY / inputX) + inputX < 0 ? Math.PI : 0;
-        double inputMagnitude = Math.sqrt(inputX * inputX + inputY * inputY);
+        // double inputAngle = Math.atan(inputY / inputX) + inputX < 0 ? Math.PI : 0;
+        // double inputMagnitude = Math.sqrt(inputX * inputX + inputY * inputY);
 
-        double angleDistance = inputAngle - currentAngle;
-        double angleOnRobot = currentAngle - angleDistance;  //angle of the movement relative to the robot's POV
+        //double angleDistance = inputAngle - currentAngle;
+        //double angleOnRobot = currentAngle - angleDistance;  //angle of the movement relative to the robot's POV
 
-        double centricX = inputMagnitude * Math.cos(angleOnRobot);
-        double centricY = inputMagnitude * Math.sin(angleOnRobot);  //ask yuhwan for the picture if you want, it will not help
+
+
+
+
+
+        double centricX = inputX*Math.cos(currentAngle)+inputY*Math.sin(currentAngle);
+        double centricY = inputX*Math.sin(currentAngle)-inputY*Math.cos(currentAngle);
+        telemetry.addData("inputX", inputX);
+        telemetry.addData("inputY", inputY);
+
+        telemetry.addData("centricX", centricX);
+        telemetry.addData("centricY", centricY);
+        telemetry.update();
 
         double[] answer = circle_to_taxicab(centricX, centricY, .8*gamepad1.right_stick_x);
         double factor = 1;
