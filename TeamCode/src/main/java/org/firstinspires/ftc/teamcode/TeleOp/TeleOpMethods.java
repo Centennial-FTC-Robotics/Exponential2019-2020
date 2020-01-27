@@ -123,7 +123,7 @@ public class TeleOpMethods extends Exponential_Methods {
                 if(gamepad2.left_stick_y<0){
                     // if user wants to push slides back up
                     slideUp.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
-                    slideDown.setPower(*SLIDE_FACTOR*-gamepad2.left_stick_y);
+                    slideDown.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
                 } else {
                     // if user is trying to push the slides down when they have already hit their limit
                     setSlidePower(0);
@@ -165,7 +165,6 @@ public class TeleOpMethods extends Exponential_Methods {
             setIntakeWheels(INTAKE_MOTORS_OUTTAKE * gamepad2.right_trigger);
         }
     }
-
 
 
     // converts between the input of the trigger to the power of the motors

@@ -1,40 +1,45 @@
 package org.firstinspires.ftc.teamcode.Trash;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.*;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@TeleOp(group = "TeleOp", name = "TESTING STUFF")
+import java.util.List;
+
+@Autonomous(group = "Autonomous", name = "Side camera vuforia stuff")
 public class Tester extends Exponential_Methods {
-
-
     public void runOpMode() throws InterruptedException {
-        runOpMode();
-        boolean isAuto = true;
+        super.runOpMode();
+    }
 
-        waitForStart();
-        while(opModeIsActive()){
-            if(isAuto){
-                move(0,12,1);
-                if(gamepad1.x){
-                    isAuto = false;
+    public int findStone(){
+        int MIDDLE_SCREEN = 640;
+        int CENTER_LEFT = MIDDLE_SCREEN - 200; //set later
+        int CENTER_RIGHT = MIDDLE_SCREEN + 200; //set later
+        int stonePos = 0;
+
+        if(tfod!= null){
+            List<Recognition> updatedRecognitions = tfod.getRecognitions();
+            if (updatedRecognitions != null) {
+                for (Recognition recognition : updatedRecognitions) {
+                    telemetry.addData(String.format("label (%d)", 0), recognition.getLabel());
+                    if (recognition.getLabel().equals(LABEL_SECOND_ELEMENT)) {
+                        float stoneCamPos = (recognition.getTop() + recognition.getBottom()) / 2;
+                        if (stoneCamPos < CENTER_LEFT) {
+                            stonePos = 1;
+                        } else if (stoneCamPos > CENTER_RIGHT) {
+                            stonePos = 3;
+                        } else {
+                            stonePos = 2;
+                        }
+                    }
                 }
             }
-            else{
-                if(gamepad1.a)
-                    toggleHook(true);
-            }
-
         }
-
-
+        if(stonePos == 0)
+            findStone();
+        telemetry.addData("stonePos", stonePos);
+        return stonePos;
     }
 }

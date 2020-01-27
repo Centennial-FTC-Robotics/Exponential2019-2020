@@ -207,7 +207,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double DEFAULT_MOVE_TOLERANCE = .6; // SET DEFAULT TOLERANCE HERE
 
 
-    public void move(double inchesSideways, double inchesForward, double maxPower){  
+    public void move(double inchesSideways, double inchesForward, double maxPower){
         // this one just inputs the default value (.5) for tolerance
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE);
     }
@@ -222,7 +222,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double currentAngle;
         int direction;
         double turnRate;
-       // double P = 0.015; //set later
+        // double P = 0.015; //set later
         double P = .02; //set later
         double maxSpeed = 1; //set later
         double minSpeed = 0.03; //set later
@@ -310,7 +310,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // SAME AS THE OTHER MOVE METHOD, change the default value for tolerance here
         turnAbsolute(targetAngle, DEFAULT_ROTATE_TOLERANCE);
     }
-    
+
     public void turnAbsoluteAddTolerance(double targetAngle, double toleranceAddition) {
         turnAbsolute(targetAngle, DEFAULT_ROTATE_TOLERANCE + toleranceAddition);
     }
@@ -593,7 +593,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation * 2, .5, .2);
         moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
-      
+
         //moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5, .2);
 
         turnAbsolute(180 - 90 * factor);
