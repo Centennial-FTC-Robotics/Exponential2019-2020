@@ -31,6 +31,9 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected Servo hookServoLeft;
     protected Servo hookServoRight;
 
+    protected DcMotor odoWheelForwards;
+    protected DcMotor odoWheelSideways;
+
     //protected RevBlinkinLedDriver blinkinLedDriver;
     protected RevBlinkinLedDriver blinkin;
     protected RevBlinkinLedDriver.BlinkinPattern pattern;
@@ -70,6 +73,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         slideUp = hardwareMap.dcMotor.get("slideRight");
         slideDown = hardwareMap.dcMotor.get("slideLeft");
 
+        // odoWheelForwards = hardwareMap.dcMotor.get("OdometryWheelForwards");
+        // odoWheelSideways = hardwareMap.dcMotor.get("OdometryWheelSideways");
 
         // sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
