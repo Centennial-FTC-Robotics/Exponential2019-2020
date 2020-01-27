@@ -221,7 +221,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void move(double inchesSideways, double inchesForward) {
         move(inchesSideways, inchesForward, MAX_POWER);
     }
-    public void move(double inchesSideways, double inchesForward, double maxPower){  
+    public void move(double inchesSideways, double inchesForward, double maxPower){
         // this one just inputs the default value (.5) for tolerance
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE);
     }

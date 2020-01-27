@@ -167,7 +167,6 @@ public class TeleOpMethods extends Exponential_Methods {
     }
 
 
-
     // converts between the input of the trigger to the power of the motors
     // don't worry about the math
     public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
