@@ -31,6 +31,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public TFObjectDetector tfod; //Tensor Flow Object Detection engine
     private int cameraMonitorViewId;
 
+    private SkystoneDetector skystoneDetector;
+
     public static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     public static final String LABEL_FIRST_ELEMENT = "Stone";
     public static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -48,12 +50,19 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final int slideMax = 2200;
     public static final int slideMin = -390;
 
+    public String color;
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         initializeIMU();
-        initVuforia();
-        initTfod();
+
+        skystoneDetector = new SkystoneDetector();
+        skystoneDetector.initialize(this);
+
+        //initVuforia();
+        //initTfod();
+
     }
 
     //-------------- INITIALIZATION -------------- (organization)
