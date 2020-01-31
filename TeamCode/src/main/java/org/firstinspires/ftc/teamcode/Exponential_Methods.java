@@ -31,7 +31,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public TFObjectDetector tfod; //Tensor Flow Object Detection engine
     private int cameraMonitorViewId;
 
-    private SkystoneDetector skystoneDetector;
+    public SkystoneDetector skystoneDetector;
 
     public static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     public static final String LABEL_FIRST_ELEMENT = "Stone";

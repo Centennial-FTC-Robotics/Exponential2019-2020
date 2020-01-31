@@ -46,6 +46,11 @@ public class SkystoneDetector{
         cam.stopStreaming();
     }
 
+    public int getStonePos(){
+        return stonePos;
+    }
+
+
     class Pipeline extends OpenCvPipeline{
         Mat gray = new Mat();
         Mat croppedGray = new Mat();
@@ -57,16 +62,18 @@ public class SkystoneDetector{
             Mat croppedGray = new Mat(gray, rectCrop);
 
             int stoneSize = 300;  //TODO set later
-            int[] divisions = {0, stoneSize*1, stoneSize*2, croppedGray.cols()}; //TODO set later
+            int[] divisions = {0, stoneSize*1, stoneSize*2, stoneSize*3}; //TODO set later
 
             double brightnessMin = Double.MAX_VALUE;
             double brightnessAvg = 0;
             int pixels = 0;
 
             //For each segment
-            for(int i=0; i<3; i++){
+            for(int i=0; i < 3; i++){
+                opMode.telemetry.addData("i", i);
+                opMode.telemetry.update();
                 //For x
-                for(int x = divisions[i]; x < divisions[i+1]; i++){
+                for(int x = divisions[i]; x < divisions[i+1]; x++){
                     //For y
                     for(int y = 0; y < croppedGray.rows(); y++){
                         brightnessAvg += croppedGray.get(y,x)[0];
@@ -80,7 +87,10 @@ public class SkystoneDetector{
                 }
             }
 
-            return input;
+            opMode.telemetry.addData("stonePos", stonePos);
+            opMode.telemetry.update();
+
+            return croppedGray;
         }
 
 
