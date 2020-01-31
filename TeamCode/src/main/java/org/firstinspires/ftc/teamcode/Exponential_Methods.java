@@ -652,8 +652,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         outwardsIntake();
 
         double inchesHorizontalForSkystone = -startX + inchesBlocks + intakeOffset;
-        move(-startY, inchesHorizontalForSkystone); //moves to the correct horizontal position
-        move(-(TILE_LENGTH * 2 - ROBOT_LENGTH / 2), 0); //moves sideways to get in intaking position
+        move(factor * -startY, -inchesHorizontalForSkystone); //moves to the correct horizontal position
+        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2), 0); //moves sideways to get in intaking position
 
         //intaking stone
         clampStone();
@@ -662,14 +662,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         stopIntakeWheels();
 
         //move to center of second tile
-        move(ROBOT_LENGTH / 2 + MIDDLE_OF_TILE, 0);
+        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE), 0);
 
         //move to foundation
         move(0, -inchesHorizontalForSkystone + TILE_LENGTH * 4.5);
 
         //releasing stone
         extendSlidesBy(6, .5);
-        turnRelative(90);
+        turnRelative(factor * 90);
         move(0, 6);
         releaseStone();
         //preparing for foundation
@@ -683,9 +683,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //right now vert position: 9 inches + middle of second tile
         double inchesToPlaceFoundation = 0;
         move(0, 9 + inchesToPlaceFoundation);
-        turnRelative(-90);
+        turnRelative(factor * -90);
         toggleHook(false);
-        move(inchesToPlaceFoundation, 0);
+        move(factor * inchesToPlaceFoundation, 0);
 
         move(0, TILE_LENGTH * 4.5 - (3 * TILE_LENGTH - ROBOT_LENGTH / 2));
 
@@ -902,21 +902,21 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     }
 
-    public void oneTileAuto(String color) { //STARTS ON THE MIDDLE OF THIRD TILE FROM THE SKYSTONES
+    public void tileSidewaysForwards(String direction) { //STARTS ON THE MIDDLE OF THIRD TILE FROM THE SKYSTONES
         int factor;
-        if (color.equals("red"))
+        if (direction.equals("right"))
             factor = 1;
         else
             factor = -1;
 
         bringSlidesDown();
-        move(factor * (TILE_LENGTH / 2), 0, .5);
+        tileSideways(direction);
         outwardsIntake();
         move(0, TILE_LENGTH + MIDDLE_OF_TILE - 2, .5);
     }
-    public void oneTileSidewaysAuto(String color) {
+    public void tileSideways(String direction) {
         int factor;
-        if (color.equals("red"))
+        if (direction.equals("right"))
             factor = 1;
         else
             factor = -1;
