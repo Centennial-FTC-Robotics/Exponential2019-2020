@@ -483,6 +483,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down) {
+        //might need to recalibrate
         if (down) {
             hookServoLeft.setPosition(.75);
             hookServoRight.setPosition(.7);
@@ -493,11 +494,25 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         sleep(500);
     }
 
-    //servos that clamp
     public void setIntakeServosPosition(double position) {
         intakeServoLeft.setPosition(position);
         intakeServoRight.setPosition(position);
     }
+
+    //yeeter methods
+
+    /*
+    public void extendYeeter (){ //extend yeeter to park
+        //set position later
+        yeetServo.setPosition(1);
+        sleep(500);
+    }
+
+    public void retractYeeter(){ //retract yeeter
+        //set position later
+        yeetServo.setPosition(0);
+        sleep(500);
+    }*/
 
     //-------------- AUTO AID METHODS  -------------- (organization)
 
