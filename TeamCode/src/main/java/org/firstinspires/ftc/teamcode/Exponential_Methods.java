@@ -117,8 +117,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     /*
     public int convertInchToEncoderOdom(double inches){
-        double conversion = 30498320948209384;
-        return (int) (conversion*inches);
+        return (int) (8192/(2*Math.PI)*inches);
     }
     */
 
@@ -280,7 +279,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
 
-            if(time.seconds()>2){
+            if(time.seconds()>.5){
                 frontLeft.setPower(p*displacementForwards-p*displacementSideways);
                 frontRight.setPower(p*displacementForwards+p*displacementSideways);
                 backLeft.setPower(p*displacementForwards-p*displacementSideways);
