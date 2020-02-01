@@ -90,12 +90,12 @@ public class TeleOpMethods extends Exponential_Methods {
     }
 
     // yeeter
-    /*public void yeetServos(){
+    public void yeetServos(){
         //extend
         if(gamepad.a){
             extendYeeter();
         }
-    }*/
+    }
 
     // moves the slides up and down
     public void slideMotors(){
