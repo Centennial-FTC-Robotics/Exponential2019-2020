@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 public class TeleOpMethods extends Exponential_Methods {
     public static final double LEFT_BUMPER_TRIGGER_FACTOR = .5;
     public static final double RIGHT_BUMPER_TRIGGER_FACTOR = .25;
-    public static final double SLIDE_FACTOR = .5;
     public static final double LEFT_SERVO_OPEN_POSITION = .55;
     public static final double Right_SERVO_OPEN_POSITION = .85;
     public static final double LEFT_SERVO_CLOSE_POSITION = .62;
@@ -21,7 +20,8 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double INTAKE_MOTORS_INTAKE = -.45;
     public static final double INTAKE_MOTORS_OUTTAKE = .3;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
-    public static final double SLIDE_POWER = .3;
+    public static final double SLIDE_FACTOR = .5;
+    public static final double SLIDE_POWER = .3; //Don't change this, EVER
 
     public ElapsedTime timer = new ElapsedTime();
     @Override
@@ -40,6 +40,7 @@ public class TeleOpMethods extends Exponential_Methods {
             hookServos();
             slideMotors();
             intakeMotors();
+            yeetServos();
         }
     }
 
@@ -60,6 +61,16 @@ public class TeleOpMethods extends Exponential_Methods {
         backRight.setPower(factor*answer[1]);
         backLeft.setPower(factor*answer[2]);
         frontLeft.setPower(factor*answer[3]);
+
+        if(gamepad1.dpad_down||gamepad1.dpad_up){
+            turnRelative(180);
+        }
+        if(gamepad1.dpad_right){
+            turnRelative(270);
+        }
+        if(gamepad1.dpad_left){
+            turnRelative(90);
+        }
     }
 
 
@@ -89,16 +100,12 @@ public class TeleOpMethods extends Exponential_Methods {
     }
 
     // yeeter
-    /*public void yeetServos(){
-        //retract
-        if(gamepad1.a){
-            retractYeeter();
-        }
+    public void yeetServos(){
         //extend
-        if(gamepad.y){
+        if(gamepad1.a){
             extendYeeter();
         }
-    }*/
+    }
 
     // moves the slides up and down
     public void slideMotors(){
