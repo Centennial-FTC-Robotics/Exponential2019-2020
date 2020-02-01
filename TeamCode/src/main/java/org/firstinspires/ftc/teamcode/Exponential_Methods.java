@@ -31,6 +31,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public TFObjectDetector tfod; //Tensor Flow Object Detection engine
     private int cameraMonitorViewId;
 
+    public SkystoneDetector skystoneDetector;
+
     public static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     public static final String LABEL_FIRST_ELEMENT = "Stone";
     public static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -48,12 +50,19 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final int slideMax = 2200;
     public static final int slideMin = -390;
 
+    public static final double MAX_POWER = .6;
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         initializeIMU();
-        initVuforia();
-        initTfod();
+
+        skystoneDetector = new SkystoneDetector();
+        skystoneDetector.initialize(this);
+
+        //initVuforia();
+        //initTfod();
+
     }
 
     //-------------- INITIALIZATION -------------- (organization)
@@ -213,7 +222,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double DEFAULT_MOVE_TOLERANCE = .6; // SET DEFAULT TOLERANCE HERE
 
 
-    public void move(double inchesSideways, double inchesForward, double maxPower){  
+    public void move(double inchesSideways, double inchesForward) {
+        move(inchesSideways, inchesForward, MAX_POWER);
+    }
+    public void move(double inchesSideways, double inchesForward, double maxPower){
         // this one just inputs the default value (.5) for tolerance
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE);
     }
@@ -388,7 +400,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // SAME AS THE OTHER MOVE METHOD, change the default value for tolerance here
         turnAbsolute(targetAngle, DEFAULT_ROTATE_TOLERANCE);
     }
-    
+
     public void turnAbsoluteAddTolerance(double targetAngle, double toleranceAddition) {
         turnAbsolute(targetAngle, DEFAULT_ROTATE_TOLERANCE + toleranceAddition);
     }
@@ -468,6 +480,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //hook for moving foundation, true = down, false = up
     public void toggleHook(boolean down) {
+        //might need to recalibrate
         if (down) {
             hookServoLeft.setPosition(.75);
             hookServoRight.setPosition(.7);
@@ -478,11 +491,25 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         sleep(500);
     }
 
-    //servos that clamp
     public void setIntakeServosPosition(double position) {
         intakeServoLeft.setPosition(position);
         intakeServoRight.setPosition(position);
     }
+
+    //yeeter methods
+
+    /*
+    public void extendYeeter (){ //extend yeeter to park
+        //set position later
+        yeetServo.setPosition(1);
+        sleep(500);
+    }
+
+    public void retractYeeter(){ //retract yeeter
+        //set position later
+        yeetServo.setPosition(0);
+        sleep(500);
+    }*/
 
     //-------------- AUTO AID METHODS  -------------- (organization)
 
@@ -595,6 +622,72 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- AUTONOMOUS PATHS -------------- (organization)
 
+    public void cornerAutoSideways(String color) { //starts facing the bridge
+        int factor;
+        if (color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
+
+        double MAX_POWER = 0.6;
+
+        bringSlidesDown();
+
+        //start distance away from wall (set later)
+        double startX = 0;
+        double startY = 0;
+
+        //position of skystone (start later)
+        boolean left = true;
+        boolean center = false;
+        boolean right = false;
+
+        int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
+        int inchesBlocks = numBlocks * 8;
+        double intakeOffset = 0; //TODO: set later, inches to get the robot close enough to the block
+
+        outwardsIntake();
+
+        double inchesHorizontalForSkystone = -startX + inchesBlocks + intakeOffset;
+        move(factor * -startY, -inchesHorizontalForSkystone); //moves to the correct horizontal position
+        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2), 0); //moves sideways to get in intaking position
+
+        //intaking stone
+        clampStone();
+        setIntakeWheels(.3);
+        sleep(1000);
+        stopIntakeWheels();
+
+        //move to center of second tile
+        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE), 0);
+
+        //move to foundation
+        move(0, -inchesHorizontalForSkystone + TILE_LENGTH * 4.5);
+
+        //releasing stone
+        extendSlidesBy(6, .5);
+        turnRelative(factor * 90);
+        move(0, 6);
+        releaseStone();
+        //preparing for foundation
+        move(0, -6);
+        turnRelative(180);
+        extendSlidesBy(-6, .5);
+        outwardsIntake();
+
+        move(0, -9);
+        toggleHook(true);
+        //right now vert position: 9 inches + middle of second tile
+        double inchesToPlaceFoundation = 0;
+        move(0, 9 + inchesToPlaceFoundation);
+        turnRelative(factor * -90);
+        toggleHook(false);
+        move(factor * inchesToPlaceFoundation, 0);
+
+        move(0, TILE_LENGTH * 4.5 - (3 * TILE_LENGTH - ROBOT_LENGTH / 2));
+
+
+    }
     public void cornerAuto(String color, boolean second, boolean secondTilePath) { // starts on second tile from the side
         int factor;
         if (color.equals("red"))
@@ -671,7 +764,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation * 2, .5, .2);
         moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
-      
+
         //moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5, .2);
 
         turnAbsolute(180 - 90 * factor);
@@ -806,21 +899,21 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     }
 
-    public void oneTileAuto(String color) { //STARTS ON THE MIDDLE OF THIRD TILE FROM THE SKYSTONES
+    public void tileSidewaysForwards(String direction) { //STARTS ON THE MIDDLE OF THIRD TILE FROM THE SKYSTONES
         int factor;
-        if (color.equals("red"))
+        if (direction.equals("right"))
             factor = 1;
         else
             factor = -1;
 
         bringSlidesDown();
-        move(factor * (TILE_LENGTH / 2), 0, .5);
+        tileSideways(direction);
         outwardsIntake();
         move(0, TILE_LENGTH + MIDDLE_OF_TILE - 2, .5);
     }
-    public void oneTileSidewaysAuto(String color) {
+    public void tileSideways(String direction) {
         int factor;
-        if (color.equals("red"))
+        if (direction.equals("right"))
             factor = 1;
         else
             factor = -1;

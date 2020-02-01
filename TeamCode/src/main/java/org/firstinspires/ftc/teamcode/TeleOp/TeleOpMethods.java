@@ -88,6 +88,18 @@ public class TeleOpMethods extends Exponential_Methods {
         }
     }
 
+    // yeeter
+    /*public void yeetServos(){
+        //retract
+        if(gamepad1.a){
+            retractYeeter();
+        }
+        //extend
+        if(gamepad.y){
+            extendYeeter();
+        }
+    }*/
+
     // moves the slides up and down
     public void slideMotors(){
         int slidePosition = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition())/2;
@@ -165,7 +177,6 @@ public class TeleOpMethods extends Exponential_Methods {
             setIntakeWheels(INTAKE_MOTORS_OUTTAKE * gamepad2.right_trigger);
         }
     }
-
 
 
     // converts between the input of the trigger to the power of the motors
