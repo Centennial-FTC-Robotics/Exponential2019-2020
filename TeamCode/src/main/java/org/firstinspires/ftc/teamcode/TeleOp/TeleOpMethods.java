@@ -21,6 +21,7 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double INTAKE_MOTORS_OUTTAKE = .3;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
     public static final double SLIDE_FACTOR = .5;
+    public static final double INTAKE_WHEELS_SPEED_FACTOR = .5;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
 
     public ElapsedTime timer = new ElapsedTime();
@@ -180,8 +181,9 @@ public class TeleOpMethods extends Exponential_Methods {
     // toggles intake wheels
     public void intakeMotors(){
         setIntakeWheels(INTAKE_MOTORS_INTAKE * gamepad2.left_trigger);
-        if(gamepad2.right_trigger!=0) {
-            setIntakeWheels(INTAKE_MOTORS_OUTTAKE * gamepad2.right_trigger);
+        setIntakeWheels(INTAKE_MOTORS_OUTTAKE * gamepad2.right_trigger);
+        if(gamepad2.right_stick_y!=0){
+            setIntakeWheels(gamepad2.right_stick_y*-1*INTAKE_WHEELS_SPEED_FACTOR);
         }
     }
 
