@@ -115,7 +115,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         return encoderValue;
     }
 
-
     /*
     public int convertInchToEncoderOdom(double inches){
         double conversion = 30498320948209384;
@@ -123,8 +122,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
     */
 
-
-    
     public double getAngleDist(double targetAngle, double currentAngle) {
         double angleDifference = currentAngle - targetAngle;
         if (Math.abs(angleDifference) > 180) {
