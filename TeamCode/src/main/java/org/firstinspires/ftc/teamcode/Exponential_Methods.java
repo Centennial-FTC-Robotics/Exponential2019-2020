@@ -33,7 +33,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public SkystoneDetector skystoneDetector;
 
-    public static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    public static final String TFOD_MODEL_ASSET = "detect.tflite";
     public static final String LABEL_FIRST_ELEMENT = "Stone";
     public static final String LABEL_SECOND_ELEMENT = "Skystone";
     public static final int MIDDLE_SCREEN = 640;
