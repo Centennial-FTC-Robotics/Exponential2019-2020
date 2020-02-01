@@ -40,6 +40,7 @@ public class TeleOpMethods extends Exponential_Methods {
             hookServos();
             slideMotors();
             intakeMotors();
+            yeetServos();
         }
     }
 
@@ -90,12 +91,8 @@ public class TeleOpMethods extends Exponential_Methods {
 
     // yeeter
     /*public void yeetServos(){
-        //retract
-        if(gamepad1.a){
-            retractYeeter();
-        }
         //extend
-        if(gamepad.y){
+        if(gamepad.a){
             extendYeeter();
         }
     }*/

@@ -504,10 +504,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         yeetServo.setPosition(1);
     }
 
-    public void retractYeeter(){ //retract yeeter
-        //set position later
-        yeetServo.setPosition(0);
-    }*/
+    */
 
     //-------------- AUTO AID METHODS  -------------- (organization)
 
