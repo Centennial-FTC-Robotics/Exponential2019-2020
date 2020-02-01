@@ -9,7 +9,7 @@ public class FieldCentric extends TeleOpMethods {
     public void runOpMode() throws InterruptedException{
         super.runOpMode();
         if(gamepad1.y){
-             resetOrientation();
+                         resetOrientation();
         }
     }
     public void driveTrain() {
