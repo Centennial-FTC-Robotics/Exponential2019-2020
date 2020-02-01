@@ -502,13 +502,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void extendYeeter (){ //extend yeeter to park
         //set position later
         yeetServo.setPosition(1);
-        sleep(500);
     }
 
     public void retractYeeter(){ //retract yeeter
         //set position later
         yeetServo.setPosition(0);
-        sleep(500);
     }*/
 
     //-------------- AUTO AID METHODS  -------------- (organization)
