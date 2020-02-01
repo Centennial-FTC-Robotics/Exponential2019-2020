@@ -57,7 +57,7 @@ public class SkystoneDetector{
 
         public Mat processFrame(Mat input){
             //TODO set points later
-            Rect rectCrop = new Rect(new Point(150,450) , new Point(1090,550));
+            Rect rectCrop = new Rect(new Point(100,400) , new Point(1100,600));
             Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
             Mat croppedGray = new Mat(gray, rectCrop);
 
@@ -70,8 +70,6 @@ public class SkystoneDetector{
 
             //For each segment
             for(int i=0; i < 3; i++){
-                opMode.telemetry.addData("i", i);
-                opMode.telemetry.update();
                 //For x
                 for(int x = divisions[i]; x < divisions[i+1]; x++){
                     //For y
