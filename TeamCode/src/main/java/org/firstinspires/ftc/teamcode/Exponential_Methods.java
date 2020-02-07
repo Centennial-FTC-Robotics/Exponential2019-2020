@@ -487,7 +487,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             hookServoLeft.setPosition(0.1);
             hookServoRight.setPosition(0.1);
         }
-        sleep(500);
+        // sleep(500);
     }
 
     public void setIntakeServosPosition(double position) {
