@@ -23,11 +23,8 @@ public class DiegoTesting extends TeleOpMethods {
         }
     }
 
-    // moves the slides up and down
     public void slideMotors(){
-        int slidePositionRight = slideUp.getCurrentPosition();
-        int slidePositionLeft = slideDown.getCurrentPosition();
-
+        int slidePosition = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition())/2;
         // height of the slides given from the encoder counts
         if(gamepad2.left_stick_y!=0){
             // user wants to move slides
@@ -35,76 +32,57 @@ public class DiegoTesting extends TeleOpMethods {
             slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if(gamepad2.left_bumper){
                 // slows down slides according to left bumper
-                slideUp.setPower(RIGHT_SLIDE_FACTOR *LEFT_BUMPER_TRIGGER_FACTOR*-gamepad2.left_stick_y);
-                slideDown.setPower(LEFT_SLIDE_FACTOR *LEFT_BUMPER_TRIGGER_FACTOR*-gamepad2.left_stick_y);
+                slideUp.setPower(SLIDE_FACTOR*LEFT_BUMPER_TRIGGER_FACTOR*-gamepad2.left_stick_y);
+                slideDown.setPower(SLIDE_FACTOR*LEFT_BUMPER_TRIGGER_FACTOR*-gamepad2.left_stick_y);
             } else if (gamepad2.right_bumper){
                 // slows down slides according to right bumper
-                slideUp.setPower(RIGHT_BUMPER_TRIGGER_FACTOR* RIGHT_SLIDE_FACTOR *-gamepad2.left_stick_y);
-                slideDown.setPower(RIGHT_BUMPER_TRIGGER_FACTOR* LEFT_SLIDE_FACTOR *-gamepad2.left_stick_y);
+                slideUp.setPower(RIGHT_BUMPER_TRIGGER_FACTOR*SLIDE_FACTOR*-gamepad2.left_stick_y);
+                slideDown.setPower(RIGHT_BUMPER_TRIGGER_FACTOR*SLIDE_FACTOR*-gamepad2.left_stick_y);
             } else {
                 // moves slides according to gamepad2 left stick
-                slideUp.setPower((RIGHT_SLIDE_FACTOR *-gamepad2.left_stick_y));
-                slideDown.setPower((LEFT_SLIDE_FACTOR *-gamepad2.left_stick_y));
+                slideUp.setPower((SLIDE_FACTOR*-gamepad2.left_stick_y));
+                slideDown.setPower((SLIDE_FACTOR*-gamepad2.left_stick_y));
             }
-
-            if(slidePositionRight > SLIDE_MAX_RIGHT) {
+            if(slidePosition > SLIDE_MAX) {
                 // slides too high
                 if(gamepad2.left_stick_y>0){
                     // if user is pushing the slides down
-                    slideUp.setPower(RIGHT_SLIDE_FACTOR *-gamepad2.left_stick_y);
+                    slideUp.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
+                    slideDown.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
                 } else {
                     // if user is trying to push the slides up when they have already hit their limit
-                    setSlidePowRight(0);
+                    setSlidePower(0);
                 }
-            } else if(slidePositionRight < SLIDE_MIN) {
-                if (gamepad2.left_stick_y < 0) {
+            } else if(slidePosition < SLIDE_MIN)
+                if(gamepad2.left_stick_y<0){
                     // if user wants to push slides back up
-                    slideUp.setPower(RIGHT_SLIDE_FACTOR * -gamepad2.left_stick_y);
+                    slideUp.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
+                    slideDown.setPower(SLIDE_FACTOR*-gamepad2.left_stick_y);
                 } else {
                     // if user is trying to push the slides down when they have already hit their limit
-                    setSlidePowRight(0);
+                    setSlidePower(0);
                 }
-            }
-
-            if(slidePositionLeft > SLIDE_MAX_LEFT) {
-                // slides too high
-                if(gamepad2.left_stick_y>0){
-                    // if user is pushing the slides down
-                    slideDown.setPower(LEFT_SLIDE_FACTOR *-gamepad2.left_stick_y);
-                } else {
-                    // if user is trying to push the slides up when they have already hit their limit
-                    setSlidePowLeft(0);
-                }
-            } else if(slidePositionLeft < SLIDE_MIN) {
-                if (gamepad2.left_stick_y < 0) {
-                    // if user wants to push slides back up
-                    slideDown.setPower(LEFT_SLIDE_FACTOR * -gamepad2.left_stick_y);
-                } else {
-                    // if user is trying to push the slides down when they have already hit their limit
-                    setSlidePowLeft(0);
-                }
-            }
         } else {
             // the user is not trying to move slides
-            if(slidePositionRight > SLIDE_MAX_RIGHT) {
+            if(slidePosition > SLIDE_MAX) {
                 // if the slide have exceeded the height, go back to slide max
-                slidePositionRight = SLIDE_MAX_RIGHT;
-            } else if(slidePositionRight < SLIDE_MIN) {
+                slidePosition = SLIDE_MAX;
+            } else if(slidePosition < SLIDE_MIN) {
                 // if the slide is too low, go back to slide min
-                slidePositionRight = SLIDE_MIN;
+                slidePosition = SLIDE_MIN;
             }
 
-            if(slidePositionLeft > SLIDE_MAX_LEFT) {
-                // if the slide have exceeded the height, go back to slide max
-                slidePositionLeft = SLIDE_MAX_LEFT;
-            } else if(slidePositionLeft < SLIDE_MIN) {
-                // if the slide is too low, go back to slide min
-                slidePositionLeft = SLIDE_MIN;
+            if ((slidePosition - (slideUp.getCurrentPosition() + slideDown.getCurrentPosition())/2) > 0) {
+
+                setZeroPowerMode(true);
+            } else if ((slidePosition - (slideUp.getCurrentPosition() + slideDown.getCurrentPosition())/2) < 0) {
+
+                setZeroPowerMode(false);
             }
 
             // tells the slides to hold the position that the slides were at when the user released the trigger
-            slideUp.setTargetPosition(slidePositionRight);
-            slideDown.setTargetPosition(slidePositionLeft);
+            slideUp.setTargetPosition(slidePosition);
+            slideDown.setTargetPosition(slidePosition);
             slideUp.setPower(SLIDE_POWER);
             slideDown.setPower(SLIDE_POWER);
             slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -112,17 +90,125 @@ public class DiegoTesting extends TeleOpMethods {
         }
         if(gamepad2.y&&timer.seconds()>TIMER_INTERVAL){
             // if button y is pressed, move slides up 4 inches
-            slidePositionRight += convertInchToEncoderSlides(4);
-            slidePositionLeft += convertInchToEncoderSlides(4);
+            slidePosition += convertInchToEncoderSlides(4);
             timer.reset();
         }
         if(gamepad2.a&&timer.seconds()>TIMER_INTERVAL){
             // if button a is pressed, move slides down 4 inches
-            slidePositionRight -= convertInchToEncoderSlides(4);
-            slidePositionLeft -= convertInchToEncoderSlides(4);
+            slidePosition -= convertInchToEncoderSlides(4);
             timer.reset();
         }
     }
+
+    // moves the slides up and down
+//    public void slideMotors(){
+//        int slidePositionRight = slideUp.getCurrentPosition();
+//        int slidePositionLeft = slideDown.getCurrentPosition();
+//
+//        // height of the slides given from the encoder counts
+//        if(gamepad2.left_stick_y!=0){
+//            // user wants to move slides
+//            slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            if(gamepad2.left_bumper){
+//                // slows down slides according to left bumper
+//                slideUp.setPower(RIGHT_SLIDE_FACTOR *LEFT_BUMPER_TRIGGER_FACTOR*-gamepad2.left_stick_y);
+//                slideDown.setPower(LEFT_SLIDE_FACTOR *LEFT_BUMPER_TRIGGER_FACTOR*-gamepad2.left_stick_y);
+//            } else if (gamepad2.right_bumper){
+//                // slows down slides according to right bumper
+//                slideUp.setPower(RIGHT_BUMPER_TRIGGER_FACTOR* RIGHT_SLIDE_FACTOR *-gamepad2.left_stick_y);
+//                slideDown.setPower(RIGHT_BUMPER_TRIGGER_FACTOR* LEFT_SLIDE_FACTOR *-gamepad2.left_stick_y);
+//            } else {
+//                // moves slides according to gamepad2 left stick
+//                slideUp.setPower((RIGHT_SLIDE_FACTOR *-gamepad2.left_stick_y));
+//                slideDown.setPower((LEFT_SLIDE_FACTOR *-gamepad2.left_stick_y));
+//            }
+//
+//            if(slidePositionRight > SLIDE_MAX_RIGHT) {
+//                // slides too high
+//                if(gamepad2.left_stick_y>0){
+//                    // if user is pushing the slides down
+//                    slideUp.setPower(RIGHT_SLIDE_FACTOR *-gamepad2.left_stick_y);
+//                } else {
+//                    // if user is trying to push the slides up when they have already hit their limit
+//                    setSlidePowRight(0);
+//                }
+//            } else if(slidePositionRight < SLIDE_MIN) {
+//                if (gamepad2.left_stick_y < 0) {
+//                    // if user wants to push slides back up
+//                    slideUp.setPower(RIGHT_SLIDE_FACTOR * -gamepad2.left_stick_y);
+//                } else {
+//                    // if user is trying to push the slides down when they have already hit their limit
+//                    setSlidePowRight(0);
+//                }
+//            }
+//
+//            if(slidePositionLeft > SLIDE_MAX_LEFT) {
+//                // slides too high
+//                if(gamepad2.left_stick_y>0){
+//                    // if user is pushing the slides down
+//                    slideDown.setPower(LEFT_SLIDE_FACTOR *-gamepad2.left_stick_y);
+//                } else {
+//                    // if user is trying to push the slides up when they have already hit their limit
+//                    setSlidePowLeft(0);
+//                }
+//            } else if(slidePositionLeft < SLIDE_MIN) {
+//                if (gamepad2.left_stick_y < 0) {
+//                    // if user wants to push slides back up
+//                    slideDown.setPower(LEFT_SLIDE_FACTOR * -gamepad2.left_stick_y);
+//                } else {
+//                    // if user is trying to push the slides down when they have already hit their limit
+//                    setSlidePowLeft(0);
+//                }
+//            }
+//        } else {
+//            // the user is not trying to move slides
+//            if(slidePositionRight > SLIDE_MAX_RIGHT) {
+//                // if the slide have exceeded the height, go back to slide max
+//                slidePositionRight = SLIDE_MAX_RIGHT;
+//            } else if(slidePositionRight < SLIDE_MIN) {
+//                // if the slide is too low, go back to slide min
+//                slidePositionRight = SLIDE_MIN;
+//            }
+//
+//            if(slidePositionLeft > SLIDE_MAX_LEFT) {
+//                // if the slide have exceeded the height, go back to slide max
+//                slidePositionLeft = SLIDE_MAX_LEFT;
+//            } else if(slidePositionLeft < SLIDE_MIN) {
+//                // if the slide is too low, go back to slide min
+//                slidePositionLeft = SLIDE_MIN;
+//            }
+//
+//            // tells the slides to hold the position that the slides were at when the user released the trigger
+//
+//            if ((slidePositionLeft - slideDown.getCurrentPosition()) > 0) {
+//
+//                setZeroPowerMode(true);
+//            } else if ((slidePositionLeft - slideDown.getCurrentPosition()) < 0) {
+//
+//                setZeroPowerMode(false);
+//            }
+//
+//            slideUp.setTargetPosition(slidePositionRight);
+//            slideDown.setTargetPosition(slidePositionLeft);
+//            slideUp.setPower(SLIDE_POWER);
+//            slideDown.setPower(SLIDE_POWER);
+//            slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        }
+//        if(gamepad2.y&&timer.seconds()>TIMER_INTERVAL){
+//            // if button y is pressed, move slides up 4 inches
+//            slidePositionRight += convertInchToEncoderSlides(4);
+//            slidePositionLeft += convertInchToEncoderSlides(4);
+//            timer.reset();
+//        }
+//        if(gamepad2.a&&timer.seconds()>TIMER_INTERVAL){
+//            // if button a is pressed, move slides down 4 inches
+//            slidePositionRight -= convertInchToEncoderSlides(4);
+//            slidePositionLeft -= convertInchToEncoderSlides(4);
+//            timer.reset();
+//        }
+//    }
 
     public void setSlidePowRight(double power) {
 
@@ -132,5 +218,15 @@ public class DiegoTesting extends TeleOpMethods {
     public void setSlidePowLeft(double power) {
 
         slideDown.setPower(0);
+    }
+
+    public void setZeroPowerMode(boolean up) {
+        if (up) {
+            slideUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        } else {
+            slideUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            slideDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
     }
 }
