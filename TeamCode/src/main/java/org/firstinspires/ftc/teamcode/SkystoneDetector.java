@@ -20,7 +20,7 @@ public class SkystoneDetector{
     int stonePos = 1;
 
     public void initialize(OpMode opmode){
-        opMode = opmode;
+        this.opMode = opmode;
         int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         cam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
