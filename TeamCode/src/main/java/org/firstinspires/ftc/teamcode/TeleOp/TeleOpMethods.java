@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@TeleOp(name = "TeleOp: Robot Relative", group = "TeleOp")
+@TeleOp(name = "TeleOp: Regular", group = "TeleOp")
 public class TeleOpMethods extends Exponential_Methods {
     public static final double LEFT_BUMPER_TRIGGER_FACTOR = .5;
     public static final double RIGHT_BUMPER_TRIGGER_FACTOR = .25;

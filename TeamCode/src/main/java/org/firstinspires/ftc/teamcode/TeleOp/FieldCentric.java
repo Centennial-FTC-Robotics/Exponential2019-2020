@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 public class FieldCentric extends TeleOpMethods {
     @Override
-    public void runOpMode() throws InterruptedException{
+    public void runOpMode() throws InterruptedException {
         super.runOpMode();
         if(gamepad1.y){
             resetOrientation();

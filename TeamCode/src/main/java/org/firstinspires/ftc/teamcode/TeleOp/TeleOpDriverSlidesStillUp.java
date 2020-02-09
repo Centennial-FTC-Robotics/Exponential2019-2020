@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "teleop slides still up", group = "TeleOp")
+@TeleOp(name = "Teleop: slides still up", group = "TeleOp")
 
 public class TeleOpDriverSlidesStillUp extends TeleOpMethods {
 
