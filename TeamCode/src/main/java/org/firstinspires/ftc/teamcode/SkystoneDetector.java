@@ -20,7 +20,7 @@ public class SkystoneDetector{
     int stonePos = 1;
 
     public void initialize(OpMode opmode){
-        opMode = opmode;
+        this.opMode = opmode;
         int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         cam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
@@ -32,7 +32,6 @@ public class SkystoneDetector{
     }
 
     public void activate(String color){
-        //TODO set later cause I don't know which side is which camera rotation
         if(color.equals("red")){
             cam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_LEFT);
         }
@@ -62,7 +61,8 @@ public class SkystoneDetector{
             Mat croppedGray = new Mat(gray, rectCrop);
 
             int stoneSize = 300;  //TODO set later
-            int[] divisions = {0, stoneSize*1, stoneSize*2, stoneSize*3}; //TODO set later
+            //int[] divisions = {0, stoneSize*1, stoneSize*2, stoneSize*3};
+            int[] divisions = {stoneSize*3, stoneSize*2, stoneSize*1, 0}; //TODO set later
 
             double brightnessMin = Double.MAX_VALUE;
             double brightnessAvg = 0;

@@ -605,8 +605,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         double MAX_POWER = 0.6;
 
-        bringSlidesDown();
-
         //start distance away from wall (set later)
         double startX = 0;
         double startY = 0;
@@ -624,8 +622,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         double inchesHorizontalForSkystone = -startX + inchesBlocks + intakeOffset;
         move(factor * -startY, -inchesHorizontalForSkystone); //moves to the correct horizontal position
-        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2), 0); //moves sideways to get in intaking position
 
+
+        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2 - 12), 0); //moves sideways to get in intaking position
+        bringSlidesDown();
+        move(factor * 12, 0);
         //intaking stone
         clampStone();
         setIntakeWheels(.3);
@@ -881,9 +882,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             factor = -1;
 
         bringSlidesDown();
-        tileSideways(direction);
         outwardsIntake();
         move(0, TILE_LENGTH + MIDDLE_OF_TILE - 2, .5);
+        tileSideways(direction);
     }
     public void tileSideways(String direction) {
         int factor;
