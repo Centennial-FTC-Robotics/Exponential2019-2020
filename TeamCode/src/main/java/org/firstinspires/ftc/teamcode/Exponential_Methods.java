@@ -114,13 +114,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         int encoderValue = (int) Math.round(conversion * inches);
         return encoderValue;
     }
-
-    /*
     public int convertInchToEncoderOdom(double inches){
         return (int) (8192/(2*Math.PI)*inches);
     }
-    */
-
     public double getAngleDist(double targetAngle, double currentAngle) {
         double angleDifference = currentAngle - targetAngle;
         if (Math.abs(angleDifference) > 180) {
@@ -232,12 +228,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
     }
-
-
-
     /*
-    public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
-        double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
+    public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){
+        double targetAngle = getRotationinDimension('Z');
         double currentAngle;
         int direction;
         double turnRate;
@@ -256,8 +249,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double max_positive = maxPower;
         double min_negative = -maxPower;
 
-        double encoderForward = convertInchToEncoder(inchesForward);
-        double encoderSideways = convertInchToEncoder(inchesSideways);
+        double encoderForward = convertInchToEncoderOdom(inchesForward);
+        double encoderSideways = convertInchToEncoderOdom(inchesSideways);
         odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -294,18 +287,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             displacementForwards = (int)encoderForward-odoWheelForwards.getCurrentPosition();
         }
         setPowerDriveMotors(0);
-        //TODO i got rid of rotate
         //turnAbsolute(targetAngle);
     }
     */
-
-
-
-
-
-
-
-
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
         double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
         double currentAngle;
@@ -351,17 +335,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
 
-            if(time.seconds()>2){
+            //if(time.seconds()>2){
                 frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
                 frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
                 backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
                 backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
-            } else {
+            //} else {
                 frontLeft.setPower(-direction * turnRate + Range.clip(p * frontLeft_displacement, min_negative, max_positive));
                 frontRight.setPower(direction * turnRate + Range.clip(p * frontRight_displacement, min_negative, max_positive));
                 backLeft.setPower(-direction * turnRate + Range.clip(p * backLeft_displacement, min_negative, max_positive));
                 backRight.setPower(direction * turnRate + Range.clip(p * backRight_displacement, min_negative, max_positive));
-            }
+            //}
 
             frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
             frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
@@ -498,7 +482,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //yeeter methods
     public void extendYeeter (){ //extend yeeter to park
         //set position later
-        yeetServo.setPosition(1);
+        // yeetServo.setPosition(1);
     }
 
     //-------------- AUTO AID METHODS  -------------- (organization)

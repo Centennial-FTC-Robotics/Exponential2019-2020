@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 @TeleOp(name = "TeleOp: Robot Relative", group = "TeleOp")
@@ -11,19 +12,24 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double LEFT_BUMPER_TRIGGER_FACTOR = .5;
     public static final double RIGHT_BUMPER_TRIGGER_FACTOR = .25;
     public static final double LEFT_SERVO_OPEN_POSITION = .55;
-    public static final double Right_SERVO_OPEN_POSITION = .85;
+    public static final double RIGHT_SERVO_OPEN_POSITION = .85;
     public static final double LEFT_SERVO_CLOSE_POSITION = .62;
-    public static final double Right_SERVO_CLOSE_POSITION = .92;
+    public static final double RIGHT_SERVO_CLOSE_POSITION = .92;
     public static final int SLIDE_MAX = slideMax - slideMin;
     public static final int SLIDE_MIN = 0;
     public static final double TIMER_INTERVAL = .15;
+    public static final double INTAKE_SERVOS_TIMER_INTERVAL = .3;
+    public static final double HOOK_SERVOS_TIMER_INTERVAL = .3;
     public static final double INTAKE_MOTORS_INTAKE = -.45;
     public static final double INTAKE_MOTORS_OUTTAKE = .3;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
     public static final double SLIDE_FACTOR = .5;
     public static final double INTAKE_WHEELS_SPEED_FACTOR = .5;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
-
+    public boolean servosOpen = true;
+    public boolean hooksDown = false;
+    public ElapsedTime intakeTimer = new ElapsedTime();
+    public ElapsedTime hookTimer = new ElapsedTime();
     public ElapsedTime timer = new ElapsedTime();
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,8 +62,6 @@ public class TeleOpMethods extends Exponential_Methods {
             // if right bumper is pressed, reduce the motor speed
             factor = RIGHT_BUMPER_TRIGGER_FACTOR;
         }
-
-
         frontRight.setPower(factor*answer[0]);
         backRight.setPower(factor*answer[1]);
         backLeft.setPower(factor*answer[2]);
@@ -77,27 +81,24 @@ public class TeleOpMethods extends Exponential_Methods {
 
     public void intakeServos(){
         //Intake arm servos
-        if(gamepad2.b){
-            // b button is pressed
-            intakeServoLeft.setPosition(LEFT_SERVO_CLOSE_POSITION);
-            intakeServoRight.setPosition(Right_SERVO_CLOSE_POSITION);
+        if(gamepad2.x&&intakeTimer.seconds()>INTAKE_SERVOS_TIMER_INTERVAL){
+            servosOpen = !servosOpen;
+            intakeTimer.reset();
         }
-
-        if(gamepad2.x){
-            // x button is pressed
+        if(servosOpen){
             intakeServoLeft.setPosition(LEFT_SERVO_OPEN_POSITION);
-            intakeServoRight.setPosition(Right_SERVO_OPEN_POSITION);
+            intakeServoRight.setPosition(RIGHT_SERVO_OPEN_POSITION);
+        } else {
+            intakeServoLeft.setPosition(LEFT_SERVO_CLOSE_POSITION);
+            intakeServoRight.setPosition(RIGHT_SERVO_CLOSE_POSITION);
         }
     }
     public void hookServos(){
-        //hook down
-        if(gamepad1.x) {
-            toggleHook(true);
+        if(gamepad1.x&hookTimer.seconds()>HOOK_SERVOS_TIMER_INTERVAL){
+            hooksDown=!hooksDown;
+            hookTimer.reset();
         }
-        //hook up
-        if(gamepad1.b) {
-            toggleHook(false);
-        }
+        toggleHook(hooksDown);
     }
 
     // yeeter
@@ -181,7 +182,8 @@ public class TeleOpMethods extends Exponential_Methods {
     // toggles intake wheels
     public void intakeMotors(){
         setIntakeWheels(INTAKE_MOTORS_INTAKE * gamepad2.left_trigger);
-        setIntakeWheels(INTAKE_MOTORS_OUTTAKE * gamepad2.right_trigger);
+        if (gamepad2.right_trigger!=0)
+            setIntakeWheels(INTAKE_MOTORS_OUTTAKE * gamepad2.right_trigger);
         if(gamepad2.right_stick_y!=0){
             setIntakeWheels(gamepad2.right_stick_y*-1*INTAKE_WHEELS_SPEED_FACTOR);
         }
