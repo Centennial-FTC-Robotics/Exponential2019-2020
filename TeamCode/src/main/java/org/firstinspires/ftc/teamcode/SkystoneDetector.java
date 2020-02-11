@@ -61,24 +61,30 @@ public class SkystoneDetector{
             Mat croppedGray = new Mat(gray, rectCrop);
 
             int stoneSize = 300;  //TODO set later
-            //int[] divisions = {0, stoneSize*1, stoneSize*2, stoneSize*3};
-            int[] divisions = {stoneSize*3, stoneSize*2, stoneSize*1, 0}; //TODO set later
+            int[] divisions = {0, stoneSize*1, stoneSize*2, stoneSize*3};
 
             double brightnessMin = Double.MAX_VALUE;
             double brightnessAvg = 0;
-            int pixels = 0;
 
             //For each segment
             for(int i=0; i < 3; i++){
+                int pixels = 0;
                 //For x
-                for(int x = divisions[i]; x < divisions[i+1]; x++){
+                for(int x = divisions[i]; x < divisions[i+1]; x+=10){
+                    opMode.telemetry.update();
                     //For y
-                    for(int y = 0; y < croppedGray.rows(); y++){
+                    for(int y = 0; y < croppedGray.rows(); y+=10){
                         brightnessAvg += croppedGray.get(y,x)[0];
+                        opMode.telemetry.addData("pix", croppedGray.get(y,x)[0]);
+                        opMode.telemetry.update();
                         pixels++;
                     }
                 }
                 brightnessAvg /= pixels;
+                opMode.telemetry.addData("i", i);
+                opMode.telemetry.addData("pixels", pixels);
+                opMode.telemetry.addData("brightness", brightnessAvg);
+
                 if(brightnessAvg < brightnessMin){
                     brightnessMin = brightnessAvg;
                     stonePos = i;
