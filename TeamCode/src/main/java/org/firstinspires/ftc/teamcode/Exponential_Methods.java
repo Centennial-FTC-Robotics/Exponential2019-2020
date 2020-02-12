@@ -865,7 +865,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         move(factor * (TILE_LENGTH / 4),0, MAX_POWER);
         move(0, 1.25 * TILE_LENGTH + 6, MAX_POWER);
-
     }
 
     public void tileSidewaysForwards(String direction) { //STARTS ON THE MIDDLE OF THIRD TILE FROM THE SKYSTONES
