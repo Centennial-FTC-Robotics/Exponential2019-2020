@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
@@ -48,6 +51,7 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
+            telemetry.addData("angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES));
         }
     }
 
@@ -172,11 +176,14 @@ public class TeleOpMethods extends Exponential_Methods {
             slidePosition += convertInchToEncoderSlides(4);
             timer.reset();
         }
-        if(gamepad2.a&&timer.seconds()>TIMER_INTERVAL){
+        if(gamepad2.a&&timer.seconds()>TIMER_INTERVAL) {
             // if button a is pressed, move slides down 4 inches
             slidePosition -= convertInchToEncoderSlides(4);
             timer.reset();
         }
+        telemetry.addData("Up Slide", slideUp.getCurrentPosition());
+        telemetry.addData("Down Slide", slideDown.getCurrentPosition());
+        telemetry.update();
     }
 
     // toggles intake wheels

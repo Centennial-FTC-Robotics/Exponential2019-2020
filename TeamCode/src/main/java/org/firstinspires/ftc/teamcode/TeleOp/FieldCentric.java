@@ -8,11 +8,12 @@ public class FieldCentric extends TeleOpMethods {
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
+
+    }
+    public void driveTrain() {
         if(gamepad1.y){
             resetOrientation();
         }
-    }
-    public void driveTrain() {
         double currentAngle = Math.PI*getRotationinDimension('Z')/180;
         // double currentAngle = 0; //  TODO; FIND OUT HOW TO SET LATeR
 

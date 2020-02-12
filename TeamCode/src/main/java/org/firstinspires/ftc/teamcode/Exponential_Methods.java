@@ -340,12 +340,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
                 backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
                 backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
-            //} else {
-                frontLeft.setPower(-direction * turnRate + Range.clip(p * frontLeft_displacement, min_negative, max_positive));
-                frontRight.setPower(direction * turnRate + Range.clip(p * frontRight_displacement, min_negative, max_positive));
-                backLeft.setPower(-direction * turnRate + Range.clip(p * backLeft_displacement, min_negative, max_positive));
-                backRight.setPower(direction * turnRate + Range.clip(p * backRight_displacement, min_negative, max_positive));
-            //}
 
             frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
             frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();

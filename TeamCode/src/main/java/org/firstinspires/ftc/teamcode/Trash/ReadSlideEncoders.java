@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Exponential_Hardware_Initializations;
 public class ReadSlideEncoders extends Exponential_Hardware_Initializations {
     public void runOpMode()throws InterruptedException{
         super.runOpMode();
+        waitForStart();
         while(opModeIsActive()){
             telemetry.addData("Up Slide", slideUp.getCurrentPosition());
             telemetry.addData("Down Slide", slideDown.getCurrentPosition());

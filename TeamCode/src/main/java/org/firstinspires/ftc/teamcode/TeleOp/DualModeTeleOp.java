@@ -17,6 +17,9 @@ public class DualModeTeleOp extends TeleOpMethods {
             }
             time.reset();
         }
+        if(gamepad1.y){
+            resetOrientation();
+        }
         if(mode.equals("Regular")){
             double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, ROTATE_TO_MOVE_RATIO*gamepad1.right_stick_x);
             double factor = 1;
