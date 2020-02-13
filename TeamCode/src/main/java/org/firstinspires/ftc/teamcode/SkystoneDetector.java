@@ -55,12 +55,11 @@ public class SkystoneDetector{
         Mat croppedGray = new Mat();
 
         public Mat processFrame(Mat input){
-            //TODO set points later
             Rect rectCrop = new Rect(new Point(100,400) , new Point(1000,600));
             Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
             Mat croppedGray = new Mat(gray, rectCrop);
 
-            int stoneSize = 280;  //TODO set later
+            int stoneSize = 280;
             int[] divisions = {0, stoneSize*1, stoneSize*2, stoneSize*3};
 
             double brightnessMin = Double.MAX_VALUE;
