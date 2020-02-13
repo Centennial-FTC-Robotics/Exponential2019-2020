@@ -33,10 +33,10 @@ public class SkystoneDetector{
 
     public void activate(String color){
         if(color.equals("red")){
-            cam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_LEFT);
+            cam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_RIGHT);
         }
         if(color.equals("blue")){
-            cam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            cam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_LEFT);
         }
     }
 
@@ -56,11 +56,11 @@ public class SkystoneDetector{
 
         public Mat processFrame(Mat input){
             //TODO set points later
-            Rect rectCrop = new Rect(new Point(100,400) , new Point(1100,600));
+            Rect rectCrop = new Rect(new Point(100,400) , new Point(1000,600));
             Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
             Mat croppedGray = new Mat(gray, rectCrop);
 
-            int stoneSize = 300;  //TODO set later
+            int stoneSize = 280;  //TODO set later
             int[] divisions = {0, stoneSize*1, stoneSize*2, stoneSize*3};
 
             double brightnessMin = Double.MAX_VALUE;
@@ -71,19 +71,18 @@ public class SkystoneDetector{
                 int pixels = 0;
                 //For x
                 for(int x = divisions[i]; x < divisions[i+1]; x+=10){
-                    opMode.telemetry.update();
                     //For y
                     for(int y = 0; y < croppedGray.rows(); y+=10){
                         brightnessAvg += croppedGray.get(y,x)[0];
-                        opMode.telemetry.addData("pix", croppedGray.get(y,x)[0]);
-                        opMode.telemetry.update();
+                        //opMode.telemetry.addData("pix", croppedGray.get(y,x)[0]);
+                        //opMode.telemetry.update();
                         pixels++;
                     }
                 }
                 brightnessAvg /= pixels;
-                opMode.telemetry.addData("i", i);
-                opMode.telemetry.addData("pixels", pixels);
-                opMode.telemetry.addData("brightness", brightnessAvg);
+                //opMode.telemetry.addData("i", i);
+                //opMode.telemetry.addData("pixels", pixels);
+                //opMode.telemetry.addData("brightness", brightnessAvg);
 
                 if(brightnessAvg < brightnessMin){
                     brightnessMin = brightnessAvg;
