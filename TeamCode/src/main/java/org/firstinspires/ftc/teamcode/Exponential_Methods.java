@@ -39,7 +39,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final int MIDDLE_SCREEN = 640;
     public static final int TOP_MIDDLE_SCREEN = 360;
 
-    public static final double TILE_LENGTH = 22.75;
+    public static final double TILE_LENGTH = 24;
     public static final double ROBOT_LENGTH = 18;
     public static final double BLOCK_LENGTH = 8;
     public static final double FOUNDATION_WIDTH = 18.5;
@@ -600,7 +600,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double MAX_POWER = 0.6;
 
         //start distance away from wall (set later)
-        double startX = 0;
+        double startX = TILE_LENGTH * 2 - ROBOT_LENGTH;
         double startY = 0;
 
         //position of skystone (start later)
@@ -610,9 +610,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
         int inchesBlocks = numBlocks * 8;
-        double intakeOffset = 0; //TODO: set later, inches to get the robot close enough to the block
+        double intakeOffset = TILE_LENGTH - ROBOT_LENGTH - 3; //TODO: change the number later, inches to get the robot close enough to the block
 
-        outwardsIntake();
+        //outwardsIntake();
 
         double inchesHorizontalForSkystone = -startX + inchesBlocks + intakeOffset;
         move(factor * -startY, -inchesHorizontalForSkystone); //moves to the correct horizontal position
