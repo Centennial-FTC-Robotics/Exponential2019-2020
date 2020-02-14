@@ -293,7 +293,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         int direction;
         double turnRate;
        // double P = 0.015; //set later
-        double P = .02; //set later
         double maxSpeed = 1; //set later
         double minSpeed = 0.03; //set later
         double error;
@@ -330,7 +329,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
-            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
 
             //if(time.seconds()>2){
                 frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
