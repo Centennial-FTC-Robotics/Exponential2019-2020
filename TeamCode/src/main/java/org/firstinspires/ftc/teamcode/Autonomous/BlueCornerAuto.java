@@ -15,7 +15,7 @@ public class BlueCornerAuto extends Exponential_Methods {
         waitForStart();
         int stonePos = skystoneDetector.getStonePos();
         skystoneDetector.deactivate();
-        
+
         //cornerAuto("red", false, false);
 
         cornerAutoSideways("blue", stonePos);
