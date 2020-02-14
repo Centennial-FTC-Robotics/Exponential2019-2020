@@ -105,7 +105,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public int convertInchToEncoderSlides(double inches) {
-        double circumference = 3.613;
+        double circumference = 5.30929;
         double encoderToIn = 537.6;
         double conversion = encoderToIn / circumference;
         int encoderValue = (int) Math.round(conversion * inches);

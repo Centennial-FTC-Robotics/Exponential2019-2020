@@ -27,7 +27,7 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double INTAKE_MOTORS_OUTTAKE = .3;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
     public static final double SLIDE_FACTOR = .5;
-    public static final double INTAKE_WHEELS_SPEED_FACTOR = .5;
+    public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
     public boolean servosOpen = true;
     public boolean hooksDown = false;
@@ -35,7 +35,7 @@ public class TeleOpMethods extends Exponential_Methods {
     public ElapsedTime hookTimer = new ElapsedTime();
     public ElapsedTime timer = new ElapsedTime();
     public double angle = 0;
-    @Override
+    public int slidePosition = 0;
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
@@ -69,8 +69,8 @@ public class TeleOpMethods extends Exponential_Methods {
                 lastAngle += currentAngleIMU-lastAngleIMU;
             }
             lastAngleIMU = currentAngleIMU;
-            telemetry.addData("angle", lastAngle);
-            telemetry.update();
+            //telemetry.addData("angle", lastAngle);
+            //telemetry.update();
         }
     }
 
@@ -134,9 +134,9 @@ public class TeleOpMethods extends Exponential_Methods {
 
     // moves the slides up and down
     public void slideMotors(){
-        int slidePosition = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition())/2;
         // height of the slides given from the encoder counts
         if(gamepad2.left_stick_y!=0){
+            slidePosition = (slideUp.getCurrentPosition());
             // user wants to move slides
             slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -200,9 +200,9 @@ public class TeleOpMethods extends Exponential_Methods {
             slidePosition -= convertInchToEncoderSlides(4);
             timer.reset();
         }
-        // telemetry.addData("Up Slide", slideUp.getCurrentPosition());
-        // telemetry.addData("Down Slide", slideDown.getCurrentPosition());
-        // telemetry.update();
+        telemetry.addData("Up Slide", slideUp.getCurrentPosition());
+        telemetry.addData("Down Slide", slideDown.getCurrentPosition());
+        telemetry.update();
     }
 
     // toggles intake wheels
