@@ -105,7 +105,7 @@ public class OdometryTesting extends Exponential_Methods {
             frontRight.setPower(Range.clip(pLin*(yDisplacement+xDisplacement), powerMin, powerMax)+pRot*(getRotationinDimension('Z')-initialAngle));
             backLeft.setPower(Range.clip(pLin*(yDisplacement+xDisplacement), powerMin, powerMax)-pRot*(getRotationinDimension('Z')-initialAngle));
             backRight.setPower(Range.clip(pLin*(yDisplacement-xDisplacement), powerMin, powerMax)+pRot*(getRotationinDimension('Z')-initialAngle));
-            
+
             xRobotPos += distanceOfSegment*(Math.cos(angleOfSegment*Math.PI/180));
             yRobotPos += distanceOfSegment*(Math.sin(angleOfSegment*Math.PI/180));
             lastAngle = getRotationinDimension('Z');
