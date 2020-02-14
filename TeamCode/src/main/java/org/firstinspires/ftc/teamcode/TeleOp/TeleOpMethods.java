@@ -115,7 +115,7 @@ public class TeleOpMethods extends Exponential_Methods {
 
     // moves the slides up and down
     public void slideMotors(){
-        int slidePosition = (slideUp.getCurrentPosition() + slideDown.getCurrentPosition())/2;
+        int slidePosition = (slideDown.getCurrentPosition())/2;
         // height of the slides given from the encoder counts
         if(gamepad2.left_stick_y!=0){
             // user wants to move slides
