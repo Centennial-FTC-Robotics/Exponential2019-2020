@@ -500,7 +500,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         setIntakeWheels(0);
     }
 
-
     public void bringSlidesDown(){
         extendSlidesBy(2,0.5);
         sleep(500);
@@ -508,6 +507,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         sleep(500);
         extendSlidesTo(slideMin, 0.5);
     }
+
 
     public int grabSkystone(String color) {
         int factor;
