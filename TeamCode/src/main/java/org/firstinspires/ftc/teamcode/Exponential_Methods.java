@@ -463,8 +463,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void toggleHook(boolean down) {
         //might need to recalibrate
         if (down) {
-            hookServoLeft.setPosition(.75);
-            hookServoRight.setPosition(.7);
+            hookServoLeft.setPosition(.48);
+            hookServoRight.setPosition(.52);
         } else {
             hookServoLeft.setPosition(0.1);
             hookServoRight.setPosition(0.1);
