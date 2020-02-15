@@ -633,7 +633,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE), 0);
 
         //move to foundation
-        move(0, -inchesHorizontalForSkystone + TILE_LENGTH * 4.5);
+        move(0, -positionForSkystone + TILE_LENGTH * 4.5);
 
         //releasing stone
         extendSlidesBy(6, .5);
