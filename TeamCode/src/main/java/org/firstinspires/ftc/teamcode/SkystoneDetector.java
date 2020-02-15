@@ -16,6 +16,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class SkystoneDetector{
     OpenCvCamera cam;
     OpMode opMode;
+    String teamColor;
 
     int stonePos = 1;
 
@@ -32,6 +33,7 @@ public class SkystoneDetector{
     }
 
     public void activate(String color){
+        teamColor = color;
         if(color.equals("red")){
             cam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_RIGHT);
         }
@@ -55,7 +57,11 @@ public class SkystoneDetector{
         Mat croppedGray = new Mat();
 
         public Mat processFrame(Mat input){
-            Rect rectCrop = new Rect(new Point(100,400) , new Point(1000,600));
+            Rect rectCrop;
+            if(teamColor.equals("red"))
+                rectCrop = new Rect(new Point(100,400) , new Point(1000,600));
+            else
+                rectCrop = new Rect(new Point(300,300) , new Point(1200,500));
             Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
             Mat croppedGray = new Mat(gray, rectCrop);
 
@@ -87,6 +93,11 @@ public class SkystoneDetector{
                     brightnessMin = brightnessAvg;
                     stonePos = i;
                 }
+            }
+
+            if(teamColor.equals("blue")){
+                stonePos = 2 - stonePos;
+
             }
 
             opMode.telemetry.addData("stonePos", stonePos);
