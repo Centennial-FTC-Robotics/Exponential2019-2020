@@ -57,9 +57,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         super.runOpMode();
         initializeIMU();
 
-        skystoneDetector = new SkystoneDetector();
-        skystoneDetector.initialize(this);
-
         //initVuforia();
         //initTfod();
 
@@ -108,7 +105,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public int convertInchToEncoderSlides(double inches) {
-        double circumference = 3.613;
+        double circumference = 5.30929;
         double encoderToIn = 537.6;
         double conversion = encoderToIn / circumference;
         int encoderValue = (int) Math.round(conversion * inches);
@@ -597,7 +594,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- AUTONOMOUS PATHS -------------- (organization)
 
-    public void cornerAutoSideways(String color) { //starts facing the bridge
+    public void cornerAutoSideways(String color, int stonePos) { //starts facing the bridge
         int factor;
         if (color.equals("red"))
             factor = 1;
@@ -611,11 +608,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double startY = 0;
 
         //position of skystone (start later)
-        boolean left = true;
-        boolean center = false;
+        boolean left = false;
+        boolean center = true;
         boolean right = false;
-
-        int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
+        int numBlocks = stonePos;
+        //int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
         int inchesBlocks = numBlocks * 8;
         double intakeOffset = TILE_LENGTH - ROBOT_LENGTH - 3; //TODO: change the number later, inches to get the robot close enough to the block
 
