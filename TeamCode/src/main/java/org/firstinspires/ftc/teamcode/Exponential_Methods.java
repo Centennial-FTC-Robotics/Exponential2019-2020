@@ -611,7 +611,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         //int numBlocks = stonePos;
         //int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
-        int inchesBlocks = (2 - stonePos) * 8;
+        int inchesBlocks = stonePos * 8;
         double intakeOffset = TILE_LENGTH - ROBOT_LENGTH - 3; //TODO: change the number later, inches to get the robot close enough to the block
 
         //outwardsIntake();
