@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-//@TeleOp(name = "MoveTester", group = "TeleOp")
+@TeleOp(name = "MoveTester", group = "TeleOp")
 
 public class MoveTester extends Exponential_Methods {
     @Override
@@ -25,7 +25,7 @@ public class MoveTester extends Exponential_Methods {
             telemetry.addData("sideways", sideways);
             // telemetry.update();
             if(gamepad1.a){
-                move(sideways, forwards, .5);
+                move(sideways, forwards, .5, .5);
             }
 
             if(gamepad2.x)
