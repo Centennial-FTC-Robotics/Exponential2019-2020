@@ -299,7 +299,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         double i = 0;
         if(Math.sqrt(inchesSideways*inchesSideways+inchesForward*inchesForward)<5){
-            i = 0.05;
+            i = 0.01;
         }
         double d = 0;
         //double inchesTolerance = .5;
@@ -327,10 +327,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double areaBackLeft= 0;
         double areaBackRight= 0;
 
-        double speedFrontLeft= 0;
-        double speedFrontRight= 0;
-        double speedBackLeft= 0;
-        double speedBackRight= 0;
+        double frontLeftLastPosition = 0;
+        double frontRightLastPosition = 0;
+        double backLeftLastPosition = 0;
+        double backRightLastPosition = 0;
+
+
 
 
         while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
@@ -338,12 +340,15 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             areaFrontRight+=time.seconds()*frontRight_displacement;
             areaBackLeft+=time.seconds()*backLeft_displacement;
             areaBackRight+=time.seconds()*backRight_displacement;
-
+            double speedFrontLeft= (frontLeft.getCurrentPosition()-frontLeftLastPosition)/time.seconds();
+            double speedFrontRight= (frontRight.getCurrentPosition()-frontRightLastPosition)/time.seconds();;
+            double speedBackLeft= (backLeft.getCurrentPosition()-backLeftLastPosition)/time.seconds();;
+            double speedBackRight= (backRight.getCurrentPosition()-backRightLastPosition)/time.seconds();;
             //if(time.seconds()>2){
-                frontLeft.setPower(Range.clip(p*frontLeft_displacement+i*areaFrontLeft, min_negative, max_positive));
-                frontRight.setPower(Range.clip(p*frontRight_displacement+i*areaFrontRight, min_negative, max_positive));
-                backLeft.setPower(Range.clip(p*backLeft_displacement+i*areaBackLeft, min_negative, max_positive));
-                backRight.setPower(Range.clip(p*backRight_displacement+i*areaBackRight, min_negative, max_positive));
+                frontLeft.setPower(Range.clip(p*frontLeft_displacement+i*areaFrontLeft+d*speedFrontLeft, min_negative, max_positive));
+                frontRight.setPower(Range.clip(p*frontRight_displacement+i*areaFrontRight+d*speedFrontRight, min_negative, max_positive));
+                backLeft.setPower(Range.clip(p*backLeft_displacement+i*areaBackLeft+d*speedBackLeft, min_negative, max_positive));
+                backRight.setPower(Range.clip(p*backRight_displacement+i*areaBackRight+d*speedBackRight, min_negative, max_positive));
 
             frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
             frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
