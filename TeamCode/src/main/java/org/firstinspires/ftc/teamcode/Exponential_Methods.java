@@ -48,7 +48,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double MIDDLE_OF_TILE = (TILE_LENGTH - ROBOT_LENGTH) / 2;
 
     public static final int slideMax = 2200;
-    public static final int slideMin = -390;
+    public static final int slideMin = -218;
 
     public static final double MAX_POWER = .6;
 
