@@ -289,20 +289,27 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     */
 
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
-        double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
-        double currentAngle;
-
+        double p;
+        double i;
         inchesForward = -inchesForward;
         inchesSideways = getTransformedDistance(inchesSideways);
 
-        double p = 1.0/600;
-
-        double i = 0;
-        if(Math.sqrt(inchesSideways*inchesSideways+inchesForward*inchesForward)<5){
-            i = 0.01;
+        if(inchesSideways!=0) {
+            p = 1.0/600;
+            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5) {
+                i = 0.01;
+            } else {
+                i=0.009;
+            }
+        } else {
+            p=1.0/1200;
+            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5){
+                i = 0.005;
+            } else {
+                i = 0;
+            }
         }
         double d = 0;
-        //double inchesTolerance = .5;
         double max_positive = maxPower;
         double min_negative = -maxPower;
 
@@ -332,23 +339,20 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double backLeftLastPosition = 0;
         double backRightLastPosition = 0;
 
-
-
-
         while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
             areaFrontLeft+=time.seconds()*frontLeft_displacement;
             areaFrontRight+=time.seconds()*frontRight_displacement;
             areaBackLeft+=time.seconds()*backLeft_displacement;
             areaBackRight+=time.seconds()*backRight_displacement;
             double speedFrontLeft= (frontLeft.getCurrentPosition()-frontLeftLastPosition)/time.seconds();
-            double speedFrontRight= (frontRight.getCurrentPosition()-frontRightLastPosition)/time.seconds();;
-            double speedBackLeft= (backLeft.getCurrentPosition()-backLeftLastPosition)/time.seconds();;
-            double speedBackRight= (backRight.getCurrentPosition()-backRightLastPosition)/time.seconds();;
+            double speedFrontRight= (frontRight.getCurrentPosition()-frontRightLastPosition)/time.seconds();
+            double speedBackLeft= (backLeft.getCurrentPosition()-backLeftLastPosition)/time.seconds();
+            double speedBackRight= (backRight.getCurrentPosition()-backRightLastPosition)/time.seconds();
             //if(time.seconds()>2){
-                frontLeft.setPower(Range.clip(p*frontLeft_displacement+i*areaFrontLeft+d*speedFrontLeft, min_negative, max_positive));
-                frontRight.setPower(Range.clip(p*frontRight_displacement+i*areaFrontRight+d*speedFrontRight, min_negative, max_positive));
-                backLeft.setPower(Range.clip(p*backLeft_displacement+i*areaBackLeft+d*speedBackLeft, min_negative, max_positive));
-                backRight.setPower(Range.clip(p*backRight_displacement+i*areaBackRight+d*speedBackRight, min_negative, max_positive));
+            frontLeft.setPower(Range.clip(p*frontLeft_displacement+i*areaFrontLeft+d*speedFrontLeft, min_negative, max_positive));
+            frontRight.setPower(Range.clip(p*frontRight_displacement+i*areaFrontRight+d*speedFrontRight, min_negative, max_positive));
+            backLeft.setPower(Range.clip(p*backLeft_displacement+i*areaBackLeft+d*speedBackLeft, min_negative, max_positive));
+            backRight.setPower(Range.clip(p*backRight_displacement+i*areaBackRight+d*speedBackRight, min_negative, max_positive));
 
             frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
             frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
