@@ -287,22 +287,21 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //turnAbsolute(targetAngle);
     }
     */
+
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
         double targetAngle = getRotationinDimension('Z');  // wow i found a good way to do this, good job yuhwan! ^^^
         double currentAngle;
-        int direction;
-        double turnRate;
-       // double P = 0.015; //set later
-        double maxSpeed = 1; //set later
-        double minSpeed = 0.03; //set later
-        double error;
 
         inchesForward = -inchesForward;
         inchesSideways = getTransformedDistance(inchesSideways);
 
-        double p = 1.0/800;
-        double i;
-        double d;
+        double p = 1.0/600;
+
+        double i = 0;
+        if(Math.sqrt(inchesSideways*inchesSideways+inchesForward*inchesForward)<5){
+            i = 0.05;
+        }
+        double d = 0;
         //double inchesTolerance = .5;
         double max_positive = maxPower;
         double min_negative = -maxPower;
@@ -323,29 +322,39 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
         ElapsedTime time = new ElapsedTime();
 
+        double areaFrontLeft= 0;
+        double areaFrontRight= 0;
+        double areaBackLeft= 0;
+        double areaBackRight= 0;
+
+        double speedFrontLeft= 0;
+        double speedFrontRight= 0;
+        double speedBackLeft= 0;
+        double speedBackRight= 0;
+
 
         while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
-            currentAngle = getRotationinDimension('Z');
-
-            error = getAngleDist(targetAngle, currentAngle);
-            direction = getAngleDir(targetAngle, currentAngle);
+            areaFrontLeft+=time.seconds()*frontLeft_displacement;
+            areaFrontRight+=time.seconds()*frontRight_displacement;
+            areaBackLeft+=time.seconds()*backLeft_displacement;
+            areaBackRight+=time.seconds()*backRight_displacement;
 
             //if(time.seconds()>2){
-                frontLeft.setPower(Range.clip(p*frontLeft_displacement, min_negative, max_positive));
-                frontRight.setPower(Range.clip(p*frontRight_displacement, min_negative, max_positive));
-                backLeft.setPower(Range.clip(p*backLeft_displacement, min_negative, max_positive));
-                backRight.setPower(Range.clip(p*backRight_displacement, min_negative, max_positive));
+                frontLeft.setPower(Range.clip(p*frontLeft_displacement+i*areaFrontLeft, min_negative, max_positive));
+                frontRight.setPower(Range.clip(p*frontRight_displacement+i*areaFrontRight, min_negative, max_positive));
+                backLeft.setPower(Range.clip(p*backLeft_displacement+i*areaBackLeft, min_negative, max_positive));
+                backRight.setPower(Range.clip(p*backRight_displacement+i*areaBackRight, min_negative, max_positive));
 
             frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
             frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
             backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
             backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-            telemetry.addData("frontLeft", frontLeft_displacement);
-            telemetry.addData("backLeft", backLeft_displacement);
-            telemetry.addData("frontRight", frontRight_displacement);
-            telemetry.addData("backRight", backRight_displacement);
-            telemetry.addData("tolerance", tolerance);
+            telemetry.addData("area frontLeft", areaFrontLeft);
+            telemetry.addData("area frontRight", areaFrontRight);
+            telemetry.addData("area backLeft", areaBackLeft);
+            telemetry.addData("area backRight", areaBackRight);
             telemetry.update();
+            time.reset();
         }
         setPowerDriveMotors(0);
         //TODO i got rid of rotate
