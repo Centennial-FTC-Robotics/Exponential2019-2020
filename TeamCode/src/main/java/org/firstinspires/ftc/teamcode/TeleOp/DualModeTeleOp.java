@@ -9,7 +9,7 @@ public class DualModeTeleOp extends TeleOpMethods {
     ElapsedTime time = new ElapsedTime();
     final double TIMER_INTERVAL = 0.3;
     public void driveTrain(){
-        if(gamepad1.b&&time.seconds()>TIMER_INTERVAL){
+        if(gamepad1.a&time.seconds()>TIMER_INTERVAL){
             if(mode.equals("Regular")){
                 mode = "Field Centric";
             } else {

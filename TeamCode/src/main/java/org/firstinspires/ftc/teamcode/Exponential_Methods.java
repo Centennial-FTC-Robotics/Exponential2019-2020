@@ -489,7 +489,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //yeeter methods
     public void extendYeeter (){ //extend yeeter to park
         //set position later
-        // yeetServo.setPosition(1);
+        yeetServo.setPosition(0.5);
     }
 
     //-------------- AUTO AID METHODS  -------------- (organization)

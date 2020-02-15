@@ -30,7 +30,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected Servo intakeServoRight;
     protected Servo hookServoLeft;
     protected Servo hookServoRight;
-    //protected Servo yeetServo;
+    protected Servo yeetServo;
 
     protected DcMotor odoWheelForwards;
     protected DcMotor odoWheelSideways;
@@ -60,7 +60,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         backRight = hardwareMap.dcMotor.get("backRight");
         intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
         intakeServoRight = hardwareMap.servo.get("intakeServoRight");
-        //yeetServo = hardwareMap.servo.get("yeetServo");
+        yeetServo = hardwareMap.servo.get("yeetServo");
 
         blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;

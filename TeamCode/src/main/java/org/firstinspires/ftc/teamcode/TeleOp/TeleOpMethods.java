@@ -127,7 +127,7 @@ public class TeleOpMethods extends Exponential_Methods {
     // yeeter
     public void yeetServos(){
         //extend
-        if(gamepad1.a){
+        if(gamepad1.b){
             extendYeeter();
         }
     }
