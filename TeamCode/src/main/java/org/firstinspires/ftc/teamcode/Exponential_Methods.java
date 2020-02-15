@@ -211,7 +211,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- MOVEMENT -------------- (organization)
 
-    public static final double DEFAULT_MOVE_TOLERANCE = .6; // SET DEFAULT TOLERANCE HERE
+    public static final double DEFAULT_MOVE_TOLERANCE = .75; // SET DEFAULT TOLERANCE HERE
 
 
     public void move(double inchesSideways, double inchesForward) {
@@ -604,22 +604,20 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double MAX_POWER = 0.6;
 
         //start distance away from wall (set later)
-        double startX = TILE_LENGTH * 2 - ROBOT_LENGTH;
+        double startX = TILE_LENGTH * 2 - ROBOT_LENGTH - MIDDLE_OF_TILE;
         double startY = 0;
 
         //position of skystone (start later)
-        boolean left = false;
-        boolean center = true;
-        boolean right = false;
-        int numBlocks = stonePos;
+
+        //int numBlocks = stonePos;
         //int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
-        int inchesBlocks = numBlocks * 8;
+        int inchesBlocks = stonePos * 8;
         double intakeOffset = TILE_LENGTH - ROBOT_LENGTH - 3; //TODO: change the number later, inches to get the robot close enough to the block
 
         //outwardsIntake();
 
-        double inchesHorizontalForSkystone = -startX + inchesBlocks + intakeOffset;
-        move(factor * -startY, -inchesHorizontalForSkystone); //moves to the correct horizontal position
+        double positionForSkystone = inchesBlocks + intakeOffset;
+        move(factor * -startY, -(startX -positionForSkystone)); //moves to the correct horizontal position
 
 
         move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2 - 12), 0); //moves sideways to get in intaking position
@@ -635,7 +633,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE), 0);
 
         //move to foundation
-        move(0, -inchesHorizontalForSkystone + TILE_LENGTH * 4.5);
+        move(0, -positionForSkystone + TILE_LENGTH * 4.5);
 
         //releasing stone
         extendSlidesBy(6, .5);
