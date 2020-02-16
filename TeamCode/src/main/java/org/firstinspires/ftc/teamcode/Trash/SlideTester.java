@@ -12,6 +12,7 @@ public class SlideTester extends Exponential_Methods {
         super.runOpMode();
         waitForStart();
         while(opModeIsActive()) {
+            /*
             if(gamepad2.y){
                 extendSlidesBy(4, 0.5);
             }
@@ -23,6 +24,11 @@ public class SlideTester extends Exponential_Methods {
             }
             if(gamepad2.x){
                 bringSlidesDown();
+            }
+             */
+
+            if(gamepad1.x){
+                outwardsIntake();
             }
         }
     }
