@@ -42,7 +42,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double TILE_LENGTH = 24;
     public static final double ROBOT_LENGTH = 18;
     public static final double BLOCK_LENGTH = 8;
-    public static final double FOUNDATION_WIDTH = 18.5;
+    public static final double FOUNDATION_LENGTH = 18.5;
     public static final double FOUNDATION_AWAY_FROM_WALL = 4;
 
     public static final double MIDDLE_OF_TILE = (TILE_LENGTH - ROBOT_LENGTH) / 2;
@@ -211,7 +211,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- MOVEMENT -------------- (organization)
 
-    public static final double DEFAULT_MOVE_TOLERANCE = .75; // SET DEFAULT TOLERANCE HERE
+    public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
 
 
     public void move(double inchesSideways, double inchesForward) {
@@ -291,6 +291,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
         double p;
         double i;
+        double targetAngle = getRotationinDimension('Z');
         inchesForward = -inchesForward;
         inchesSideways = getTransformedDistance(inchesSideways);
 
@@ -306,7 +307,81 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5){
                 i = 0.005;
             } else {
-                i = 0;
+                i = 0.0015;
+            }
+        }
+        double d = 0;
+        double max_positive = maxPower;
+        double min_negative = -maxPower;
+
+        double encoderForward = convertInchToEncoder(inchesForward);
+        double encoderSideways = convertInchToEncoder(inchesSideways);
+        resetDriveMotorEncoders();
+        double tolerance = convertInchToEncoder(inchesTolerance);
+
+        double frontLeft_encoder = encoderForward-encoderSideways;
+        double frontRight_encoder = encoderForward+encoderSideways;
+        double backLeft_encoder = encoderForward+encoderSideways;
+        double backRight_encoder = encoderForward-encoderSideways;
+
+        double frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+        double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+        double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+        double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+        ElapsedTime time = new ElapsedTime();
+
+        double areaFrontLeft= 0;
+        double areaFrontRight= 0;
+        double areaBackLeft= 0;
+        double areaBackRight= 0;
+
+        double frontLeftLastPosition = 0;
+        double frontRightLastPosition = 0;
+        double backLeftLastPosition = 0;
+        double backRightLastPosition = 0;
+        time = new ElapsedTime();
+        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
+            areaFrontLeft+=time.seconds()*frontLeft_displacement;
+            areaFrontRight+=time.seconds()*frontRight_displacement;
+            areaBackLeft+=time.seconds()*backLeft_displacement;
+            areaBackRight+=time.seconds()*backRight_displacement;
+            double speedFrontLeft= (frontLeft.getCurrentPosition()-frontLeftLastPosition)/time.seconds();
+            double speedFrontRight= (frontRight.getCurrentPosition()-frontRightLastPosition)/time.seconds();
+            double speedBackLeft= (backLeft.getCurrentPosition()-backLeftLastPosition)/time.seconds();
+            double speedBackRight= (backRight.getCurrentPosition()-backRightLastPosition)/time.seconds();
+            //if(time.seconds()>2){
+            frontLeft.setPower(Range.clip(p*frontLeft_displacement+i*areaFrontLeft+d*speedFrontLeft, min_negative, max_positive));
+            frontRight.setPower(Range.clip(p*frontRight_displacement+i*areaFrontRight+d*speedFrontRight, min_negative, max_positive));
+            backLeft.setPower(Range.clip(p*backLeft_displacement+i*areaBackLeft+d*speedBackLeft, min_negative, max_positive));
+            backRight.setPower(Range.clip(p*backRight_displacement+i*areaBackRight+d*speedBackRight, min_negative, max_positive));
+
+            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
+            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
+            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
+            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
+            telemetry.addData("area frontLeft", areaFrontLeft);
+            telemetry.addData("area frontRight", areaFrontRight);
+            telemetry.addData("area backLeft", areaBackLeft);
+            telemetry.addData("area backRight", areaBackRight);
+            telemetry.update();
+            time.reset();
+        }
+        setPowerDriveMotors(0);
+        //TODO i got rid of rotate
+        turnAbsolute(targetAngle);
+    }
+    public void moveSetISetP(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance, double i, double p){  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
+        double targetAngle = getRotationinDimension('Z');
+        inchesForward = -inchesForward;
+        inchesSideways = getTransformedDistance(inchesSideways);
+
+        if(inchesSideways!=0) {
+            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5) {
+            } else {
+            }
+        } else {
+            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5){
+            } else {
             }
         }
         double d = 0;
@@ -367,8 +442,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
         setPowerDriveMotors(0);
         //TODO i got rid of rotate
-        //turnAbsolute(targetAngle);
+        turnAbsolute(targetAngle);
     }
+
 
     public static double getTransformedDistance(double inches) {  // leave this as a separate method, ENCAPSULATION ! !
         double m = .866279;
@@ -472,8 +548,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void toggleHook(boolean down) {
         //might need to recalibrate
         if (down) {
-            hookServoLeft.setPosition(.48);
-            hookServoRight.setPosition(.52);
+            hookServoLeft.setPosition(.44);
+            hookServoRight.setPosition(.48);
         } else {
             hookServoLeft.setPosition(0.1);
             hookServoRight.setPosition(0.1);
@@ -502,8 +578,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void outwardsIntake() { //moves intake servos all the way open
-        intakeServoLeft.setPosition(.25);
-        intakeServoRight.setPosition(.5);
+        intakeServoLeft.setPosition(.3);
+        intakeServoRight.setPosition(.6);
     }
     public void intakeStone() { //servos to a position to open, turns on intake wheels
         setIntakeWheels(0.9);
@@ -613,7 +689,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double MAX_POWER = 0.6;
 
         //start distance away from wall (set later)
-        double startX = TILE_LENGTH * 2 - ROBOT_LENGTH - MIDDLE_OF_TILE;
+        double startX = TILE_LENGTH * 2 - ROBOT_LENGTH /*- MIDDLE_OF_TILE*/;
         double startY = 0;
 
         //position of skystone (start later)
@@ -621,7 +697,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //int numBlocks = stonePos;
         //int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
         int inchesBlocks = stonePos * 8;
-        double intakeOffset = TILE_LENGTH - ROBOT_LENGTH - 3; //TODO: change the number later, inches to get the robot close enough to the block
+        double intakeOffset = TILE_LENGTH - ROBOT_LENGTH; //TODO: change the number later, inches to get the robot close enough to the block
 
         //outwardsIntake();
 
@@ -629,42 +705,56 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(factor * -startY, -(startX -positionForSkystone)); //moves to the correct horizontal position
 
 
-        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2 - 12), 0); //moves sideways to get in intaking position
-        bringSlidesDown();
-        move(factor * 12, 0);
+        double stopMiddleAmount = 18;
+
+        double randomAlign = 2;
+        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2 - stopMiddleAmount - randomAlign), 0); //moves sideways to get in intaking position
+        //bringSlidesDown();
+
+        extendSlidesBy(2,0.5);
+        sleep(500);
+        outwardsIntake();
+        sleep(500);
+        extendSlidesTo(slideMin, .5);
+
+        move(factor * -stopMiddleAmount, 0);
         //intaking stone
         clampStone();
-        setIntakeWheels(.3);
-        sleep(1000);
+        setIntakeWheels(.7);
+        sleep(1500);
         stopIntakeWheels();
 
         //move to center of second tile
-        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE), 0);
+        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE + randomAlign + 2), 0);
 
+        double foundationPosition = (TILE_LENGTH * 6 - ROBOT_LENGTH - 4 - FOUNDATION_LENGTH / 2);
         //move to foundation
-        move(0, -positionForSkystone + TILE_LENGTH * 4.5);
+        moveSetISetP(0, -positionForSkystone + foundationPosition /*TILE_LENGTH * 4.5*/, .5, 1, .0003, 1.0/1000);
 
         //releasing stone
-        extendSlidesBy(6, .5);
+        extendSlidesBy(12, .5);
         turnRelative(factor * 90);
-        move(0, 6);
+        move(0, 8);
         releaseStone();
         //preparing for foundation
-        move(0, -6);
+        move(0, -8);
         turnRelative(180);
-        extendSlidesBy(-6, .5);
+        extendSlidesBy(-12, .5);
         outwardsIntake();
 
-        move(0, -9);
+        move(0, -11);
+        sleep(500);
         toggleHook(true);
+        sleep(1000);
         //right now vert position: 9 inches + middle of second tile
         double inchesToPlaceFoundation = 0;
-        move(0, 9 + inchesToPlaceFoundation);
+        move(0, 11  + (((20))) + inchesToPlaceFoundation);
         turnRelative(factor * -90);
         toggleHook(false);
+        move(factor * 9, 0);
         move(factor * inchesToPlaceFoundation, 0);
 
-        move(0, TILE_LENGTH * 4.5 - (3 * TILE_LENGTH - ROBOT_LENGTH / 2));
+        move(0, foundationPosition - (3 * TILE_LENGTH - ROBOT_LENGTH / 2) - 15);
 
 
     }
@@ -743,7 +833,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //TODO: 19 is a sketchy ass value
 
         moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation * 2, .5, .2);
-        moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
+        moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_LENGTH), 0, .5, .2);
 
         //moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5, .2);
 
@@ -759,7 +849,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         } else {
             move(factor * (MIDDLE_OF_TILE + secondTile), 0, .5); //6 tiles - robot length - foundation width, middle of tile)
         }
-        double tempPosition = 5 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_WIDTH;
+        double tempPosition = 5 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_LENGTH;
         extendSlidesBy(-6, 0.5); //move slides back down
 
         if (!second) { //if don't want second block
@@ -796,14 +886,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             //moving to the edge of the foundation
             // (6 blocks - foundation  - robot length, middle of tile)
-            move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - (BLOCK_LENGTH * 3 + inchesMoved + observingDistanceX), MAX_POWER);
+            move(0, 6 * TILE_LENGTH - FOUNDATION_LENGTH - ROBOT_LENGTH - (BLOCK_LENGTH * 3 + inchesMoved + observingDistanceX), MAX_POWER);
 
             releaseStone();
 
             extendSlidesBy(-6, 0.5);
 
             //moving backwards towards tape
-            move(0, -1 * (TILE_LENGTH * 6 - FOUNDATION_WIDTH - ROBOT_LENGTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2)), MAX_POWER); // (3 blocks - half of robot length, tile length);
+            move(0, -1 * (TILE_LENGTH * 6 - FOUNDATION_LENGTH - ROBOT_LENGTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2)), MAX_POWER); // (3 blocks - half of robot length, tile length);
         }
     }
 
@@ -871,7 +961,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         turnAbsolute(factor * -90);
         bringSlidesDown();
         sleep(500);
-        move(0,-7,0.4);
+        moveSetISetP(0,-10,0.5, 0.75, 0.01, 1.0/600);
         toggleHook(false);
 
         move(factor * (TILE_LENGTH / 4),0, MAX_POWER);
