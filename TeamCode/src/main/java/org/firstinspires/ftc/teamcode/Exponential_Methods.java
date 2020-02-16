@@ -42,7 +42,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double TILE_LENGTH = 24;
     public static final double ROBOT_LENGTH = 18;
     public static final double BLOCK_LENGTH = 8;
-    public static final double FOUNDATION_WIDTH = 18.5;
+    public static final double FOUNDATION_LENGTH = 18.5;
     public static final double FOUNDATION_AWAY_FROM_WALL = 4;
 
     public static final double MIDDLE_OF_TILE = (TILE_LENGTH - ROBOT_LENGTH) / 2;
@@ -307,7 +307,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5){
                 i = 0.005;
             } else {
-                i = 0.0001;
+                i = 0.001;
             }
         }
         double d = 0;
@@ -340,7 +340,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double backLeftLastPosition = 0;
         double backRightLastPosition = 0;
         time = new ElapsedTime();
-        while (opModeIsActive()&&time.seconds()<2&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
+        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
             areaFrontLeft+=time.seconds()*frontLeft_displacement;
             areaFrontRight+=time.seconds()*frontRight_displacement;
             areaBackLeft+=time.seconds()*backLeft_displacement;
@@ -548,8 +548,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void toggleHook(boolean down) {
         //might need to recalibrate
         if (down) {
-            hookServoLeft.setPosition(.45);
-            hookServoRight.setPosition(.49);
+            hookServoLeft.setPosition(.44);
+            hookServoRight.setPosition(.48);
         } else {
             hookServoLeft.setPosition(0.1);
             hookServoRight.setPosition(0.1);
@@ -578,8 +578,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void outwardsIntake() { //moves intake servos all the way open
-        intakeServoLeft.setPosition(.25);
-        intakeServoRight.setPosition(.58);
+        intakeServoLeft.setPosition(.3);
+        intakeServoRight.setPosition(.6);
     }
     public void intakeStone() { //servos to a position to open, turns on intake wheels
         setIntakeWheels(0.9);
@@ -697,7 +697,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //int numBlocks = stonePos;
         //int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
         int inchesBlocks = stonePos * 8;
-        double intakeOffset = TILE_LENGTH - ROBOT_LENGTH - 1; //TODO: change the number later, inches to get the robot close enough to the block
+        double intakeOffset = TILE_LENGTH - ROBOT_LENGTH; //TODO: change the number later, inches to get the robot close enough to the block
 
         //outwardsIntake();
 
@@ -706,7 +706,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
         double stopMiddleAmount = 18;
-        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2 - stopMiddleAmount - 2), 0); //moves sideways to get in intaking position
+
+        double randomAlign = 2;
+        move(factor * -(TILE_LENGTH * 2 - ROBOT_LENGTH / 2 - stopMiddleAmount - randomAlign), 0); //moves sideways to get in intaking position
         //bringSlidesDown();
 
         extendSlidesBy(2,0.5);
@@ -723,18 +725,19 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         stopIntakeWheels();
 
         //move to center of second tile
-        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE + 2), 0);
+        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE + randomAlign + 5), 0);
 
+        double foundationPosition = (TILE_LENGTH * 6 - ROBOT_LENGTH - 4 - FOUNDATION_LENGTH / 2);
         //move to foundation
-        moveSetISetP(0, -positionForSkystone + TILE_LENGTH * 4.5, .5, 1, .0003, 1.0/1000);
+        moveSetISetP(0, -positionForSkystone + foundationPosition /*TILE_LENGTH * 4.5*/, .5, 1, .0003, 1.0/1000);
 
         //releasing stone
         extendSlidesBy(12, .5);
         turnRelative(factor * 90);
-        move(0, 6);
+        move(0, 8);
         releaseStone();
         //preparing for foundation
-        move(0, -6);
+        move(0, -8);
         turnRelative(180);
         extendSlidesBy(-12, .5);
         outwardsIntake();
@@ -745,12 +748,13 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         sleep(1000);
         //right now vert position: 9 inches + middle of second tile
         double inchesToPlaceFoundation = 0;
-        move(0, 11 + inchesToPlaceFoundation);
+        move(0, 11  + (((20))) + inchesToPlaceFoundation);
         turnRelative(factor * -90);
         toggleHook(false);
+        move(factor * -5, 0);
         move(factor * inchesToPlaceFoundation, 0);
 
-        move(0, TILE_LENGTH * 4.5 - (3 * TILE_LENGTH - ROBOT_LENGTH / 2));
+        move(0, foundationPosition - (3 * TILE_LENGTH - ROBOT_LENGTH / 2) - 10);
 
 
     }
@@ -829,7 +833,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //TODO: 19 is a sketchy ass value
 
         moveAddTolerance(0, 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation * 2, .5, .2);
-        moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 0, .5, .2);
+        moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_LENGTH), 0, .5, .2);
 
         //moveAddTolerance(factor * (-FOUNDATION_AWAY_FROM_WALL + 8 + FOUNDATION_WIDTH), 19 + TILE_LENGTH * 2 - ROBOT_LENGTH - 8 - offsetForFoundation, 0.5, .2);
 
@@ -845,7 +849,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         } else {
             move(factor * (MIDDLE_OF_TILE + secondTile), 0, .5); //6 tiles - robot length - foundation width, middle of tile)
         }
-        double tempPosition = 5 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_WIDTH;
+        double tempPosition = 5 * TILE_LENGTH - ROBOT_LENGTH - FOUNDATION_LENGTH;
         extendSlidesBy(-6, 0.5); //move slides back down
 
         if (!second) { //if don't want second block
@@ -882,14 +886,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             //moving to the edge of the foundation
             // (6 blocks - foundation  - robot length, middle of tile)
-            move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - (BLOCK_LENGTH * 3 + inchesMoved + observingDistanceX), MAX_POWER);
+            move(0, 6 * TILE_LENGTH - FOUNDATION_LENGTH - ROBOT_LENGTH - (BLOCK_LENGTH * 3 + inchesMoved + observingDistanceX), MAX_POWER);
 
             releaseStone();
 
             extendSlidesBy(-6, 0.5);
 
             //moving backwards towards tape
-            move(0, -1 * (TILE_LENGTH * 6 - FOUNDATION_WIDTH - ROBOT_LENGTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2)), MAX_POWER); // (3 blocks - half of robot length, tile length);
+            move(0, -1 * (TILE_LENGTH * 6 - FOUNDATION_LENGTH - ROBOT_LENGTH - (3 * TILE_LENGTH - ROBOT_LENGTH / 2)), MAX_POWER); // (3 blocks - half of robot length, tile length);
         }
     }
 
