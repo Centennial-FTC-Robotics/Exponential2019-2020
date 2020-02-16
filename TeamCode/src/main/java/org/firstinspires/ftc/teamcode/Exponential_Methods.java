@@ -211,7 +211,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- MOVEMENT -------------- (organization)
 
-    public static final double DEFAULT_MOVE_TOLERANCE = 1; // SET DEFAULT TOLERANCE HERE
+    public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
 
 
     public void move(double inchesSideways, double inchesForward) {
@@ -307,7 +307,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5){
                 i = 0.005;
             } else {
-                i = 0.001;
+                i = 0.0015;
             }
         }
         double d = 0;
@@ -725,7 +725,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         stopIntakeWheels();
 
         //move to center of second tile
-        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE + randomAlign + 5), 0);
+        move(factor * (ROBOT_LENGTH / 2 + MIDDLE_OF_TILE + randomAlign + 2), 0);
 
         double foundationPosition = (TILE_LENGTH * 6 - ROBOT_LENGTH - 4 - FOUNDATION_LENGTH / 2);
         //move to foundation
@@ -751,10 +751,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(0, 11  + (((20))) + inchesToPlaceFoundation);
         turnRelative(factor * -90);
         toggleHook(false);
-        move(factor * -5, 0);
+        move(factor * 9, 0);
         move(factor * inchesToPlaceFoundation, 0);
 
-        move(0, foundationPosition - (3 * TILE_LENGTH - ROBOT_LENGTH / 2) - 10);
+        move(0, foundationPosition - (3 * TILE_LENGTH - ROBOT_LENGTH / 2) - 15);
 
 
     }
