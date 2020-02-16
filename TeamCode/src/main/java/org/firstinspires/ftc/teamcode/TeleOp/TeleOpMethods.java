@@ -27,14 +27,15 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double INTAKE_MOTORS_OUTTAKE = .3;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
     public static final double SLIDE_FACTOR = .5;
-    public static final double INTAKE_WHEELS_SPEED_FACTOR = .5;
+    public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
     public boolean servosOpen = true;
     public boolean hooksDown = false;
     public ElapsedTime intakeTimer = new ElapsedTime();
     public ElapsedTime hookTimer = new ElapsedTime();
     public ElapsedTime timer = new ElapsedTime();
-    @Override
+    public double angle = 0;
+    public int slidePosition = 0;
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
@@ -42,6 +43,12 @@ public class TeleOpMethods extends Exponential_Methods {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
+        //IMU from -180 to 180
+        double intialAngle = getRotationinDimension('Z'); // -180 to 180
+        double lastAngleIMU = getRotationinDimension('Z'); // -180 to 180
+        double lastAngle = getRotationinDimension('Z'); // -inf to inf
+
+
 
         waitForStart();
         while(opModeIsActive()){
@@ -51,7 +58,19 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
-            // telemetry.addData("angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES));
+            double currentAngleIMU = getRotationinDimension('Z');
+            if(Math.abs(lastAngleIMU-currentAngleIMU)>300){
+                if(lastAngleIMU>currentAngleIMU){
+                    lastAngle +=currentAngleIMU-lastAngleIMU+360;
+                } else {
+                    lastAngle += currentAngleIMU-lastAngleIMU-360;
+                }
+            } else {
+                lastAngle += currentAngleIMU-lastAngleIMU;
+            }
+            lastAngleIMU = currentAngleIMU;
+            //telemetry.addData("angle", lastAngle);
+            //telemetry.update();
         }
     }
 
@@ -108,16 +127,16 @@ public class TeleOpMethods extends Exponential_Methods {
     // yeeter
     public void yeetServos(){
         //extend
-        if(gamepad1.a){
+        if(gamepad1.b){
             extendYeeter();
         }
     }
 
     // moves the slides up and down
     public void slideMotors(){
-        int slidePosition = (slideDown.getCurrentPosition())/2;
         // height of the slides given from the encoder counts
         if(gamepad2.left_stick_y!=0){
+            slidePosition = (slideUp.getCurrentPosition());
             // user wants to move slides
             slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -192,7 +211,7 @@ public class TeleOpMethods extends Exponential_Methods {
         if (gamepad2.right_trigger!=0)
             setIntakeWheels(INTAKE_MOTORS_OUTTAKE * gamepad2.right_trigger);
         if(gamepad2.right_stick_y!=0){
-            setIntakeWheels(gamepad2.right_stick_y*-1*INTAKE_WHEELS_SPEED_FACTOR);
+            setIntakeWheels(gamepad2.right_stick_y*INTAKE_WHEELS_SPEED_FACTOR);
         }
     }
 
