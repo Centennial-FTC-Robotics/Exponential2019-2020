@@ -732,14 +732,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         moveSetISetP(0, -positionForSkystone + foundationPosition /*TILE_LENGTH * 4.5*/, .5, 1, .0003, 1.0/1000);
 
         //releasing stone
-        extendSlidesBy(12, .5);
+        extendSlidesBy(6, .5);
         turnRelative(factor * 90);
         move(0, 8);
         releaseStone();
         //preparing for foundation
         move(0, -8);
         turnRelative(180);
-        extendSlidesBy(-12, .5);
+        extendSlidesBy(-6, .5);
         outwardsIntake();
 
         move(0, -11);
