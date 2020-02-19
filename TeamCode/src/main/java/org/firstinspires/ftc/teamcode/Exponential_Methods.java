@@ -480,11 +480,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         int val = position + encoderVal;
 
-        if(position > slideMax)
-            val = slideMax;
-        else if(position < slideMin)
-            val = slideMin;
-
         slideUp.setTargetPosition(val);
         slideDown.setTargetPosition(val);
         slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -654,7 +649,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         //int numBlocks = stonePos;
         //int numBlocks = left ? 0 : center ? 1 : right ? 2: -1;
         int inchesBlocks = stonePos * 8;
-        double intakeOffset = TILE_LENGTH - ROBOT_LENGTH; //TODO: change the number later, inches to get the robot close enough to the block
+        double intakeOffset = TILE_LENGTH - ROBOT_LENGTH/* + 1*/; //TODO: change the number later, inches to get the robot close enough to the block
 
         //outwardsIntake();
 
@@ -689,17 +684,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         moveSetISetP(0, -positionForSkystone + foundationPosition /*TILE_LENGTH * 4.5*/, .5, 1, .0003, 1.0/1000);
 
         //releasing stone
-        extendSlidesBy(12, .5);
+        extendSlidesBy(6, .5);
         turnRelative(factor * 90);
         move(0, 8);
         releaseStone();
         //preparing for foundation
         move(0, -8);
         turnRelative(180);
-        extendSlidesBy(-12, .5);
+        extendSlidesBy(-6, .5);
         outwardsIntake();
 
-        move(0, -11);
+        move(0, -11, .3);
         sleep(500);
         toggleHook(true);
         sleep(1000);
@@ -944,8 +939,13 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         else
             factor = -1;
 
-        bringSlidesDown();
+        //bringSlidesDown();
         move(factor * (TILE_LENGTH / 2), 0, .5);
+        //outwardsIntake();
+        extendSlidesBy(2,0.5);
+        sleep(500);
         outwardsIntake();
+        sleep(500);
+        extendSlidesTo(slideMin, .5);
     }
 }

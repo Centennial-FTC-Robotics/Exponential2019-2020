@@ -23,8 +23,8 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double TIMER_INTERVAL = .15;
     public static final double INTAKE_SERVOS_TIMER_INTERVAL = .3;
     public static final double HOOK_SERVOS_TIMER_INTERVAL = .3;
-    public static final double INTAKE_MOTORS_INTAKE = -.45;
-    public static final double INTAKE_MOTORS_OUTTAKE = .3;
+    public static final double INTAKE_MOTORS_INTAKE = -.6;
+    public static final double INTAKE_MOTORS_OUTTAKE = .6;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
     public static final double SLIDE_FACTOR = .5;
     public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
@@ -44,11 +44,6 @@ public class TeleOpMethods extends Exponential_Methods {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         //IMU from -180 to 180
-        double intialAngle = getRotationinDimension('Z'); // -180 to 180
-        double lastAngleIMU = getRotationinDimension('Z'); // -180 to 180
-        double lastAngle = getRotationinDimension('Z'); // -inf to inf
-
-
 
         waitForStart();
         while(opModeIsActive()){
@@ -58,19 +53,6 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
-            double currentAngleIMU = getRotationinDimension('Z');
-            if(Math.abs(lastAngleIMU-currentAngleIMU)>300){
-                if(lastAngleIMU>currentAngleIMU){
-                    lastAngle +=currentAngleIMU-lastAngleIMU+360;
-                } else {
-                    lastAngle += currentAngleIMU-lastAngleIMU-360;
-                }
-            } else {
-                lastAngle += currentAngleIMU-lastAngleIMU;
-            }
-            lastAngleIMU = currentAngleIMU;
-            //telemetry.addData("angle", lastAngle);
-            //telemetry.update();
         }
     }
 
