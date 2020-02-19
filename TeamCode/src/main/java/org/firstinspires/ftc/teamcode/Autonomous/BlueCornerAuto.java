@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 import org.firstinspires.ftc.teamcode.SkystoneDetector;
 
 @Autonomous(group = "Autonomous", name = "Blue Corner")
-public class BlueCornerAuto extends Exponential_Methods {
+public class BlueCornerAuto extends AutonomousPaths {
     public void runOpMode() throws InterruptedException { // starts on second tile from the right
         super.runOpMode();
         SkystoneDetector skystoneDetector = new SkystoneDetector();
