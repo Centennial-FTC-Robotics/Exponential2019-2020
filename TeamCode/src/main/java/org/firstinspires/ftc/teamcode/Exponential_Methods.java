@@ -220,8 +220,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //-------------- MOVEMENT -------------- (organization)
 
     public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
-
-
+    public static Position currentPosition = new Position(0, 0);
+//todo: make moveto / coordinates and shit
     public void move(double inchesSideways, double inchesForward) {
         move(inchesSideways, inchesForward, MAX_POWER);
     }
