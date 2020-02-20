@@ -534,8 +534,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void toggleHook(boolean down) {
         //might need to recalibrate
         if (down) {
-            hookServoLeft.setPosition(.44);
-            hookServoRight.setPosition(.48);
+            hookServoLeft.setPosition(.45);
+            hookServoRight.setPosition(.5);
         } else {
             hookServoLeft.setPosition(0.1);
             hookServoRight.setPosition(0.1);
@@ -565,7 +565,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public void outwardsIntake() { //moves intake servos all the way open
         intakeServoLeft.setPosition(.3);
-        intakeServoRight.setPosition(.6);
+        intakeServoRight.setPosition(.62);
     }
 
     public void intakeStone() { //servos to a position to open, turns on intake wheels
