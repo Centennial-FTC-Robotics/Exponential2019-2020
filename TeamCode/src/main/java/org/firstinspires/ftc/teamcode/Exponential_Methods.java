@@ -509,6 +509,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // sleep(500);
     }
 
+    //TODO values need to be changed
+    public void toggleHood(boolean down){
+        if(down)
+            hoodServo.setPosition(1);
+        else
+            hoodServo.setPosition(0);
+    }
+
     public void setIntakeServosPosition(double position) {
         intakeServoLeft.setPosition(position);
         intakeServoRight.setPosition(position);
