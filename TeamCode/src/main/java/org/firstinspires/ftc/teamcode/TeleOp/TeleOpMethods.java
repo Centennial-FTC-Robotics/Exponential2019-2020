@@ -31,6 +31,7 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
     public boolean servosOpen = true;
     public boolean hooksDown = false;
+    public boolean hoodDown = false;
     public ElapsedTime intakeTimer = new ElapsedTime();
     public ElapsedTime hookTimer = new ElapsedTime();
     public ElapsedTime timer = new ElapsedTime();
@@ -53,6 +54,7 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
+            hoodServos();
         }
     }
 
@@ -116,6 +118,13 @@ public class TeleOpMethods extends Exponential_Methods {
         if(gamepad1.b){
             extendYeeter();
         }
+    }
+
+    public void hoodServos(){
+        if(gamepad2.y){
+            hoodDown=!hoodDown;
+        }
+        toggleHood(hoodDown);
     }
 
     // moves the slides up and down
