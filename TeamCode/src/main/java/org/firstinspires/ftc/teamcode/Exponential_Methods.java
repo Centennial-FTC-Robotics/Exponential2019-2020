@@ -232,8 +232,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
     public Position currentPosition = new Position(0, 0);
 
-    public void moveTo(double x, double y) {
-        double currentAngle = getRotationInDimension('Z');
+    public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
+                                                //if blue, positions are the bottom left of robot
+        double currentAngle = getAngle();
         double currentX = currentPosition.getX();
         double currentY = currentPosition.getY();
         double magnitude = Math.sqrt(Math.pow(x - currentX, 2) + Math.pow(y - currentY, 2));
@@ -258,6 +259,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(moveX, moveY);
         //TODO: temporary
         currentPosition = new Position(x, y);
+    }
+
+    public void moveRelative(double x, double y) {  //a move method relative to the robot, but with the coordinate plane
+        double currentX = currentPosition.getX();
+        double currentY = currentPosition.getY();
+        moveTo(currentX + x, currentY + y);
     }
     //todo: make moveto / coordinates and shit
     public void move(double inchesSideways, double inchesForward) {

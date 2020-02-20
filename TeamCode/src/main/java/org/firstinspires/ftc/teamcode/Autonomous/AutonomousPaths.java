@@ -5,6 +5,27 @@ import org.firstinspires.ftc.teamcode.Position;
 
 public class AutonomousPaths extends Exponential_Methods {
 
+    public void twoStoneAutoMoveTo(String color, int stonePos) {
+        initialHeading -= 270;
+
+        int factor;
+        if (color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
+
+
+        //start distance away from wall (set later)
+        double startX = 3 * TILE_LENGTH;
+        double startY = TILE_LENGTH * 2 - ROBOT_LENGTH /* + something */;
+
+        currentPosition = new Position(startX, startY);
+
+        int inchesBlocks = stonePos * 8;
+
+        moveRelative(factor * (TILE_LENGTH + MIDDLE_OF_TILE), 0);
+        yuhwanSlidesDown();
+    }
     public void twoStoneAuto(String color, int stonePos) { //starts facing the bridge
         initialHeading -= 270; //robot starts off facing 270
 
