@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
@@ -16,8 +17,11 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 
 import java.util.List;
+
+import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 
 public abstract class Exponential_Methods extends Exponential_Hardware_Initializations {
 
@@ -556,13 +560,21 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void toggleHook(boolean down) {
         //might need to recalibrate
         if (down) {
-            hookServoLeft.setPosition(.45);
-            hookServoRight.setPosition(.5);
+            hookServoLeft.setPosition(.44);
+            hookServoRight.setPosition(.48);
         } else {
             hookServoLeft.setPosition(0.1);
             hookServoRight.setPosition(0.1);
         }
         // sleep(500);
+    }
+
+    //TODO values need to be changed
+    public void toggleHood(boolean down){
+        if(down)
+            hoodServo.setPosition(1);
+        else
+            hoodServo.setPosition(0);
     }
 
     public void setIntakeServosPosition(double position) {
@@ -571,7 +583,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     //yeeter methods
-    public void extendYeeter() { //extend yeeter to park
+    public void extendYeeter (){ //extend yeeter to park
         //set position later
         yeetServo.setPosition(0.5);
     }
@@ -587,27 +599,24 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public void outwardsIntake() { //moves intake servos all the way open
         intakeServoLeft.setPosition(.3);
-        intakeServoRight.setPosition(.62);
+        intakeServoRight.setPosition(.6);
     }
-
     public void intakeStone() { //servos to a position to open, turns on intake wheels
         setIntakeWheels(0.9);
         intakeServoLeft.setPosition(.6);
         intakeServoRight.setPosition(.9);
     }
-
     public void clampStone() { //servos to close position
         intakeServoLeft.setPosition(.62);
         intakeServoRight.setPosition(.92);
     }
-
     public void stopIntakeWheels() {
         setIntakeWheels(0);
     }
 
 
-    public void bringSlidesDown() {
-        extendSlidesBy(2, 0.5);
+    public void bringSlidesDown(){
+        extendSlidesBy(2,0.5);
         sleep(500);
         releaseStone();
         sleep(500);
