@@ -121,6 +121,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public int convertInchToEncoderOdom(double inches) {
         return (int) (8192 / (2 * Math.PI) * inches);
     }
+    public double convertEncoderToInchOdom(double encoder) {
+        return (encoder)/(8192 / (2 * Math.PI));
+    }
 
     public double getAngleDist(double targetAngle, double currentAngle) {
         double angleDifference = currentAngle - targetAngle;
