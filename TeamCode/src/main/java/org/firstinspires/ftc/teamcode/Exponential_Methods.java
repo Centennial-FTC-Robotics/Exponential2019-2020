@@ -170,9 +170,22 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         initialPitch = orientation.thirdAngle;
     }
 
+
+
     public void updateOrientation() {
         orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
+
+    public double convertNormDegree(double degree){
+        if(degree < 0)
+            return degree + 360;
+        else
+            return degree;
+    }
+    public double getAngle(){
+        return convertNormDegree(getRotationInDimension('Z'));
+    }
+
 
     public double getRotationInDimension(char dimension) {
         updateOrientation();
