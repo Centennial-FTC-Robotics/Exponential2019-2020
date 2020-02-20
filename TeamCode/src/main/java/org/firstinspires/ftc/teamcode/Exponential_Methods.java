@@ -243,6 +243,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double moveY = magnitude * Math.cos(difference);
 
         move(moveX, moveY);
+        //TODO: temporary
+        currentPosition = new Position(x, y);
     }
     //todo: make moveto / coordinates and shit
     public void move(double inchesSideways, double inchesForward) {
