@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 @Autonomous(group = "Autonomous", name = "Tile Left")
-public class TileLeft extends Exponential_Methods {
+public class TileLeft extends AutonomousPaths {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         waitForStart();
