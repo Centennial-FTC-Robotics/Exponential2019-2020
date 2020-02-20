@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 public class AutonomousPaths extends Exponential_Methods {
 
     public void twoStoneAuto(String color, int stonePos) { //starts facing the bridge
+        initialHeading += 270; //robot starts off facing 270
+
         int factor;
         if (color.equals("red"))
             factor = 1;

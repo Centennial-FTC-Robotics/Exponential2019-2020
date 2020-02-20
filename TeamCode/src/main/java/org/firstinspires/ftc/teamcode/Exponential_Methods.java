@@ -9,7 +9,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
@@ -17,11 +16,8 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
 
 import java.util.List;
-
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
 
 public abstract class Exponential_Methods extends Exponential_Hardware_Initializations {
 
@@ -54,6 +50,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public static final double MAX_POWER = .6;
 
+    public static double initialAngleOffset; //how far away the front of robot is from 90 deg
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -177,7 +174,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
 
-    public double getRotationinDimension(char dimension) {
+    public double getRotationInDimension(char dimension) {
         updateOrientation();
         switch (Character.toUpperCase(dimension)) {
             case 'X':
@@ -220,8 +217,34 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //-------------- MOVEMENT -------------- (organization)
 
     public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
-    public static Position currentPosition = new Position(0, 0);
-//todo: make moveto / coordinates and shit
+    public Position currentPosition = new Position(0, 0);
+
+    public void moveTo(double x, double y) {
+        double currentAngle = getRotationInDimension('Z');
+        double currentX = currentPosition.getX();
+        double currentY = currentPosition.getY();
+        double magnitude = Math.sqrt(Math.pow(x - currentX, 2) + Math.pow(y - currentY, 2));
+        //if currentAngle is the direction of the front of the robot, with the horizontal drawn from the robot:
+        //angleOfPosition is the direction of the moveTO position with the horizontal drawn from the robot
+        //x < currentX: if atan needs to be correct
+        double angleOfPosition;
+        if (currentX == x) {
+            if (y < currentY) {
+                angleOfPosition = 3 * Math.PI / 2;
+            } else {
+                angleOfPosition = Math.PI / 2;
+            }
+        } else {
+            angleOfPosition = Math.atan((y - currentY) / (x - currentX)) + (x < currentX ? Math.PI : 0);
+        }
+        //look at the image if you want explanation
+        double difference = currentAngle - angleOfPosition;
+        double moveX = magnitude * Math.sin(difference);
+        double moveY = magnitude * Math.cos(difference);
+
+        move(moveX, moveY);
+    }
+    //todo: make moveto / coordinates and shit
     public void move(double inchesSideways, double inchesForward) {
         move(inchesSideways, inchesForward, MAX_POWER);
     }
@@ -236,7 +259,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
     /*
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){
-        double targetAngle = getRotationinDimension('Z');
+        double targetAngle = getRotationInDimension('Z');
         double currentAngle;
         int direction;
         double turnRate;
@@ -272,7 +295,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
         while (opModeIsActive()&&Math.abs(displacementSideways)>tolerance&&Math.abs(displacementForwards)>tolerance){
-            currentAngle = getRotationinDimension('Z');
+            currentAngle = getRotationInDimension('Z');
 
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
@@ -338,7 +361,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void moveSetISetP(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance, double i, double p) {  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
-        double targetAngle = getRotationinDimension('Z');
+        double targetAngle = getRotationInDimension('Z');
         inchesForward = -inchesForward;
         inchesSideways = getTransformedDistance(inchesSideways);
 
@@ -424,7 +447,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //-------------- ROTATION -------------- (organization)
 
     public void turnRelative(double targetAngle) {
-        turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
+        turnAbsolute(AngleUnit.normalizeDegrees(getRotationInDimension('Z') + targetAngle));
     }
 
     public static final double DEFAULT_ROTATE_TOLERANCE = 5; // SET DEFAULT ROTATE TOLERANCE HERE
@@ -449,7 +472,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double error;
 
         do {
-            currentAngle = getRotationinDimension('Z');
+            currentAngle = getRotationInDimension('Z');
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);

@@ -5,10 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.util.*;
 
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
-
-import java.io.File;
 
 @TeleOp(name = "Odometry Testing", group = "TeleOp")
 public class OdometryCode extends Exponential_Methods {
@@ -99,9 +96,9 @@ public class OdometryCode extends Exponential_Methods {
         double yRobotVel = 0;
 
         //IMU from -180 to 180
-        double initialAngle = getRotationinDimension('Z'); // -180 to 180
-        double lastAngleIMU = getRotationinDimension('Z'); // -180 to 180
-        double currentAngle = getRotationinDimension('Z'); // -inf to inf
+        double initialAngle = getRotationInDimension('Z'); // -180 to 180
+        double lastAngleIMU = getRotationInDimension('Z'); // -180 to 180
+        double currentAngle = getRotationInDimension('Z'); // -inf to inf
         double lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
         double lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
 
@@ -110,7 +107,7 @@ public class OdometryCode extends Exponential_Methods {
         double areaYDis = 0; // perspective of field
         ElapsedTime time = new ElapsedTime();
         while (opModeIsActive() && (Math.abs(xTarget - xRobotPos) > tolerance || Math.abs(yTarget - yRobotPos) > tolerance)) {
-            double currentAngleIMU = getRotationinDimension('Z');
+            double currentAngleIMU = getRotationInDimension('Z');
             double changeInAngle;
 
             // Allows angle to go greater than 180 and less than -180

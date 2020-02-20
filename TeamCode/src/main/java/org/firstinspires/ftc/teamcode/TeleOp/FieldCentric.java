@@ -14,7 +14,7 @@ public class FieldCentric extends TeleOpMethods {
         if(gamepad1.y){
             resetOrientation();
         }
-        double currentAngle = Math.PI*getRotationinDimension('Z')/180;
+        double currentAngle = Math.PI* getRotationInDimension('Z')/180;
         // double currentAngle = 0; //  TODO; FIND OUT HOW TO SET LATeR
 
         //------FIELD CENTRIC-------
