@@ -46,7 +46,7 @@ public class DualModeTeleOp extends TeleOpMethods {
                 turnRelative(90);
             }
         } else {
-            double currentAngle = Math.PI*getRotationinDimension('Z')/180;
+            double currentAngle = Math.PI* getRotationInDimension('Z')/180;
             // double currentAngle = 0; //  TODO; FIND OUT HOW TO SET LATeR
 
             //------FIELD CENTRIC-------

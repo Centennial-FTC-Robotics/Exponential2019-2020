@@ -98,6 +98,13 @@ public class TeleOpMethods extends Exponential_Methods {
             intakeServoRight.setPosition(RIGHT_SERVO_CLOSE_POSITION);
         }
     }
+
+    public void intakeWideMode(){
+        if(gamepad2.a){
+            outwardsIntake();
+        }
+    }
+
     public void hookServos(){
         if(gamepad1.x&hookTimer.seconds()>HOOK_SERVOS_TIMER_INTERVAL){
             hooksDown=!hooksDown;
@@ -171,16 +178,6 @@ public class TeleOpMethods extends Exponential_Methods {
             slideDown.setPower(SLIDE_POWER);
             slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        if(gamepad2.y&&timer.seconds()>TIMER_INTERVAL){
-            // if button y is pressed, move slides up 4 inches
-            slidePosition += convertInchToEncoderSlides(4);
-            timer.reset();
-        }
-        if(gamepad2.a&&timer.seconds()>TIMER_INTERVAL) {
-            // if button a is pressed, move slides down 4 inches
-            slidePosition -= convertInchToEncoderSlides(4);
-            timer.reset();
         }
         telemetry.addData("Up Slide", slideUp.getCurrentPosition());
         telemetry.addData("Down Slide", slideDown.getCurrentPosition());
