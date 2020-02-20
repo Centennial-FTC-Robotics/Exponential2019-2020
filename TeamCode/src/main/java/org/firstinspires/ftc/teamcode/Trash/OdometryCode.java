@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.Trash;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
 import com.qualcomm.robotcore.util.*;
+
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
@@ -111,7 +113,7 @@ public class OdometryCode extends Exponential_Methods {
         double areaYDis = 0; // perspective of field
         ElapsedTime time = new ElapsedTime();
         while (opModeIsActive() && (Math.abs(xTarget - xRobotPos) > tolerance || Math.abs(yTarget - yRobotPos) > tolerance)) {
-            double currentAngleIMU = getRotationinDimension('Z');
+            double currentAngleIMU = getRotationInDimension('Z');
             double changeInAngle;
 
             // Allows angle to go greater than 180 and less than -180

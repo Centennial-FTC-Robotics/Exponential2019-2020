@@ -31,6 +31,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected Servo hookServoLeft;
     protected Servo hookServoRight;
     protected Servo yeetServo;
+    protected Servo hoodServo;
 
     protected DcMotor odoWheelForwards;
     protected DcMotor odoWheelSideways;
@@ -48,9 +49,9 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
     protected Orientation orientation = new Orientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES,0,0,0,0);
     protected BNO055IMU imu;
-    double initialHeading;
-    double initialPitch;
-    double initialRoll;
+    public double initialHeading;
+    public double initialPitch;
+    public double initialRoll;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -61,6 +62,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
         intakeServoRight = hardwareMap.servo.get("intakeServoRight");
         yeetServo = hardwareMap.servo.get("yeetServo");
+        //hoodServo = hardwareMap.servo.get("hoodServo");
+
 
         blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;

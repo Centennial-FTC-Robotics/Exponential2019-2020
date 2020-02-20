@@ -1,10 +1,34 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
+import org.firstinspires.ftc.teamcode.Position;
 
 public class AutonomousPaths extends Exponential_Methods {
 
+    public void twoStoneAutoMoveTo(String color, int stonePos) {
+        initialHeading -= 270;
+
+        int factor;
+        if (color.equals("red"))
+            factor = 1;
+        else
+            factor = -1;
+
+
+        //start distance away from wall (set later)
+        double startX = 3 * TILE_LENGTH;
+        double startY = TILE_LENGTH * 2 - ROBOT_LENGTH /* + something */;
+
+        currentPosition = new Position(startX, startY);
+
+        int inchesBlocks = stonePos * 8;
+
+        moveRelative(factor * (TILE_LENGTH + MIDDLE_OF_TILE), 0);
+        yuhwanSlidesDown();
+    }
     public void twoStoneAuto(String color, int stonePos) { //starts facing the bridge
+        initialHeading -= 270; //robot starts off facing 270
+
         int factor;
         if (color.equals("red"))
             factor = 1;
@@ -15,6 +39,7 @@ public class AutonomousPaths extends Exponential_Methods {
         //start distance away from wall (set later)
         double startX = TILE_LENGTH * 2 - ROBOT_LENGTH /*- MIDDLE_OF_TILE*/;
         double startY = 0;
+        currentPosition = new Position(startX, startY);
 
         int inchesBlocks = stonePos * 8;
 

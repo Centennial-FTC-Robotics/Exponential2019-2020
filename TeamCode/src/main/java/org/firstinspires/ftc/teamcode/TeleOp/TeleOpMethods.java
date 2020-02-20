@@ -16,21 +16,22 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double RIGHT_BUMPER_TRIGGER_FACTOR = .25;
     public static final double LEFT_SERVO_OPEN_POSITION = .55;
     public static final double RIGHT_SERVO_OPEN_POSITION = .85;
-    public static final double LEFT_SERVO_CLOSE_POSITION = .62;
-    public static final double RIGHT_SERVO_CLOSE_POSITION = .92;
+    public static final double LEFT_SERVO_CLOSE_POSITION = .67;
+    public static final double RIGHT_SERVO_CLOSE_POSITION = .97;
     public static final int SLIDE_MAX = slideMax - slideMin;
     public static final int SLIDE_MIN = 0;
     public static final double TIMER_INTERVAL = .15;
     public static final double INTAKE_SERVOS_TIMER_INTERVAL = .3;
     public static final double HOOK_SERVOS_TIMER_INTERVAL = .3;
-    public static final double INTAKE_MOTORS_INTAKE = -.6;
-    public static final double INTAKE_MOTORS_OUTTAKE = .6;
+    public static final double INTAKE_MOTORS_INTAKE = -1;
+    public static final double INTAKE_MOTORS_OUTTAKE = 1;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
     public static final double SLIDE_FACTOR = .5;
     public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
     public boolean servosOpen = true;
     public boolean hooksDown = false;
+    public boolean hoodDown = false;
     public ElapsedTime intakeTimer = new ElapsedTime();
     public ElapsedTime hookTimer = new ElapsedTime();
     public ElapsedTime timer = new ElapsedTime();
@@ -53,6 +54,7 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
+            hoodServos();
         }
     }
 
@@ -84,13 +86,16 @@ public class TeleOpMethods extends Exponential_Methods {
     }
 
 
-    public void intakeServos(){
+    public void intakeServos() {
         //Intake arm servos
-        if(gamepad2.x&&intakeTimer.seconds()>INTAKE_SERVOS_TIMER_INTERVAL){
+        if (gamepad2.x && intakeTimer.seconds() > INTAKE_SERVOS_TIMER_INTERVAL) {
             servosOpen = !servosOpen;
             intakeTimer.reset();
         }
-        if(servosOpen){
+        if (gamepad2.a) {
+            outwardsIntake();
+        }
+        if (servosOpen) {
             intakeServoLeft.setPosition(LEFT_SERVO_OPEN_POSITION);
             intakeServoRight.setPosition(RIGHT_SERVO_OPEN_POSITION);
         } else {
@@ -98,6 +103,7 @@ public class TeleOpMethods extends Exponential_Methods {
             intakeServoRight.setPosition(RIGHT_SERVO_CLOSE_POSITION);
         }
     }
+
     public void hookServos(){
         if(gamepad1.x&hookTimer.seconds()>HOOK_SERVOS_TIMER_INTERVAL){
             hooksDown=!hooksDown;
@@ -112,6 +118,13 @@ public class TeleOpMethods extends Exponential_Methods {
         if(gamepad1.b){
             extendYeeter();
         }
+    }
+
+    public void hoodServos(){
+        if(gamepad2.y){
+            hoodDown=!hoodDown;
+        }
+        toggleHood(hoodDown);
     }
 
     // moves the slides up and down
@@ -171,16 +184,6 @@ public class TeleOpMethods extends Exponential_Methods {
             slideDown.setPower(SLIDE_POWER);
             slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        if(gamepad2.y&&timer.seconds()>TIMER_INTERVAL){
-            // if button y is pressed, move slides up 4 inches
-            slidePosition += convertInchToEncoderSlides(4);
-            timer.reset();
-        }
-        if(gamepad2.a&&timer.seconds()>TIMER_INTERVAL) {
-            // if button a is pressed, move slides down 4 inches
-            slidePosition -= convertInchToEncoderSlides(4);
-            timer.reset();
         }
         telemetry.addData("Up Slide", slideUp.getCurrentPosition());
         telemetry.addData("Down Slide", slideDown.getCurrentPosition());

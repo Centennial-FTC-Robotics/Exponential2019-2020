@@ -54,6 +54,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public static final double MAX_POWER = .6;
 
+    public static double initialAngleOffset; //how far away the front of robot is from 90 deg
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -176,11 +177,24 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         initialPitch = orientation.thirdAngle;
     }
 
+
+
     public void updateOrientation() {
         orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
 
-    public double getRotationinDimension(char dimension) {
+    public double convertNormDegree(double degree){
+        if(degree < 0)
+            return degree + 360;
+        else
+            return degree;
+    }
+    public double getAngle(){
+        return convertNormDegree(getRotationInDimension('Z'));
+    }
+
+
+    public double getRotationInDimension(char dimension) {
         updateOrientation();
         switch (Character.toUpperCase(dimension)) {
             case 'X':
@@ -223,8 +237,43 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //-------------- MOVEMENT -------------- (organization)
 
     public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
-    public static Position currentPosition = new Position(0, 0);
-//todo: make moveto / coordinates and shit
+    public Position currentPosition = new Position(0, 0);
+
+    public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
+                                                //if blue, positions are the bottom left of robot
+        double currentAngle = getAngle();
+        double currentX = currentPosition.getX();
+        double currentY = currentPosition.getY();
+        double magnitude = Math.sqrt(Math.pow(x - currentX, 2) + Math.pow(y - currentY, 2));
+        //if currentAngle is the direction of the front of the robot, with the horizontal drawn from the robot:
+        //angleOfPosition is the direction of the moveTO position with the horizontal drawn from the robot
+        //x < currentX: if atan needs to be correct
+        double angleOfPosition;
+        if (currentX == x) {
+            if (y < currentY) {
+                angleOfPosition = 3 * Math.PI / 2;
+            } else {
+                angleOfPosition = Math.PI / 2;
+            }
+        } else {
+            angleOfPosition = Math.atan((y - currentY) / (x - currentX)) + (x < currentX ? Math.PI : 0);
+        }
+        //look at the image if you want explanation
+        double difference = currentAngle - angleOfPosition;
+        double moveX = magnitude * Math.sin(difference);
+        double moveY = magnitude * Math.cos(difference);
+
+        move(moveX, moveY);
+        //TODO: temporary
+        currentPosition = new Position(x, y);
+    }
+
+    public void moveRelative(double x, double y) {  //a move method relative to the robot, but with the coordinate plane
+        double currentX = currentPosition.getX();
+        double currentY = currentPosition.getY();
+        moveTo(currentX + x, currentY + y);
+    }
+    //todo: make moveto / coordinates and shit
     public void move(double inchesSideways, double inchesForward) {
         move(inchesSideways, inchesForward, MAX_POWER);
     }
@@ -239,7 +288,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
     /*
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){
-        double targetAngle = getRotationinDimension('Z');
+        double targetAngle = getRotationInDimension('Z');
         double currentAngle;
         int direction;
         double turnRate;
@@ -275,7 +324,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
         while (opModeIsActive()&&Math.abs(displacementSideways)>tolerance&&Math.abs(displacementForwards)>tolerance){
-            currentAngle = getRotationinDimension('Z');
+            currentAngle = getRotationInDimension('Z');
 
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
@@ -341,7 +390,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void moveSetISetP(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance, double i, double p) {  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
-        double targetAngle = getRotationinDimension('Z');
+        double targetAngle = getRotationInDimension('Z');
         inchesForward = -inchesForward;
         inchesSideways = getTransformedDistance(inchesSideways);
 
@@ -427,7 +476,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //-------------- ROTATION -------------- (organization)
 
     public void turnRelative(double targetAngle) {
-        turnAbsolute(AngleUnit.normalizeDegrees(getRotationinDimension('Z') + targetAngle));
+        turnAbsolute(AngleUnit.normalizeDegrees(getRotationInDimension('Z') + targetAngle));
     }
 
     public static final double DEFAULT_ROTATE_TOLERANCE = 5; // SET DEFAULT ROTATE TOLERANCE HERE
@@ -452,7 +501,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double error;
 
         do {
-            currentAngle = getRotationinDimension('Z');
+            currentAngle = getRotationInDimension('Z');
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
@@ -523,13 +572,21 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // sleep(500);
     }
 
+    //TODO values need to be changed
+    public void toggleHood(boolean down){
+        if(down)
+            hoodServo.setPosition(1);
+        else
+            hoodServo.setPosition(0);
+    }
+
     public void setIntakeServosPosition(double position) {
         intakeServoLeft.setPosition(position);
         intakeServoRight.setPosition(position);
     }
 
     //yeeter methods
-    public void extendYeeter() { //extend yeeter to park
+    public void extendYeeter (){ //extend yeeter to park
         //set position later
         yeetServo.setPosition(0.5);
     }
@@ -547,25 +604,22 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeServoLeft.setPosition(.3);
         intakeServoRight.setPosition(.6);
     }
-
     public void intakeStone() { //servos to a position to open, turns on intake wheels
         setIntakeWheels(0.9);
         intakeServoLeft.setPosition(.6);
         intakeServoRight.setPosition(.9);
     }
-
     public void clampStone() { //servos to close position
         intakeServoLeft.setPosition(.62);
         intakeServoRight.setPosition(.92);
     }
-
     public void stopIntakeWheels() {
         setIntakeWheels(0);
     }
 
 
-    public void bringSlidesDown() {
-        extendSlidesBy(2, 0.5);
+    public void bringSlidesDown(){
+        extendSlidesBy(2,0.5);
         sleep(500);
         releaseStone();
         sleep(500);
