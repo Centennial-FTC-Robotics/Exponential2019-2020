@@ -84,24 +84,21 @@ public class TeleOpMethods extends Exponential_Methods {
     }
 
 
-    public void intakeServos(){
+    public void intakeServos() {
         //Intake arm servos
-        if(gamepad2.x&&intakeTimer.seconds()>INTAKE_SERVOS_TIMER_INTERVAL){
+        if (gamepad2.x && intakeTimer.seconds() > INTAKE_SERVOS_TIMER_INTERVAL) {
             servosOpen = !servosOpen;
             intakeTimer.reset();
         }
-        if(servosOpen){
+        if (gamepad2.a) {
+            outwardsIntake();
+        }
+        if (servosOpen) {
             intakeServoLeft.setPosition(LEFT_SERVO_OPEN_POSITION);
             intakeServoRight.setPosition(RIGHT_SERVO_OPEN_POSITION);
         } else {
             intakeServoLeft.setPosition(LEFT_SERVO_CLOSE_POSITION);
             intakeServoRight.setPosition(RIGHT_SERVO_CLOSE_POSITION);
-        }
-    }
-
-    public void intakeWideMode(){
-        if(gamepad2.a){
-            outwardsIntake();
         }
     }
 
