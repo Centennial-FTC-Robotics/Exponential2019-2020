@@ -100,7 +100,8 @@ public class OdometryCode extends Exponential_Methods {
 
         odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while (odoWheelSideways.isBusy() || odoWheelForwards.isBusy()) {}
+        while (odoWheelSideways.isBusy() || odoWheelForwards.isBusy()) {
+        }
         odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -225,31 +226,30 @@ public class OdometryCode extends Exponential_Methods {
 
         if (circle_x == 0.0) {
             x = 0.0;
-        }else {
+        } else {
             x = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
                     * (Math.abs(circle_x)) / (Math.abs(circle_x) + Math.abs(circle_y));
         }
         if (circle_y == 0.0) {
             y = 0.0;
-        }else {
+        } else {
             y = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
                     * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
         }
-        double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
-        if(sum >1){
-            answer[0]=(x+y+circle_rotate)/sum;
-            answer[1]=(-x+y+circle_rotate)/sum;
-            answer[2]=(x+y-circle_rotate)/sum;
-            answer[3]=(-x+y-circle_rotate)/sum;
+        double sum = Math.abs(x) + Math.abs(y) + Math.abs(circle_rotate);
+        if (sum > 1) {
+            answer[0] = (x + y + circle_rotate) / sum;
+            answer[1] = (-x + y + circle_rotate) / sum;
+            answer[2] = (x + y - circle_rotate) / sum;
+            answer[3] = (-x + y - circle_rotate) / sum;
         } else {
-            answer[0]=(x+y+circle_rotate);
-            answer[1]=(-x+y+circle_rotate);
-            answer[2]=(x+y-circle_rotate);
-            answer[3]=(-x+y-circle_rotate);
+            answer[0] = (x + y + circle_rotate);
+            answer[1] = (-x + y + circle_rotate);
+            answer[2] = (x + y - circle_rotate);
+            answer[3] = (-x + y - circle_rotate);
         }
         return answer;
     }
-
 
 
 }
