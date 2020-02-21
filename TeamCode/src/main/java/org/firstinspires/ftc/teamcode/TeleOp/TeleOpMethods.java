@@ -203,35 +203,5 @@ public class TeleOpMethods extends Exponential_Methods {
 
     // converts between the input of the trigger to the power of the motors
     // don't worry about the math
-    public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
-        double[] answer = new double[4];
-        double x;
-        double y;
 
-        if (circle_x == 0.0) {
-            x = 0.0;
-        }else {
-            x = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
-                    * (Math.abs(circle_x)) / (Math.abs(circle_x) + Math.abs(circle_y));
-        }
-        if (circle_y == 0.0) {
-            y = 0.0;
-        }else {
-            y = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
-                    * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
-        }
-        double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
-        if(sum >1){
-            answer[0]=(x+y+circle_rotate)/sum;
-            answer[1]=(-x+y+circle_rotate)/sum;
-            answer[2]=(x+y-circle_rotate)/sum;
-            answer[3]=(-x+y-circle_rotate)/sum;
-        } else {
-            answer[0]=(x+y+circle_rotate);
-            answer[1]=(-x+y+circle_rotate);
-            answer[2]=(x+y-circle_rotate);
-            answer[3]=(-x+y-circle_rotate);
-        }
-        return answer;
-    }
 }
