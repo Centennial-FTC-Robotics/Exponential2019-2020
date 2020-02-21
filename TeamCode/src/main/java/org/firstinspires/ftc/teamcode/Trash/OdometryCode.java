@@ -79,13 +79,12 @@ public class OdometryCode extends Exponential_Methods {
     }
 
 
-
-
     public void move(double xInch, double yInch, double pRot, double pLin, double iRot, double iLin, double dRot, double dLin, double maxPower, double inchesTolerence) {
 
         odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while (odoWheelSideways.isBusy() || odoWheelForwards.isBusy()) {}
+        while (odoWheelSideways.isBusy() || odoWheelForwards.isBusy()) {
+        }
         odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -132,26 +131,28 @@ public class OdometryCode extends Exponential_Methods {
             lastAngleIMU = currentAngleIMU;
             //telemetry.addData("angle", lastAngle);
             //telemetry.update();
-
-            double arcDistance = Math.sqrt((odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition - odoSidewaysError * (changeInAngle))
-                    * (odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition - odoSidewaysError * (changeInAngle))
-                    + (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle))
-                    * (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle)));
+            double sidewaysOdoDisplacement = odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition;
+            double forwardsOdoDisplacement = odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition;
+            double arcDistance = Math.sqrt((sidewaysOdoDisplacement - odoSidewaysError * (changeInAngle))
+                    * (sidewaysOdoDisplacement - odoSidewaysError * (changeInAngle))
+                    + (forwardsOdoDisplacement - odoForwardsError * (changeInAngle))
+                    * (forwardsOdoDisplacement - odoForwardsError * (changeInAngle)));
 
             if (changeInAngle != 0) {
                 // Since the robot rotates with the arc, the distance the odometry wheels measure is going to be the distance of the arc
                 double radius = Math.abs(arcDistance / (Math.PI / 180 * changeInAngle));
                 // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
-
-                xRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[0]/time.seconds();
-                yRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[1]/time.seconds();
+                double xChord = radius * (1 - Math.cos(changeInAngle * Math.PI / 180));
+                double yChord = radius * (Math.sin(changeInAngle * Math.PI / 180));
+                xRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[0];
+                yRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[1];
+                xRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[1] / time.seconds();
             } else {
-                xRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[0]/time.seconds();
-                yRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[1]/time.seconds();
+                xRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0];
+                yRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1];
+                xRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1] / time.seconds();
             }
             // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
 
@@ -187,13 +188,13 @@ public class OdometryCode extends Exponential_Methods {
             */
 
 
-            double magnitude = Math.sqrt(xDisplacement*xDisplacement+yDisplacement*yDisplacement);
-            double[] answer = circle_to_taxicab(xDisplacement/magnitude, xDisplacement/magnitude, 0);
+            double magnitude = Math.sqrt(xDisplacement * xDisplacement + yDisplacement * yDisplacement);
+            double[] answer = circle_to_taxicab(xDisplacement / magnitude, xDisplacement / magnitude, 0);
             double speed = 1;
-            frontRight.setPower(speed*answer[0]);
-            backRight.setPower(speed*answer[1]);
-            backLeft.setPower(speed*answer[2]);
-            frontLeft.setPower(speed*answer[3]);
+            frontRight.setPower(speed * answer[0]);
+            backRight.setPower(speed * answer[1]);
+            backLeft.setPower(speed * answer[2]);
+            frontLeft.setPower(speed * answer[3]);
             lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
             lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
             time.reset();
@@ -205,7 +206,8 @@ public class OdometryCode extends Exponential_Methods {
     public void monkeyMove(double xInch, double yInch, double inchesTolerence) {
         odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while (odoWheelSideways.isBusy() || odoWheelForwards.isBusy()) {}
+        while (odoWheelSideways.isBusy() || odoWheelForwards.isBusy()) {
+        }
         odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -253,43 +255,50 @@ public class OdometryCode extends Exponential_Methods {
             //telemetry.addData("angle", lastAngle);
             //telemetry.update();
 
-            double arcDistance = Math.sqrt((odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition - odoSidewaysError * (changeInAngle))
-                    * (odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition - odoSidewaysError * (changeInAngle))
-                    + (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle))
-                    * (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle)));
+            double sidewaysOdoDisplacement = odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition;
+            double forwardsOdoDisplacement = odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition;
+
+            double arcDistance = Math.sqrt((sidewaysOdoDisplacement - odoSidewaysError * (changeInAngle))
+                    * (sidewaysOdoDisplacement - odoSidewaysError * (changeInAngle))
+                    + (forwardsOdoDisplacement - odoForwardsError * (changeInAngle))
+                    * (forwardsOdoDisplacement - odoForwardsError * (changeInAngle)));
 
             if (changeInAngle != 0) {
                 // Since the robot rotates with the arc, the distance the odometry wheels measure is going to be the distance of the arc
                 double radius = Math.abs(arcDistance / (Math.PI / 180 * changeInAngle));
                 // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
-
-                xRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[0]/time.seconds();
-                yRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle)[1]/time.seconds();
+                double xChord = radius * (1 - Math.cos(changeInAngle * Math.PI / 180));
+                double yChord = radius * (Math.sin(changeInAngle * Math.PI / 180));
+                xRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[0];
+                yRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[1];
+                xRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[1] / time.seconds();
             } else {
-                xRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[0]/time.seconds();
-                yRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[1]/time.seconds();
+                xRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0];
+                yRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1];
+                xRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1] / time.seconds();
             }
             // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
 
             // Rotation of the displacement to get the displacement relative to the robot
-            double xDisplacement = (xTarget - xRobotPos) * Math.cos(-(currentAngle - initialAngle) * Math.PI / 180) - (yTarget - yRobotPos) * Math.sin(-(currentAngle + initialAngle) * Math.PI / 180); // Displacement is relative to robot
-            double yDisplacement = (xTarget - xRobotPos) * Math.sin(-(currentAngle - initialAngle) * Math.PI / 180) + (yTarget - yRobotPos) * Math.cos(-(currentAngle + initialAngle) * Math.PI / 180); // Displacement is relative to robot
+            double xTargetDistance = xTarget - xRobotPos;
+            double yTargetDistance = yTarget - yRobotPos;
+            double angleTravelled = -(currentAngle - initialAngle);
+            double xDisplacement = (xTargetDistance) * Math.cos(angleTravelled * Math.PI / 180) - (yTargetDistance) * Math.sin(angleTravelled * Math.PI / 180); // Displacement is relative to robot
+            double yDisplacement = (xTargetDistance) * Math.sin(angleTravelled * Math.PI / 180) + (yTargetDistance) * Math.cos(angleTravelled * Math.PI / 180); // Displacement is relative to robot
 
             areaXDis += (xTarget - xRobotPos) * time.seconds(); // in terms of the field
             areaYDis += (yTarget - yRobotPos) * time.seconds(); // in terms of the field
 
 
-            double magnitude = Math.sqrt(xDisplacement*xDisplacement+yDisplacement*yDisplacement);
-            double[] answer = circle_to_taxicab(xDisplacement/magnitude, xDisplacement/magnitude, 0);
+            double magnitude = Math.sqrt(xDisplacement * xDisplacement + yDisplacement * yDisplacement);
+            double[] answer = circle_to_taxicab(xDisplacement / magnitude, xDisplacement / magnitude, 0);
             double speed = 1;
-            frontRight.setPower(speed*answer[0]);
-            backRight.setPower(speed*answer[1]);
-            backLeft.setPower(speed*answer[2]);
-            frontLeft.setPower(speed*answer[3]);
+            frontRight.setPower(speed * answer[0]);
+            backRight.setPower(speed * answer[1]);
+            backLeft.setPower(speed * answer[2]);
+            frontLeft.setPower(speed * answer[3]);
             lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
             lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
             time.reset();
@@ -298,6 +307,7 @@ public class OdometryCode extends Exponential_Methods {
         }
 
     }
+
     public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -305,31 +315,30 @@ public class OdometryCode extends Exponential_Methods {
 
         if (circle_x == 0.0) {
             x = 0.0;
-        }else {
+        } else {
             x = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
                     * (Math.abs(circle_x)) / (Math.abs(circle_x) + Math.abs(circle_y));
         }
         if (circle_y == 0.0) {
             y = 0.0;
-        }else {
+        } else {
             y = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
                     * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
         }
-        double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
-        if(sum >1){
-            answer[0]=(x+y+circle_rotate)/sum;
-            answer[1]=(-x+y+circle_rotate)/sum;
-            answer[2]=(x+y-circle_rotate)/sum;
-            answer[3]=(-x+y-circle_rotate)/sum;
+        double sum = Math.abs(x) + Math.abs(y) + Math.abs(circle_rotate);
+        if (sum > 1) {
+            answer[0] = (x + y + circle_rotate) / sum;
+            answer[1] = (-x + y + circle_rotate) / sum;
+            answer[2] = (x + y - circle_rotate) / sum;
+            answer[3] = (-x + y - circle_rotate) / sum;
         } else {
-            answer[0]=(x+y+circle_rotate);
-            answer[1]=(-x+y+circle_rotate);
-            answer[2]=(x+y-circle_rotate);
-            answer[3]=(-x+y-circle_rotate);
+            answer[0] = (x + y + circle_rotate);
+            answer[1] = (-x + y + circle_rotate);
+            answer[2] = (x + y - circle_rotate);
+            answer[3] = (-x + y - circle_rotate);
         }
         return answer;
     }
-
 
 
 }
