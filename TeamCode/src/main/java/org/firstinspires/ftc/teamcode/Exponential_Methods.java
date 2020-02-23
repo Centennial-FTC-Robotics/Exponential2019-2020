@@ -236,6 +236,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- MOVEMENT -------------- (organization)
 
+
+    // Takes in unit circle coordinates and rotation speed and outputs motor powers to put into the motors
+    // The robot's speed/max speed in the direction will be the magnitude of the coordinates
     public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -301,7 +304,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         currentPosition = new Position(x, y);
     }
 
-    public void moveRelative(double x, double y) {  //a move method relative to the robot, but with the coordinate plane
+    public void moveRelative(double x, double y) {//a move method relative to the robot, but with the coordinate plane
         double currentX = currentPosition.getX();
         double currentY = currentPosition.getY();
         moveTo(currentX + x, currentY + y);
@@ -319,6 +322,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
     }
+
     /*
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){
         double targetAngle = getRotationInDimension('Z');

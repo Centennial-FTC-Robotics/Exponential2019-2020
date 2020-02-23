@@ -160,15 +160,15 @@ public class OdometryCode extends Exponential_Methods {
                 // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
 
                 double angleOffBearing = getAngleBearing(xTarget-xRobotPos, yTarget-yRobotPos);
-                xRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle-angleOffBearing)[0];
-                yRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle-angleOffBearing)[1];
-                xRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle-angleOffBearing)[0]/time.seconds();
-                yRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle-angleOffBearing)[1]/time.seconds();
+                xRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - changeInAngle - initialAngle - angleOffBearing)[0];
+                yRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - changeInAngle - initialAngle - angleOffBearing)[1];
+                xRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - changeInAngle - initialAngle - angleOffBearing)[0]/time.seconds();
+                yRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - changeInAngle - initialAngle - angleOffBearing)[1]/time.seconds();
             } else {
-                xRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[0]/time.seconds();
-                yRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[1]/time.seconds();
+                xRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - changeInAngle - initialAngle)[0];
+                yRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - changeInAngle - initialAngle)[1];
+                xRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - changeInAngle - initialAngle)[0]/time.seconds();
+                yRobotVel = rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - changeInAngle - initialAngle)[1]/time.seconds();
             }
             // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
 
@@ -181,7 +181,7 @@ public class OdometryCode extends Exponential_Methods {
 
 
             // TODO: 2/19/2020 figure out if dLin is supposed to be negative or positive
-            /*frontLeft.setPower(
+            frontLeft.setPower(
                     Range.clip(pLin * (yDisplacement - xDisplacement)
                             + iLin * (rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] - rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
                             + dLin * (rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] - rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
@@ -201,9 +201,7 @@ public class OdometryCode extends Exponential_Methods {
                             + iLin * (rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] - rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
                             + dLin * (rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] - rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
                             + pRot * (-currentAngle + initialAngle), -maxPower, maxPower));
-            */
-
-
+            /*
             double magnitude = Math.sqrt(xDisplacement*xDisplacement+yDisplacement*yDisplacement);
             double[] answer = circle_to_taxicab(xDisplacement/magnitude, xDisplacement/magnitude, 0);
             double speed = 1;
@@ -211,45 +209,13 @@ public class OdometryCode extends Exponential_Methods {
             backRight.setPower(speed*answer[1]);
             backLeft.setPower(speed*answer[2]);
             frontLeft.setPower(speed*answer[3]);
+            */
             lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
             lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
             time.reset();
             telemetry.addData("Orientation", currentAngle - initialAngle);
             telemetry.update();
         }
+        setPowerDriveMotors(0);
     }
-
-    public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
-        double[] answer = new double[4];
-        double x;
-        double y;
-
-        if (circle_x == 0.0) {
-            x = 0.0;
-        } else {
-            x = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
-                    * (Math.abs(circle_x)) / (Math.abs(circle_x) + Math.abs(circle_y));
-        }
-        if (circle_y == 0.0) {
-            y = 0.0;
-        } else {
-            y = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
-                    * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
-        }
-        double sum = Math.abs(x) + Math.abs(y) + Math.abs(circle_rotate);
-        if (sum > 1) {
-            answer[0] = (x + y + circle_rotate) / sum;
-            answer[1] = (-x + y + circle_rotate) / sum;
-            answer[2] = (x + y - circle_rotate) / sum;
-            answer[3] = (-x + y - circle_rotate) / sum;
-        } else {
-            answer[0] = (x + y + circle_rotate);
-            answer[1] = (-x + y + circle_rotate);
-            answer[2] = (x + y - circle_rotate);
-            answer[3] = (-x + y - circle_rotate);
-        }
-        return answer;
-    }
-
-
 }
