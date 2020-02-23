@@ -191,9 +191,9 @@ public class TeleOpMethods extends Exponential_Methods {
             slideUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             slideDown.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        telemetry.addData("Up Slide", slideUp.getCurrentPosition());
-        telemetry.addData("Down Slide", slideDown.getCurrentPosition());
-        telemetry.update();
+        //telemetry.addData("Up Slide", slideUp.getCurrentPosition());
+        //telemetry.addData("Down Slide", slideDown.getCurrentPosition());
+        //telemetry.update();
     }
 
     // toggles intake wheels

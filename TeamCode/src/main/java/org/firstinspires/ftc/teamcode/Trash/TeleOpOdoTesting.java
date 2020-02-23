@@ -10,6 +10,11 @@ import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMethods;
 
 @TeleOp(name = "Odometry TeleOp Testing")
 public class TeleOpOdoTesting extends TeleOpMethods {
+    public void runOpMode()throws InterruptedException {
+        super.runOpMode();
+        initialAngle = getRotationInDimension('Z');
+    }
+
     private double[] rototePoint(double x, double y, double angle /*in degrees*/) {
         double[] translatedPoint = new double[2];
         double angleRad = Math.PI / 180 * angle;
@@ -44,7 +49,7 @@ public class TeleOpOdoTesting extends TeleOpMethods {
     double areaYDis = 0; // perspective of field
 
 
-    double initialAngle = getRotationInDimension('Z'); // -180 to 180
+    double initialAngle; // -180 to 180
     double lastAngleIMU = initialAngle; // -180 to 180
     double currentAngle = initialAngle; // -inf to inf
 

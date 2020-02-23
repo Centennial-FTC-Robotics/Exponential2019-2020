@@ -79,7 +79,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
         odoWheelForwards = intakeLeft;
         //Encoder cable for forwards odometry wheel is plugged into the intakeLeft motor encoder
-        // odoWheelSideways = hardwareMap.dcMotor.get("OdometryWheelSideways");
+        odoWheelSideways = intakeRight;
 
         // sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
@@ -104,6 +104,10 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
+        odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        odoWheelSideways.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        odoWheelForwards.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slideUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
