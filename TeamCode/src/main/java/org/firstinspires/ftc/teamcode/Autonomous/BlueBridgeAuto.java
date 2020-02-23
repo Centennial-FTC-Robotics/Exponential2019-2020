@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@Autonomous(group = "Autonomous", name = "Blue Bridge")
+//@Autonomous(group = "Autonomous", name = "Blue Bridge")
 public class BlueBridgeAuto extends AutonomousPaths {
     public void runOpMode() throws InterruptedException { // starts on third tile from the right
         super.runOpMode();

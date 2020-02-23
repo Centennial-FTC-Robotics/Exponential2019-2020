@@ -49,6 +49,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double FOUNDATION_POSITION = TILE_LENGTH * 6 - ROBOT_LENGTH - 4 - FOUNDATION_LENGTH / 2;
     public static final double MIDDLE_OF_TILE = (TILE_LENGTH - ROBOT_LENGTH) / 2;
 
+    public static final double FOUNDATION_POSITION_MOVETO = FOUNDATION_POSITION - 3 * TILE_LENGTH;
+
     public static final int slideMax = 2250;
     public static final int slideMin = -325;
 
