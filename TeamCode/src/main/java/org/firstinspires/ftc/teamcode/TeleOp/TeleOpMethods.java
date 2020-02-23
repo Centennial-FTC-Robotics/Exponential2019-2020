@@ -29,6 +29,7 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double SLIDE_FACTOR = .63;
     public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
+
     public boolean servosOpen = true;
     public boolean hooksDown = false;
     public boolean hoodDown = false;
@@ -45,7 +46,6 @@ public class TeleOpMethods extends Exponential_Methods {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        //IMU from -180 to 180
 
         waitForStart();
         while(opModeIsActive()){
@@ -55,7 +55,7 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
-            hoodServos();
+            //hoodServos();
         }
     }
 
@@ -123,9 +123,9 @@ public class TeleOpMethods extends Exponential_Methods {
 
     public void hoodServos(){
         if(gamepad2.y){
-            hoodDown=!hoodDown;
+            //hoodDown=!hoodDown;
         }
-        toggleHood(hoodDown);
+        //toggleHood(hoodDown);
     }
 
     // moves the slides up and down
@@ -204,5 +204,4 @@ public class TeleOpMethods extends Exponential_Methods {
 
     // converts between the input of the trigger to the power of the motors
     // don't worry about the math
-
 }

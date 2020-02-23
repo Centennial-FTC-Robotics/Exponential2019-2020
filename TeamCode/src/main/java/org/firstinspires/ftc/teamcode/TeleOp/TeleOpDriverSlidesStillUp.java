@@ -8,6 +8,5 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class TeleOpDriverSlidesStillUp extends TeleOpMethods {
     public void runOpMode() throws InterruptedException{
         super.runOpMode();
-
     }
 }
