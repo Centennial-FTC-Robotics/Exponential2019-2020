@@ -57,20 +57,19 @@ public class OneController extends TeleOpMethods {
     }
 
     public void slideMotors(){
-
+        double slideSpeed = 0.5;
         if(gamepad1.dpad_up && slidePosition < SLIDE_MAX){
             slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
             slidePosition = (slideUp.getCurrentPosition());
-            slideUp.setPower(SLIDE_FACTOR);
+            slideUp.setPower(slideSpeed);
+            slideDown.setPower(slideSpeed);
         } else if(gamepad1.dpad_down && slidePosition > SLIDE_MIN){
             slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
             slidePosition = (slideUp.getCurrentPosition());
-            slideUp.setPower(-SLIDE_FACTOR);
-            slideDown.setPower(-SLIDE_FACTOR);
+            slideUp.setPower(-slideSpeed);
+            slideDown.setPower(-slideSpeed);
         } else {
             // the user is not trying to move slides
             if(slidePosition > SLIDE_MAX) {
