@@ -50,7 +50,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double MIDDLE_OF_TILE = (TILE_LENGTH - ROBOT_LENGTH) / 2;
 
     public static final int slideMax = 2250;
-    public static final int slideMin = -218;
+    public static final int slideMin = -325;
 
     public static final double MAX_POWER = .6;
 
@@ -647,8 +647,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeServoRight.setPosition(.9);
     }
     public void clampStone() { //servos to close position
-        intakeServoLeft.setPosition(.62);
-        intakeServoRight.setPosition(.92);
+        intakeServoLeft.setPosition(.67);
+        intakeServoRight.setPosition(.97);
     }
     public void stopIntakeWheels() {
         setIntakeWheels(0);
