@@ -5,10 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.util.*;
 
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
-
-import java.io.File;
 
 @TeleOp(name = "Odometry Testing", group = "TeleOp")
 public class OdometryCode extends Exponential_Methods {
@@ -70,7 +67,7 @@ public class OdometryCode extends Exponential_Methods {
     }
 
 
-    private double[] rototePoint(double x, double y, double angle /*in degrees*/) {
+    private double[] rotatePoint(double x, double y, double angle /*in degrees*/) {
         double[] translatedPoint = new double[2];
         double angleRad = Math.PI / 180 * angle;
         translatedPoint[0] = x * Math.cos(angleRad) - y * Math.sin(angleRad);
@@ -144,15 +141,15 @@ public class OdometryCode extends Exponential_Methods {
                 // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
                 double xChord = radius * (1 - Math.cos(changeInAngle * Math.PI / 180));
                 double yChord = radius * (Math.sin(changeInAngle * Math.PI / 180));
-                xRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[0] / time.seconds();
-                yRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[1] / time.seconds();
+                xRobotPos += rotatePoint(xChord, yChord, currentAngle - initialAngle)[0];
+                yRobotPos += rotatePoint(xChord, yChord, currentAngle - initialAngle)[1];
+                xRobotVel = rotatePoint(xChord, yChord, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rotatePoint(xChord, yChord, currentAngle - initialAngle)[1] / time.seconds();
             } else {
-                xRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0] / time.seconds();
-                yRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1] / time.seconds();
+                xRobotPos += rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0];
+                yRobotPos += rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1];
+                xRobotVel = rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1] / time.seconds();
             }
             // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
 
@@ -167,23 +164,23 @@ public class OdometryCode extends Exponential_Methods {
             // TODO: 2/19/2020 figure out if dLin is supposed to be negative or positive
             /*frontLeft.setPower(
                     Range.clip(pLin * (yDisplacement - xDisplacement)
-                            + iLin * (rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] - rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
-                            + dLin * (rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] - rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
+                            + iLin * (rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] - rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
+                            + dLin * (rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] - rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
                             - pRot * (-currentAngle + initialAngle), -maxPower, maxPower));
             frontRight.setPower(
                     Range.clip(pLin * (yDisplacement + xDisplacement)
-                            + iLin * (rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] + rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
-                            + dLin * (rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] + rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
+                            + iLin * (rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] + rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
+                            + dLin * (rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] + rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
                             + pRot * (-currentAngle + initialAngle), -maxPower, maxPower));
             backLeft.setPower(
                     Range.clip(pLin * (yDisplacement + xDisplacement)
-                            + iLin * (rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] + rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
-                            + dLin * (rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] + rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
+                            + iLin * (rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] + rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
+                            + dLin * (rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] + rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
                             - pRot * (-currentAngle + initialAngle), -maxPower, maxPower));
             backRight.setPower(
                     Range.clip(pLin * (yDisplacement - xDisplacement)
-                            + iLin * (rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] - rototePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
-                            + dLin * (rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] - rototePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
+                            + iLin * (rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[1] - rotatePoint(areaXDis, areaYDis, -currentAngle + initialAngle)[0])
+                            + dLin * (rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[1] - rotatePoint(xRobotVel, yRobotVel, -currentAngle + initialAngle)[0])
                             + pRot * (-currentAngle + initialAngle), -maxPower, maxPower));
             */
 
@@ -269,15 +266,15 @@ public class OdometryCode extends Exponential_Methods {
                 // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
                 double xChord = radius * (1 - Math.cos(changeInAngle * Math.PI / 180));
                 double yChord = radius * (Math.sin(changeInAngle * Math.PI / 180));
-                xRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(xChord, yChord, currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[0] / time.seconds();
-                yRobotVel = rototePoint(xChord, yChord, currentAngle - initialAngle)[1] / time.seconds();
+                xRobotPos += rotatePoint(xChord, yChord, currentAngle - initialAngle)[0];
+                yRobotPos += rotatePoint(xChord, yChord, currentAngle - initialAngle)[1];
+                xRobotVel = rotatePoint(xChord, yChord, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rotatePoint(xChord, yChord, currentAngle - initialAngle)[1] / time.seconds();
             } else {
-                xRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0];
-                yRobotPos += rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1];
-                xRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0] / time.seconds();
-                yRobotVel = rototePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1] / time.seconds();
+                xRobotPos += rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0];
+                yRobotPos += rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1];
+                xRobotVel = rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[0] / time.seconds();
+                yRobotVel = rotatePoint(sidewaysOdoDisplacement, forwardsOdoDisplacement, currentAngle - initialAngle)[1] / time.seconds();
             }
             // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
 
