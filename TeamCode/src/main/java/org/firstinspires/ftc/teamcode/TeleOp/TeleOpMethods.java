@@ -26,9 +26,10 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double INTAKE_MOTORS_INTAKE = -1;
     public static final double INTAKE_MOTORS_OUTTAKE = 1;
     public static final double ROTATE_TO_MOVE_RATIO = .8;
-    public static final double SLIDE_FACTOR = .5;
+    public static final double SLIDE_FACTOR = .63;
     public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
+
     public boolean servosOpen = true;
     public boolean hooksDown = false;
     public boolean hoodDown = false;
@@ -37,6 +38,7 @@ public class TeleOpMethods extends Exponential_Methods {
     public ElapsedTime timer = new ElapsedTime();
     public double angle = 0;
     public int slidePosition = 0;
+
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
@@ -44,7 +46,6 @@ public class TeleOpMethods extends Exponential_Methods {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        //IMU from -180 to 180
 
         waitForStart();
         while(opModeIsActive()){
@@ -54,7 +55,12 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
-            hoodServos();
+            //hoodServos();
+            telemetry.addData("Forwards Odometry", odoWheelForwards.getCurrentPosition());
+            telemetry.addData("Sideways Odometry", odoWheelSideways.getCurrentPosition());
+            telemetry.addData("Forwards Odometry in Inches", convertEncoderToInchOdom(odoWheelForwards.getCurrentPosition()));
+            telemetry.addData("Sideways Odometry in Inches", convertEncoderToInchOdom(odoWheelSideways.getCurrentPosition()));
+            telemetry.update();
         }
     }
 
@@ -122,9 +128,9 @@ public class TeleOpMethods extends Exponential_Methods {
 
     public void hoodServos(){
         if(gamepad2.y){
-            hoodDown=!hoodDown;
+            //hoodDown=!hoodDown;
         }
-        toggleHood(hoodDown);
+        //toggleHood(hoodDown);
     }
 
     // moves the slides up and down
@@ -203,5 +209,4 @@ public class TeleOpMethods extends Exponential_Methods {
 
     // converts between the input of the trigger to the power of the motors
     // don't worry about the math
-
 }

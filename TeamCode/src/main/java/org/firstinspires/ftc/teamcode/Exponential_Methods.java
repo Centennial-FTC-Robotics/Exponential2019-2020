@@ -52,7 +52,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double FOUNDATION_POSITION_MOVETO = FOUNDATION_POSITION - 3 * TILE_LENGTH;
 
     public static final int slideMax = 2250;
-    public static final int slideMin = -218;
+    public static final int slideMin = -325;
 
     public static final double MAX_POWER = .6;
 
@@ -238,6 +238,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     //-------------- MOVEMENT -------------- (organization)
 
+
+    // Takes in unit circle coordinates and rotation speed and outputs motor powers to put into the motors
+    // The robot's speed/max speed in the direction will be the magnitude of the coordinates
     public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
         double[] answer = new double[4];
         double x;
@@ -303,7 +306,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         currentPosition = new Position(x, y);
     }
 
-    public void moveRelative(double x, double y) {  //a move method relative to the robot, but with the coordinate plane
+    public void moveRelative(double x, double y) {//a move method relative to the robot, but with the coordinate plane
         double currentX = currentPosition.getX();
         double currentY = currentPosition.getY();
         moveTo(currentX + x, currentY + y);
@@ -321,6 +324,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
         move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
     }
+
     /*
     public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){
         double targetAngle = getRotationInDimension('Z');
@@ -645,8 +649,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeServoRight.setPosition(.9);
     }
     public void clampStone() { //servos to close position
-        intakeServoLeft.setPosition(.62);
-        intakeServoRight.setPosition(.92);
+        intakeServoLeft.setPosition(.67);
+        intakeServoRight.setPosition(.97);
     }
     public void stopIntakeWheels() {
         setIntakeWheels(0);
