@@ -53,7 +53,7 @@ public class TeleOpOdoTesting extends TeleOpMethods {
     double lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
 
     public void driveTrain() {
-
+        super.driveTrain();
         odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -123,10 +123,11 @@ public class TeleOpOdoTesting extends TeleOpMethods {
             */
         lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
         lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
-        time.reset();
         telemetry.addData("Orientation", currentAngle - initialAngle);
-        telemetry.addData("x Robot Position", xRobotPos);
-        telemetry.addData("y Robot Position", yRobotPos);
+        telemetry.addData("x Robot Position", convertEncoderToInchOdom(xRobotPos));
+        telemetry.addData("y Robot Position", convertEncoderToInchOdom(yRobotPos));
+        telemetry.addData("Timer", time.seconds());
+        time.reset();
         telemetry.update();
     }
 }

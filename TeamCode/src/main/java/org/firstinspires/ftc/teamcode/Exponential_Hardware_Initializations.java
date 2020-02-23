@@ -77,7 +77,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         slideUp = hardwareMap.dcMotor.get("slideRight");
         slideDown = hardwareMap.dcMotor.get("slideLeft");
 
-        // odoWheelForwards = hardwareMap.dcMotor.get("OdometryWheelForwards");
+        odoWheelForwards = intakeLeft;
+        //Encoder cable for forwards odometry wheel is plugged into the intakeLeft motor encoder
         // odoWheelSideways = hardwareMap.dcMotor.get("OdometryWheelSideways");
 
         // sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");

@@ -214,9 +214,13 @@ public class OdometryCode extends Exponential_Methods {
 
             lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
             lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
-            time.reset();
             telemetry.addData("Orientation", currentAngle - initialAngle);
+            telemetry.addData("Robot Displacement", (xTarget-xRobotPos)+", "+(yTarget-yRobotPos));
+            telemetry.addData("Robot Velocity", (xRobotVel)+", "+(yRobotVel));
+            telemetry.addData("Robot Area", (areaXDis)+", "+(areaYDis));
             telemetry.update();
+
+            time.reset();
         }
         setPowerDriveMotors(0);
     }

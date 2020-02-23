@@ -56,6 +56,11 @@ public class TeleOpMethods extends Exponential_Methods {
             intakeMotors();
             yeetServos();
             //hoodServos();
+            telemetry.addData("Forwards Odometry", odoWheelForwards.getCurrentPosition());
+            telemetry.addData("Sideways Odometry", odoWheelSideways.getCurrentPosition());
+            telemetry.addData("Forwards Odometry in Inches", convertEncoderToInchOdom(odoWheelForwards.getCurrentPosition()));
+            telemetry.addData("Sideways Odometry in Inches", convertEncoderToInchOdom(odoWheelSideways.getCurrentPosition()));
+            telemetry.update();
         }
     }
 
