@@ -13,11 +13,15 @@ public class TeleOpOdoTesting extends TeleOpMethods {
     public void runOpMode()throws InterruptedException {
         super.runOpMode();
         initialAngle = getRotationInDimension('Z');
+        lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
+        lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
+        lastAngleIMU = initialAngle;
+        currentAngle = initialAngle;
     }
 
     private double[] rototePoint(double x, double y, double angle /*in degrees*/) {
         double[] translatedPoint = new double[2];
-        double angleRad = Math.PI / 180 * angle;
+        double angleRad = Math.toRadians(angle);
         translatedPoint[0] = x * Math.cos(angleRad) - y * Math.sin(angleRad);
         translatedPoint[1] = y * Math.cos(angleRad) + x * Math.sin(angleRad);
         return translatedPoint;
@@ -26,18 +30,7 @@ public class TeleOpOdoTesting extends TeleOpMethods {
 
     //Bearings so clockwise from position y axis
     public double getAngleBearing(double x, double y) {
-        if (y == 0) {
-            if (x > 0) {
-                return 90;
-            } else {
-                return -90;
-            }
-        }
-        if (y > 0) {
-            return Math.atan(x / y);
-        } else {
-            return Math.atan(x / y) + 180;
-        }
+        return Math.toDegrees(Math.atan2(x, y));
     }
 
 
@@ -50,12 +43,12 @@ public class TeleOpOdoTesting extends TeleOpMethods {
 
 
     double initialAngle; // -180 to 180
-    double lastAngleIMU = initialAngle; // -180 to 180
-    double currentAngle = initialAngle; // -inf to inf
+    double lastAngleIMU; // -180 to 180
+    double currentAngle; // -inf to inf
 
     ElapsedTime time = new ElapsedTime();
-    double lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
-    double lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
+    double lastodoWheelSidewaysPosition;
+    double lastodoWheelForwardsPosition;
 
     public void driveTrain() {
         super.driveTrain();
@@ -96,16 +89,16 @@ public class TeleOpOdoTesting extends TeleOpMethods {
                 + (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle))
                 * (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle)));
 
-        if (changeInAngle != 0) {
+        if (Math.abs(changeInAngle) <= 0.001) {
             // Since the robot rotates with the arc, the distance the odometry wheels measure is going to be the distance of the arc
             double radius = Math.abs(arcDistance / (Math.PI / 180 * changeInAngle));
             // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
 
             double angleOffBearing = getAngleBearing(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            xRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing-changeInAngle)[0];
-            yRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing-changeInAngle)[1];
-            xRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing-changeInAngle)[0] / time.seconds();
-            yRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing-changeInAngle)[1] / time.seconds();
+            xRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing - changeInAngle)[0];
+            yRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing - changeInAngle)[1];
+            xRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing - changeInAngle)[0] / time.seconds();
+            yRobotVel = rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing - changeInAngle)[1] / time.seconds();
         } else {
             xRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[0];
             yRobotPos += rototePoint(odoWheelSideways.getCurrentPosition() - lastodoWheelSidewaysPosition, odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition, currentAngle - initialAngle)[1];
@@ -128,6 +121,8 @@ public class TeleOpOdoTesting extends TeleOpMethods {
             */
         lastodoWheelSidewaysPosition = odoWheelSideways.getCurrentPosition();
         lastodoWheelForwardsPosition = odoWheelForwards.getCurrentPosition();
+        telemetry.addData("Change in Angle", changeInAngle);
+        telemetry.addData("Arc Length", arcDistance);
         telemetry.addData("Orientation", currentAngle - initialAngle);
         telemetry.addData("x Robot Position", convertEncoderToInchOdom(xRobotPos));
         telemetry.addData("y Robot Position", convertEncoderToInchOdom(yRobotPos));
