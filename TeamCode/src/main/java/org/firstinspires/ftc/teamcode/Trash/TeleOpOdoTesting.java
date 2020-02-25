@@ -89,11 +89,10 @@ public class TeleOpOdoTesting extends TeleOpMethods {
                 + (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle))
                 * (odoWheelForwards.getCurrentPosition() - lastodoWheelForwardsPosition - odoForwardsError * (changeInAngle)));
 
-        if (Math.abs(changeInAngle) <= 0.001) {
+        if (Math.abs(changeInAngle) <= 0.01) {
             // Since the robot rotates with the arc, the distance the odometry wheels measure is going to be the distance of the arc
             double radius = Math.abs(arcDistance / (Math.PI / 180 * changeInAngle));
             // Segment of the arc is the chord that represents the total displacement of the robot as it travelled on the arc
-
             double angleOffBearing = getAngleBearing(gamepad1.left_stick_x, gamepad1.left_stick_y);
             xRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing - changeInAngle)[0];
             yRobotPos += rototePoint(radius * (1 - Math.cos(changeInAngle * Math.PI / 180)), radius * (Math.sin(changeInAngle * Math.PI / 180)), currentAngle - initialAngle - angleOffBearing - changeInAngle)[1];
