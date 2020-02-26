@@ -11,10 +11,13 @@ import org.firstinspires.ftc.teamcode.TensorflowDetector;
 
 import java.util.List;
 
-@TeleOp(group = "TeleOp", name = "margo testing")
+@TeleOp(group = "TeleOp", name = "OpenCV Blue Tester")
 public class Tester extends Exponential_Methods {
+    public SkystoneDetector skystoneDetector = new SkystoneDetector();
+
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
+        /*
         telemetry.addData("init", initialHeading);
         initialHeading -= 270;
         telemetry.update();
@@ -27,8 +30,10 @@ public class Tester extends Exponential_Methods {
             telemetry.addData("rot", getAngle());
             telemetry.update();
         }
-
-
+        */
+        skystoneDetector.initialize(this);
+        skystoneDetector.activate("blue");
+        waitForStart();
     }
 
 }

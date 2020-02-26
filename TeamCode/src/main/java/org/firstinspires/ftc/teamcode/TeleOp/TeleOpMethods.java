@@ -14,10 +14,10 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 public class TeleOpMethods extends Exponential_Methods {
     public static final double LEFT_BUMPER_TRIGGER_FACTOR = .5;
     public static final double RIGHT_BUMPER_TRIGGER_FACTOR = .25;
-    public static final double LEFT_SERVO_OPEN_POSITION = .55;
-    public static final double RIGHT_SERVO_OPEN_POSITION = .85;
-    public static final double LEFT_SERVO_CLOSE_POSITION = .67;
-    public static final double RIGHT_SERVO_CLOSE_POSITION = .97;
+    public static final double LEFT_SERVO_OPEN_POSITION = .4;
+    public static final double RIGHT_SERVO_OPEN_POSITION = .7;
+    public static final double LEFT_SERVO_CLOSE_POSITION = .66;
+    public static final double RIGHT_SERVO_CLOSE_POSITION = .96;
     public static final int SLIDE_MAX = slideMax - slideMin;
     public static final int SLIDE_MIN = 0;
     public static final double TIMER_INTERVAL = .15;
@@ -97,9 +97,6 @@ public class TeleOpMethods extends Exponential_Methods {
         if (gamepad2.x && intakeTimer.seconds() > INTAKE_SERVOS_TIMER_INTERVAL) {
             servosOpen = !servosOpen;
             intakeTimer.reset();
-        }
-        if (gamepad2.a) {
-            outwardsIntake();
         }
         if (servosOpen) {
             intakeServoLeft.setPosition(LEFT_SERVO_OPEN_POSITION);

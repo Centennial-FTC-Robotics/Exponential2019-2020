@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMethods;
 
-@TeleOp(group = "TeleOp", name = "Diego Test")
+//@TeleOp(group = "TeleOp", name = "Diego Test")
 public class DiegoTesting extends TeleOpMethods {
 
     public static final double LEFT_BUMPER_TRIGGER_FACTOR = .5;

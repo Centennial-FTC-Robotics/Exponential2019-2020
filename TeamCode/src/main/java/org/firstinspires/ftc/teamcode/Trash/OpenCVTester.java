@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.SkystoneDetector;
 
 import java.util.List;
 
-//@TeleOp(group = "TeleOp", name = "OpenCV Tester")
+@TeleOp(group = "TeleOp", name = "OpenCV Red Tester")
 public class OpenCVTester extends LinearOpMode {
     public SkystoneDetector skystoneDetector = new SkystoneDetector();
 
