@@ -52,7 +52,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double FOUNDATION_POSITION_MOVETO = FOUNDATION_POSITION - 3 * TILE_LENGTH;
 
     public static final int slideMax = 2250;
-    public static final int slideMin = -325;
+    public static final int slideMin = -425;
 
     public static final double MAX_POWER = .6;
 
@@ -236,6 +236,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     //-------------- MOVEMENT -------------- (organization)
+
+
+
+
+
 
 
     // Takes in unit circle coordinates and rotation speed and outputs motor powers to put into the motors

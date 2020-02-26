@@ -1,55 +1,13 @@
 package org.firstinspires.ftc.teamcode.Trash;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@TeleOp(name = "MoveTester", group = "TeleOp")
-
-public class MoveTester extends Exponential_Methods {
-
-    double p = -0.000045;
-    double i = -0.00003;
-    double d = 0;
-    @Override
-    public void runOpMode() throws InterruptedException {
-        super.runOpMode();
-        double sideways = 10;
-        double forwards = 0;
-        telemetry.addData("It got up here", "hello");
-        telemetry.update();
-        waitForStart();
-        while(opModeIsActive()) {
-            if(gamepad1.left_stick_x!=0||gamepad1.left_stick_y!=0||gamepad1.right_stick_x!=0||gamepad1.right_stick_y!=0||gamepad2.right_stick_x!=0) {
-                sideways += .25*(int)(gamepad1.left_stick_x);
-                forwards -= .25*(int)(gamepad1.left_stick_y);
-                p+=0.000001*(int)(gamepad1.right_stick_x);
-                i-=0.000001*(int)(gamepad1.right_stick_y);
-                d+=0.000001*(int)(gamepad2.right_stick_x);
-                sleep(200);
-
-            }
-            telemetry.addData("forwards", forwards);
-            telemetry.addData("sideways", sideways);
-            telemetry.addData("p value", p);
-            telemetry.addData("i value", i);
-            telemetry.addData("d value", d);
-
-
-            telemetry.update();
-            if(gamepad1.a){
-                move(sideways, forwards, p, i, d, .5, .75);
-            }
-            telemetry.update();
-        }
-    }
-
+public class moveOdometryV2 extends Exponential_Methods {
     public void move(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double maxPower) {
-        double pRot = .02;
-        inchesSideways = -inchesSideways;
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -58,7 +16,7 @@ public class MoveTester extends Exponential_Methods {
         double toleranceEncoder = convertInchToEncoderOdom(inchesTolerance);
         double xTarget = convertInchToEncoderOdom(inchesSideways);
         double yTarget = convertInchToEncoderOdom(inchesForward);
-        double minSpeed = 0;// 0.005; // Change later
+        double minSpeed = 0.1; // Change later
 
         double disFront = yTarget; // Y displacement from the target in encoders
         double disSide = xTarget; // X displacement from the target in encoders
@@ -81,7 +39,6 @@ public class MoveTester extends Exponential_Methods {
             areaFront += interval.seconds() * disFront;
             areaSide += interval.seconds() * disSide;
 
-            double angle = getRotationInDimension('Z');
             // Sets the actual motor powers according to PID
             // Clips it so the motor power is not too low to avoid steady-state or goes too fast
             frontLeft.setPower(motorClip(Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
@@ -99,6 +56,8 @@ public class MoveTester extends Exponential_Methods {
         }
         setPowerDriveMotors(0);
     }
+    // min Power and max Power have to be positive
+    // keeps the motor from running too slowly or going too fast
     private double motorClip(double power, double minPower, double maxPower){
         if(power < 0){
             return Range.clip(power, -maxPower, -minPower);
