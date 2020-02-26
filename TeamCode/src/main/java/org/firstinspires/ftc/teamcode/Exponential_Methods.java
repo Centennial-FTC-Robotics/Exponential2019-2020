@@ -239,6 +239,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     //-------------- MOVEMENT -------------- (organization)
 
 
+
+
+
+
+
     // Takes in unit circle coordinates and rotation speed and outputs motor powers to put into the motors
     // The robot's speed/max speed in the direction will be the magnitude of the coordinates
     public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
