@@ -345,7 +345,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
         double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
 
-        double pRot = 0.02;
+        double pRot = 0.01;
         double initialAngle = getRotationInDimension('Z'); // -180 to 180
         double lastAngleIMU = initialAngle; // -180 to 180
         double currentAngle = initialAngle; // -inf to inf
@@ -381,10 +381,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             // Sets the actual motor powers according to PID
             // Clips it so the motor power is not too low to avoid steady-state or goes too fast
             double maxPower = Math.min(.5+.5*time.seconds(), 1);
-            frontLeft.setPower(motorClip(pRot*(currentAngle-initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-            backRight.setPower(motorClip(-pRot*(currentAngle-initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-            frontRight.setPower(motorClip(-pRot*(currentAngle-initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
-            backLeft.setPower(motorClip(pRot*(currentAngle-initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
+            frontLeft.setPower(motorClip(-pRot*(currentAngle-initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
+            backRight.setPower(motorClip(pRot*(currentAngle-initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
+            frontRight.setPower(motorClip(pRot*(currentAngle-initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
+            backLeft.setPower(motorClip(-pRot*(currentAngle-initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
 
             telemetry.addData("Motor Front Left and Back Right", frontLeft.getPower());
             telemetry.addData("Motor Front Right and Back Left", frontRight.getPower());
