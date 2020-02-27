@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 import java.util.List;
 
-@Autonomous(group = "Autonomous", name = "SomeAutonomousPath")
+//@Autonomous(group = "Autonomous", name = "SomeAutonomousPath")
 public class SomeAutonomousPath extends Exponential_Methods {
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";

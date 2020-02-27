@@ -180,7 +180,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
 
-
     public void updateOrientation() {
         orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
