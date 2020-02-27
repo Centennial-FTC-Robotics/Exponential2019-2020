@@ -180,7 +180,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
 
-
     public void updateOrientation() {
         orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
@@ -313,239 +312,80 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
     //todo: make moveto / coordinates and shit
     public void move(double inchesSideways, double inchesForward) {
-        move(inchesSideways, inchesForward, MAX_POWER);
-    }
-
-    public void move(double inchesSideways, double inchesForward, double maxPower) {
-        // this one just inputs the default value (.5) for tolerance
-        move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE);
+        move(inchesSideways, inchesForward, 1);
     }
 
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
-        move(inchesSideways, inchesForward, maxPower, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
+        move(inchesSideways, inchesForward, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
+    }
+    public void move(double inchesSideways, double inchesForward, double inchesTolerance){
+        double p = -0.00005;
+        double i = -0.000017;
+        double d = 0.00001;
+        move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
     }
 
-    /*
-    public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance){
-        double targetAngle = getRotationInDimension('Z');
-        double currentAngle;
-        int direction;
-        double turnRate;
-        // double P = 0.015; //set later
-        double P = .02; //set later
-        double maxSpeed = 1; //set later
-        double minSpeed = 0.03; //set later
-        double error;
-
-        inchesForward = -inchesForward;
-
-        double p = 1.0/800;
-        double i;
-        double d;
-        //double inchesTolerance = .5;
-        double max_positive = maxPower;
-        double min_negative = -maxPower;
-
-        double encoderForward = convertInchToEncoderOdom(inchesForward);
-        double encoderSideways = convertInchToEncoderOdom(inchesSideways);
-        odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    public void move(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance) {
+        inchesSideways = -inchesSideways;
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        int displacementSideways = (int)encoderSideways;
-        int displacementForwards = (int)encoderForward;
+        odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double tolerance = convertInchToEncoder(inchesTolerance);
+        double toleranceEncoder = convertInchToEncoderOdom(inchesTolerance);
+        double xTarget = convertInchToEncoderOdom(inchesSideways);
+        double yTarget = convertInchToEncoderOdom(inchesForward);
+        double minSpeed = 0;// 0.005; // Change later
 
+        double disFront = yTarget; // Y displacement from the target in encoders
+        double disSide = xTarget; // X displacement from the target in encoders
+        double speedFront = 0; // Y speed in encoders per second
+        double speedSide = 0; // X speed in encoders per second
+        double areaFront = 0; // Y area in encoders * seconds
+        double areaSide = 0; // X area in encoders * seconds
 
+        double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
+        double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
 
+        ElapsedTime interval = new ElapsedTime();
         ElapsedTime time = new ElapsedTime();
+        while (opModeIsActive() && (Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder) {
+            // Updates the area, displacement, and speed variables for the PID loop
+            disFront = yTarget - odoWheelForwards.getCurrentPosition();
+            disSide = xTarget - odoWheelSideways.getCurrentPosition();
+            speedFront = (odoWheelForwards.getCurrentPosition() - frontOdometryLastPosition) / interval.seconds();
+            speedSide = (odoWheelSideways.getCurrentPosition() - sidewaysOdometryLastPosition) / interval.seconds();
+            areaFront += interval.seconds() * disFront;
+            areaSide += interval.seconds() * disSide;
 
+            double angle = getRotationInDimension('Z');
+            // Sets the actual motor powers according to PID
+            // Clips it so the motor power is not too low to avoid steady-state or goes too fast
+            double maxPower = Math.min(.5+.5*time.seconds(), 1);
+            frontLeft.setPower(motorClip(Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
+            backRight.setPower(motorClip(Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
+            frontRight.setPower(motorClip(Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
+            backLeft.setPower(motorClip(Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
 
-        while (opModeIsActive()&&Math.abs(displacementSideways)>tolerance&&Math.abs(displacementForwards)>tolerance){
-            currentAngle = getRotationInDimension('Z');
-
-            error = getAngleDist(targetAngle, currentAngle);
-            direction = getAngleDir(targetAngle, currentAngle);
-            turnRate = Range.clip(P * error, minSpeed, maxSpeed);
-
-            if(time.seconds()>.5){
-                frontLeft.setPower(p*displacementForwards-p*displacementSideways);
-                frontRight.setPower(p*displacementForwards+p*displacementSideways);
-                backLeft.setPower(p*displacementForwards-p*displacementSideways);
-                backRight.setPower(p*displacementForwards+p*displacementSideways);
-            } else {
-                frontLeft.setPower(-direction * turnRate + p*displacementForwards-p*displacementSideways);
-                frontRight.setPower(direction * turnRate + p*displacementForwards+p*displacementSideways);
-                backLeft.setPower(-direction * turnRate + p*displacementForwards-p*displacementSideways);
-                backRight.setPower(direction * turnRate + p*displacementForwards+p*displacementSideways);
-            }
-            displacementSideways = (int)encoderSideways-odoWheelSideways.getCurrentPosition();
-            displacementForwards = (int)encoderForward-odoWheelForwards.getCurrentPosition();
-        }
-        setPowerDriveMotors(0);
-        //turnAbsolute(targetAngle);
-    }
-    */
-
-    public void move(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance) {  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
-        double p;
-        double i;
-        double targetAngle = getAngle() ;
-        inchesForward = -inchesForward;
-        inchesSideways = getTransformedDistance(inchesSideways);
-
-        if(inchesSideways!=0) {
-            p = 1.0/600;
-            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5) {
-                i = 0.01;
-            } else {
-                i=0.009;
-            }
-        } else {
-            p=1.0/1200;
-            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5){
-                i = 0.005;
-            } else {
-                i = 0.0015;
-            }
-        }
-        double d = 0;
-        double max_positive = maxPower;
-        double min_negative = -maxPower;
-
-        double encoderForward = convertInchToEncoder(inchesForward);
-        double encoderSideways = convertInchToEncoder(inchesSideways);
-        resetDriveMotorEncoders();
-        double tolerance = convertInchToEncoder(inchesTolerance);
-
-        double frontLeft_encoder = encoderForward-encoderSideways;
-        double frontRight_encoder = encoderForward+encoderSideways;
-        double backLeft_encoder = encoderForward+encoderSideways;
-        double backRight_encoder = encoderForward-encoderSideways;
-
-        double frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
-        double frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
-        double backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
-        double backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-        ElapsedTime time = new ElapsedTime();
-
-        double areaFrontLeft= 0;
-        double areaFrontRight= 0;
-        double areaBackLeft= 0;
-        double areaBackRight= 0;
-
-        double frontLeftLastPosition = 0;
-        double frontRightLastPosition = 0;
-        double backLeftLastPosition = 0;
-        double backRightLastPosition = 0;
-        time = new ElapsedTime();
-        while (opModeIsActive()&&(Math.abs(frontLeft_displacement)>tolerance||Math.abs(frontRight_displacement)>tolerance||Math.abs(backLeft_displacement)>tolerance||Math.abs(backRight_displacement)>tolerance)){
-            areaFrontLeft+=time.seconds()*frontLeft_displacement;
-            areaFrontRight+=time.seconds()*frontRight_displacement;
-            areaBackLeft+=time.seconds()*backLeft_displacement;
-            areaBackRight+=time.seconds()*backRight_displacement;
-            double speedFrontLeft= (frontLeft.getCurrentPosition()-frontLeftLastPosition)/time.seconds();
-            double speedFrontRight= (frontRight.getCurrentPosition()-frontRightLastPosition)/time.seconds();
-            double speedBackLeft= (backLeft.getCurrentPosition()-backLeftLastPosition)/time.seconds();
-            double speedBackRight= (backRight.getCurrentPosition()-backRightLastPosition)/time.seconds();
-            //if(time.seconds()>2){
-            frontLeft.setPower(Range.clip(p*frontLeft_displacement+i*areaFrontLeft+d*speedFrontLeft, min_negative, max_positive));
-            frontRight.setPower(Range.clip(p*frontRight_displacement+i*areaFrontRight+d*speedFrontRight, min_negative, max_positive));
-            backLeft.setPower(Range.clip(p*backLeft_displacement+i*areaBackLeft+d*speedBackLeft, min_negative, max_positive));
-            backRight.setPower(Range.clip(p*backRight_displacement+i*areaBackRight+d*speedBackRight, min_negative, max_positive));
-
-            frontLeft_displacement = frontLeft_encoder-frontLeft.getCurrentPosition();
-            frontRight_displacement = frontRight_encoder-frontRight.getCurrentPosition();
-            backLeft_displacement = backLeft_encoder-backLeft.getCurrentPosition();
-            backRight_displacement = backRight_encoder-backRight.getCurrentPosition();
-            telemetry.addData("area frontLeft", areaFrontLeft);
-            telemetry.addData("area frontRight", areaFrontRight);
-            telemetry.addData("area backLeft", areaBackLeft);
-            telemetry.addData("area backRight", areaBackRight);
+            telemetry.addData("Motor Front Left and Back Right", frontLeft.getPower());
+            telemetry.addData("Motor Front Right and Back Left", frontRight.getPower());
             telemetry.update();
-            time.reset();
+
+            frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
+            sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
+            interval.reset();
         }
         setPowerDriveMotors(0);
-        //TODO i got rid of rotate
-        turnAbsolute(targetAngle);
     }
-
-    public void moveSetISetP(double inchesSideways, double inchesForward, double maxPower, double inchesTolerance, double i, double p) {  // DON'T FUCK WITH THIS METHOD, i will find a better way to do this later
-        double targetAngle = getRotationInDimension('Z');
-        inchesForward = -inchesForward;
-        inchesSideways = getTransformedDistance(inchesSideways);
-
-        if (inchesSideways != 0) {
-            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5) {
-            } else {
-            }
+    private double motorClip(double power, double minPower, double maxPower){
+        if(power < 0){
+            return Range.clip(power, -maxPower, -minPower);
+        } else if (power > 0){
+            return Range.clip(power, minPower, maxPower);
         } else {
-            if (Math.sqrt(inchesSideways * inchesSideways + inchesForward * inchesForward) < 5) {
-            } else {
-            }
+            return 0;
         }
-        double d = 0;
-        double max_positive = maxPower;
-        double min_negative = -maxPower;
-
-        double encoderForward = convertInchToEncoder(inchesForward);
-        double encoderSideways = convertInchToEncoder(inchesSideways);
-        resetDriveMotorEncoders();
-        double tolerance = convertInchToEncoder(inchesTolerance);
-
-        double frontLeft_encoder = encoderForward - encoderSideways;
-        double frontRight_encoder = encoderForward + encoderSideways;
-        double backLeft_encoder = encoderForward + encoderSideways;
-        double backRight_encoder = encoderForward - encoderSideways;
-
-        double frontLeft_displacement = frontLeft_encoder - frontLeft.getCurrentPosition();
-        double frontRight_displacement = frontRight_encoder - frontRight.getCurrentPosition();
-        double backLeft_displacement = backLeft_encoder - backLeft.getCurrentPosition();
-        double backRight_displacement = backRight_encoder - backRight.getCurrentPosition();
-        ElapsedTime time = new ElapsedTime();
-
-        double areaFrontLeft = 0;
-        double areaFrontRight = 0;
-        double areaBackLeft = 0;
-        double areaBackRight = 0;
-
-        double frontLeftLastPosition = 0;
-        double frontRightLastPosition = 0;
-        double backLeftLastPosition = 0;
-        double backRightLastPosition = 0;
-
-        while (opModeIsActive() && (Math.abs(frontLeft_displacement) > tolerance || Math.abs(frontRight_displacement) > tolerance || Math.abs(backLeft_displacement) > tolerance || Math.abs(backRight_displacement) > tolerance)) {
-            areaFrontLeft += time.seconds() * frontLeft_displacement;
-            areaFrontRight += time.seconds() * frontRight_displacement;
-            areaBackLeft += time.seconds() * backLeft_displacement;
-            areaBackRight += time.seconds() * backRight_displacement;
-            double speedFrontLeft = (frontLeft.getCurrentPosition() - frontLeftLastPosition) / time.seconds();
-            double speedFrontRight = (frontRight.getCurrentPosition() - frontRightLastPosition) / time.seconds();
-            double speedBackLeft = (backLeft.getCurrentPosition() - backLeftLastPosition) / time.seconds();
-            double speedBackRight = (backRight.getCurrentPosition() - backRightLastPosition) / time.seconds();
-            //if(time.seconds()>2){
-            frontLeft.setPower(Range.clip(p * frontLeft_displacement + i * areaFrontLeft + d * speedFrontLeft, min_negative, max_positive));
-            frontRight.setPower(Range.clip(p * frontRight_displacement + i * areaFrontRight + d * speedFrontRight, min_negative, max_positive));
-            backLeft.setPower(Range.clip(p * backLeft_displacement + i * areaBackLeft + d * speedBackLeft, min_negative, max_positive));
-            backRight.setPower(Range.clip(p * backRight_displacement + i * areaBackRight + d * speedBackRight, min_negative, max_positive));
-
-            frontLeft_displacement = frontLeft_encoder - frontLeft.getCurrentPosition();
-            frontRight_displacement = frontRight_encoder - frontRight.getCurrentPosition();
-            backLeft_displacement = backLeft_encoder - backLeft.getCurrentPosition();
-            backRight_displacement = backRight_encoder - backRight.getCurrentPosition();
-            telemetry.addData("area frontLeft", areaFrontLeft);
-            telemetry.addData("area frontRight", areaFrontRight);
-            telemetry.addData("area backLeft", areaBackLeft);
-            telemetry.addData("area backRight", areaBackRight);
-            telemetry.update();
-            time.reset();
-        }
-        setPowerDriveMotors(0);
-        //TODO i got rid of rotate
-        turnAbsolute(targetAngle);
     }
-
 
     public static double getTransformedDistance(double inches) {  // leave this as a separate method, ENCAPSULATION ! !
         double m = .866279;
@@ -587,9 +427,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
-            telemetry.addData("error", error);
-            telemetry.addData("turnRate", turnRate);
-            telemetry.update();
+            //telemetry.addData("error", error);
+            //telemetry.addData("turnRate", turnRate);
+            //telemetry.update();
             setPowerDriveMotors(-(float) (turnRate * direction), (float) (turnRate * direction));
         }
         while (opModeIsActive() && error > tolerance);

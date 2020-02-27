@@ -16,19 +16,20 @@ public class OdoErrorFinder extends Exponential_Methods {
         double odoForwardsError = 0;
 
         do{
+            initializeIMU();
             odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             turnRelative(90);
             sleep(1000);
-            odoForwardsChange = odoWheelForwards.getCurrentPosition() - odoForwardsError*90;
-            odoSidewaysChange = odoWheelSideways.getCurrentPosition() - odoSidewaysError*90;
+            odoForwardsChange = odoWheelForwards.getCurrentPosition() - odoForwardsError*getRotationInDimension('Z');
+            odoSidewaysChange = odoWheelSideways.getCurrentPosition() - odoSidewaysError*getRotationInDimension('Z');
 
-            odoForwardsError+=odoForwardsChange/90;
-            odoSidewaysError+=odoSidewaysChange/90;
+            odoForwardsError+=odoForwardsChange/getRotationInDimension('Z')/2;
+            odoSidewaysError+=odoSidewaysChange/getRotationInDimension('Z')/2;
             telemetry.addData("OdoForwardsError", odoForwardsError);
             telemetry.addData("OdoSidewaysError", odoSidewaysError);
-            telemetry.addData("OdoForwardsChange", odoForwardsChange);
-            telemetry.addData("OdoSidewaysChange", odoSidewaysChange);
+            telemetry.addData("OdoForwardsChange", convertEncoderToInchOdom(odoForwardsChange));
+            telemetry.addData("OdoSidewaysChange", convertEncoderToInchOdom(odoSidewaysChange));
             telemetry.update();
         } while(opModeIsActive());
     }

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 import java.io.File;
 
-@TeleOp(name = "Read Write File")
+//@TeleOp(name = "Read Write File")
 public class ReadWriteFileTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

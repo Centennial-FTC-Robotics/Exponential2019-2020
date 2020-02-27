@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
-@Autonomous(group = "Autonomous", name = "LEDTesting")
+//@Autonomous(group = "Autonomous", name = "LEDTesting")
 //public class LEDTesting extends LinearOpMode {
 public class LEDTesting extends Exponential_Methods {
     public void runOpMode() throws InterruptedException { // starts on second tile from the right
