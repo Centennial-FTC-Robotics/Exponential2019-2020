@@ -97,7 +97,7 @@ public class AutonomousPaths extends Exponential_Methods {
 
     }
     public void twoStoneAuto(String color, int stonePos) { //starts facing the bridge
-        initialHeading -= 270; //robot starts off facing 270
+        //initialHeading -= 270; //robot starts off facing 270
 
         int factor;
         if (color.equals("red"))
@@ -107,7 +107,7 @@ public class AutonomousPaths extends Exponential_Methods {
 
 
         //start distance away from wall (set later)
-        double startX = TILE_LENGTH * 2 - ROBOT_LENGTH /*- MIDDLE_OF_TILE*/;
+        double startX = /*TILE_LENGTH * 2 - ROBOT_LENGTH *//*- MIDDLE_OF_TILE*/TILE_LENGTH;
         double startY = 0;
         currentPosition = new Position(startX, startY);
 
@@ -163,11 +163,12 @@ public class AutonomousPaths extends Exponential_Methods {
         toggleHook(true);
         sleep(250);
 
+        move(0, (11 + TILE_LENGTH + MIDDLE_OF_TILE) - MIDDLE_OF_TILE);
+
         //rotating foundation
         //double inchesToPlaceFoundation =
         turnRelative(factor * -90);
 
-        move(0, (11 + TILE_LENGTH + MIDDLE_OF_TILE) - MIDDLE_OF_TILE);
         toggleHook(false);
         //centering with second tile
         move(factor * (TILE_LENGTH + MIDDLE_OF_TILE - MIDDLE_OF_TILE), 0);

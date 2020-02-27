@@ -423,7 +423,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double error;
 
         do {
-            currentAngle = getAngle();
+            currentAngle = getRotationInDimension('Z');
             error = getAngleDist(targetAngle, currentAngle);
             direction = getAngleDir(targetAngle, currentAngle);
             turnRate = Range.clip(P * error, minSpeed, maxSpeed);
