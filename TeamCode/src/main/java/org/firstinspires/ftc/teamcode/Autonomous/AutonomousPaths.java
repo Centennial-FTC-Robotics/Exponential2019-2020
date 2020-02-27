@@ -17,14 +17,15 @@ public class AutonomousPaths extends Exponential_Methods {
 
         //start distance away from wall (set later)
         double startX = 3 * TILE_LENGTH;
-        double startY = TILE_LENGTH * 2 - ROBOT_LENGTH /* + something */;
+        double startY = /*TILE_LENGTH * 2 - ROBOT_LENGTH*/ TILE_LENGTH /* + something */;
 
         currentPosition = new Position(startX, startY);
 
         int inchesBlocks = stonePos * 8;
 
-        moveRelative(factor * (TILE_LENGTH + MIDDLE_OF_TILE), 0);
+        moveRelative(factor * (TILE_LENGTH + MIDDLE_OF_TILE - 6), 0);
         yuhwanSlidesDown();
+        moveRelative(factor * 6, 0);
         double intakeWidthOffset = 2;
 
         if (stonePos == 2) {
@@ -112,15 +113,18 @@ public class AutonomousPaths extends Exponential_Methods {
 
         int inchesBlocks = stonePos * 8;
 
-        move(factor * -(TILE_LENGTH + MIDDLE_OF_TILE - startY), 0);
+        move(factor * (TILE_LENGTH + MIDDLE_OF_TILE - startY - 6), 0);
         yuhwanSlidesDown();
+        //move(0, factor * 6);
+
+        double intakeWidthOffset = 2;
+
 
         if (stonePos == 2) {
             move(0, startX - (TILE_LENGTH * 2 + MIDDLE_OF_TILE));
             //move the front of the robot to the almost corner of the tile
             turnRelative(factor * -45);
             double halfOfDiagonal = Math.sqrt(2 * Math.pow(TILE_LENGTH, 2)) / 2;
-            double intakeWidthOffset = 2;
             double diagonalToStone = halfOfDiagonal - ROBOT_LENGTH / 2 - intakeWidthOffset;
             move(0, diagonalToStone);
             yuhwanIntakeStone();
@@ -130,14 +134,15 @@ public class AutonomousPaths extends Exponential_Methods {
             //moving to foundation
             move(0, (2 * TILE_LENGTH + MIDDLE_OF_TILE) - FOUNDATION_POSITION);
         } else {
-            move(0, startX - (TILE_LENGTH + MIDDLE_OF_TILE));
-            move(0, MIDDLE_OF_TILE - 10 + inchesBlocks);
-            move(factor * (TILE_LENGTH / 2), 0);
+            //move(0, startX - (TILE_LENGTH + MIDDLE_OF_TILE));
+            //move(0, MIDDLE_OF_TILE - 10 + inchesBlocks);
+            move(0, startX - (TILE_LENGTH + intakeWidthOffset + BLOCK_LENGTH + inchesBlocks));
+            move(factor * (TILE_LENGTH / 2 + 6), 0);
 
             yuhwanIntakeStone();
             move(factor * (-TILE_LENGTH / 2), 0);
 
-            move(0, (TILE_LENGTH + MIDDLE_OF_TILE + 10 + inchesBlocks) - FOUNDATION_POSITION);
+            move(0, (TILE_LENGTH + intakeWidthOffset + BLOCK_LENGTH + inchesBlocks) - FOUNDATION_POSITION);
         }
         //currently at middle of foundation
 
@@ -160,13 +165,14 @@ public class AutonomousPaths extends Exponential_Methods {
 
         //rotating foundation
         //double inchesToPlaceFoundation =
-        move(0, (11 + TILE_LENGTH + MIDDLE_OF_TILE) - MIDDLE_OF_TILE);
         turnRelative(factor * -90);
+
+        move(0, (11 + TILE_LENGTH + MIDDLE_OF_TILE) - MIDDLE_OF_TILE);
         toggleHook(false);
         //centering with second tile
         move(factor * (TILE_LENGTH + MIDDLE_OF_TILE - MIDDLE_OF_TILE), 0);
         //moving to intake second block
-        move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - 10 - inchesBlocks);
+        move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - intakeWidthOffset - BLOCK_LENGTH - inchesBlocks);
 
 
 
@@ -235,7 +241,8 @@ public class AutonomousPaths extends Exponential_Methods {
 
         double foundationPosition = (TILE_LENGTH * 6 - ROBOT_LENGTH - 4 - FOUNDATION_LENGTH / 2);
         //move to foundation
-        moveSetISetP(0, -positionForSkystone + foundationPosition /*TILE_LENGTH * 4.5*/, .5, 1, .0003, 1.0/1000);
+        //moveSetISetP(0, -positionForSkystone + foundationPosition /*TILE_LENGTH * 4.5*/, .5, 1, .0003, 1.0/1000);
+        move(0, -positionForSkystone + foundationPosition);
 
         //releasing stone
         extendSlidesBy(6, .5);
@@ -467,7 +474,9 @@ public class AutonomousPaths extends Exponential_Methods {
         turnAbsolute(factor * -90);
         bringSlidesDown();
         sleep(500);
-        moveSetISetP(0,-10,0.5, 0.75, 0.01, 1.0/600);
+        //moveSetISetP(0,-10,0.5, 0.75, 0.01, 1.0/600);
+        move(0,-10);
+
         toggleHook(false);
 
         move(factor * (TILE_LENGTH / 4),0, MAX_POWER);
