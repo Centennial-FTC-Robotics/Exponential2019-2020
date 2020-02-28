@@ -140,9 +140,9 @@ public class AutonomousPaths extends Exponential_Methods {
             move(factor * (TILE_LENGTH / 2 + 6), 0);
 
             yuhwanIntakeStone();
-            move(factor * (-TILE_LENGTH / 2), 0);
+            move(factor * (-TILE_LENGTH / 2 - 1), 0);
 
-            move(0, (TILE_LENGTH + intakeWidthOffset + BLOCK_LENGTH + inchesBlocks) - FOUNDATION_POSITION);
+            move(0, (TILE_LENGTH + intakeWidthOffset + BLOCK_LENGTH + inchesBlocks + 4) - FOUNDATION_POSITION);
         }
         //currently at middle of foundation
 
@@ -171,9 +171,9 @@ public class AutonomousPaths extends Exponential_Methods {
 
         toggleHook(false);
         //centering with second tile
-        move(factor * (TILE_LENGTH + MIDDLE_OF_TILE - MIDDLE_OF_TILE), 0);
+        move(factor * (TILE_LENGTH + MIDDLE_OF_TILE - MIDDLE_OF_TILE/*TODO*/ - 6), 0);
         //moving to intake second block
-        move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - intakeWidthOffset - BLOCK_LENGTH - inchesBlocks);
+        move(0, 6 * TILE_LENGTH - FOUNDATION_WIDTH - ROBOT_LENGTH - intakeWidthOffset - BLOCK_LENGTH - inchesBlocks - 2 - 2);
 
 
 
@@ -181,7 +181,7 @@ public class AutonomousPaths extends Exponential_Methods {
         yuhwanIntakeStone();
         move(factor * -TILE_LENGTH / 2, 0);
         //moving to 4th tile to rotate and extend slides
-        move (0, 4 * TILE_LENGTH - 10 - inchesBlocks);
+        move (0, -(4 * TILE_LENGTH - 10 - inchesBlocks));
         extendSlidesBy(6, .5);
         turnRelative(180);
 

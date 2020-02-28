@@ -61,7 +61,7 @@ public class SkystoneDetector{
             if(teamColor.equals("red"))
                 rectCrop = new Rect(new Point(100,400) , new Point(1000,600));
             else
-                rectCrop = new Rect(new Point(300,300) , new Point(1200,500));
+                rectCrop = new Rect(new Point(300,350) , new Point(1200,550));
             Imgproc.cvtColor(input, gray, Imgproc.COLOR_BGR2GRAY);
             Mat croppedGray = new Mat(gray, rectCrop);
 
