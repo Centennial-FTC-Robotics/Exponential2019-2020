@@ -16,7 +16,7 @@ public class AutonomousPaths extends Exponential_Methods {
 
 
         //start distance away from wall (set later)
-        double startX = 3 * TILE_LENGTH;
+        double startX = 3 * TILE_LENGTH * factor;
         double startY = /*TILE_LENGTH * 2 - ROBOT_LENGTH*/ TILE_LENGTH /* + something */;
 
         currentX = startX;
@@ -31,7 +31,9 @@ public class AutonomousPaths extends Exponential_Methods {
 
         if (stonePos == 2) {
             setTargetPosition(targetX, -TILE_LENGTH + MIDDLE_OF_TILE);
-            turnAbsolute(225);
+
+            turnAbsolute(270 - factor * 45);
+            //turnAbsolute(225);
 
             double halfOfDiagonal = Math.sqrt(2 * Math.pow(TILE_LENGTH, 2)) / 2;
 
@@ -40,61 +42,73 @@ public class AutonomousPaths extends Exponential_Methods {
             move(0, diagonalToStone);
             yuhwanIntakeStone();
             move(0, -diagonalToStone);
-            turnRelative(factor * 45);
+
+            turnAbsolute(270);
+            //turnRelative(factor * 45);
         } else {
-            moveTo(targetX, -2 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
-            moveRelative(-TILE_LENGTH / 2, 0);
+            setTargetPosition(targetX, -2 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
+            moveRelative(factor * -TILE_LENGTH / 2, 0);
 
             yuhwanIntakeStone();
 
-            moveRelative(TILE_LENGTH / 2, 0);
+            moveRelative(factor * TILE_LENGTH / 2, 0);
         }
-        moveTo(currentPosition.getX(), FOUNDATION_POSITION_MOVETO);
+        setTargetPosition(targetX, FOUNDATION_POSITION_MOVETO);
 
         //releasing stone
         extendSlidesBy(6, .5);
-        turnAbsolute(180);
-        moveRelative(0, -8);
+
+        turnAbsolute(90 + factor * 90);
+        //turnAbsolute(180);
+
+        moveRelative(-8 * factor, 0);
         releaseStone();
 
         //preparing for foundation
-        moveRelative(8, 0);
-        turnAbsolute(0);
+        moveRelative(8 * factor, 0);
+
+        turnAbsolute(90 - factor * 90);
+        //turnAbsolute(0);
+
         extendSlidesBy(-6, .5);
         outwardsIntake();
 
-        moveRelative(-11, 0);
+        moveRelative(-11 * factor, 0);
         sleep(500);
         toggleHook(true);
         sleep(250);
 
         //rotating foundation
 
-        moveTo(3 * TILE_LENGTH - MIDDLE_OF_TILE, currentPosition.getY());
+        setTargetPosition(factor * (3 * TILE_LENGTH - MIDDLE_OF_TILE), targetY);
+
         turnAbsolute(270);
+
         toggleHook(true);
         //centering with second tile
-        moveTo(2 * TILE_LENGTH - MIDDLE_OF_TILE, currentPosition.getY());
+        setTargetPosition(factor * (2 * TILE_LENGTH - MIDDLE_OF_TILE), targetY);
         //moving to intake second block
-        moveTo(currentPosition.getX(), -3 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
+        setTargetPosition(targetX, -3 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
 
-        moveRelative(-TILE_LENGTH / 2, 0);
+        moveRelative(factor * -TILE_LENGTH / 2, 0);
         yuhwanIntakeStone();
-        moveRelative(TILE_LENGTH / 2, 0);
+        moveRelative(factor * TILE_LENGTH / 2, 0);
         //moving to 4th tile to rotate and extend slides
-        moveTo(currentPosition.getX(), TILE_LENGTH);
+        setTargetPosition(targetX, TILE_LENGTH);
         extendSlidesBy(6, .5);
-        turnRelative(180);
+
+        turnAbsolute(90);
+        //turnRelative(180);
 
         //placing the stone
-        moveTo(currentPosition.getX(), TILE_LENGTH * 3 - ROBOT_LENGTH - FOUNDATION_WIDTH);
+        setTargetPosition(targetX, TILE_LENGTH * 3 - ROBOT_LENGTH - FOUNDATION_WIDTH);
         releaseStone();
         //moving back to lower slides
         moveRelative(0, -TILE_LENGTH);
         extendSlidesBy(-6, .5);
         outwardsIntake();
         //park
-        moveTo(currentPosition.getX(), -ROBOT_LENGTH / 2);
+        setTargetPosition(targetX, -ROBOT_LENGTH / 2);
 
     }
     public void twoStoneAuto(String color, int stonePos) { //starts facing the bridge
@@ -110,7 +124,9 @@ public class AutonomousPaths extends Exponential_Methods {
         //start distance away from wall (set later)
         double startX = /*TILE_LENGTH * 2 - ROBOT_LENGTH *//*- MIDDLE_OF_TILE*/TILE_LENGTH;
         double startY = 0;
-        currentPosition = new Position(startX, startY);
+
+        currentX = startX;
+        currentY = startY;
 
         int inchesBlocks = stonePos * 8;
 
