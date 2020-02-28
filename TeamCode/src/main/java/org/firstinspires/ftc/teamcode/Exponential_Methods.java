@@ -57,6 +57,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double MAX_POWER = .6;
 
     public static double initialAngleOffset; //how far away the front of robot is from 90 deg
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -122,8 +123,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public int convertInchToEncoderOdom(double inches) {
         return (int) (8192 / (2 * Math.PI) * inches);
     }
+
     public double convertEncoderToInchOdom(double encoder) {
-        return (encoder)/(8192 / (2 * Math.PI));
+        return (encoder) / (8192 / (2 * Math.PI));
     }
 
     public double getAngleDist(double targetAngle, double currentAngle) {
@@ -182,13 +184,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     }
 
-    public double convertNormDegree(double degree){
-        if(degree < 0)
+    public double convertNormDegree(double degree) {
+        if (degree < 0)
             return degree + 360;
         else
             return degree;
     }
-    public double getAngle(){
+
+    public double getAngle() {
         return convertNormDegree(getRotationInDimension('Z'));
     }
 
@@ -245,36 +248,42 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         if (circle_x == 0.0) {
             x = 0.0;
-        }else {
+        } else {
             x = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
                     * (Math.abs(circle_x)) / (Math.abs(circle_x) + Math.abs(circle_y));
         }
         if (circle_y == 0.0) {
             y = 0.0;
-        }else {
+        } else {
             y = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
                     * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
         }
-        double sum = Math.abs(x)+Math.abs(y)+Math.abs(circle_rotate);
-        if(sum >1){
-            answer[0]=(x+y+circle_rotate)/sum;
-            answer[1]=(-x+y+circle_rotate)/sum;
-            answer[2]=(x+y-circle_rotate)/sum;
-            answer[3]=(-x+y-circle_rotate)/sum;
+        double sum = Math.abs(x) + Math.abs(y) + Math.abs(circle_rotate);
+        if (sum > 1) {
+            answer[0] = (x + y + circle_rotate) / sum;
+            answer[1] = (-x + y + circle_rotate) / sum;
+            answer[2] = (x + y - circle_rotate) / sum;
+            answer[3] = (-x + y - circle_rotate) / sum;
         } else {
-            answer[0]=(x+y+circle_rotate);
-            answer[1]=(-x+y+circle_rotate);
-            answer[2]=(x+y-circle_rotate);
-            answer[3]=(-x+y-circle_rotate);
+            answer[0] = (x + y + circle_rotate);
+            answer[1] = (-x + y + circle_rotate);
+            answer[2] = (x + y - circle_rotate);
+            answer[3] = (-x + y - circle_rotate);
         }
         return answer;
     }
 
 
     public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
-    public Position currentPosition = new Position(0, 0);
+    //public Position currentPosition = new Position(0, 0);
 
-    public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
+    public double currentX;
+    public double currentY;
+
+    public double targetX;
+    public double targetY;
+
+   /* public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
                                                 //if blue, positions are the bottom left of robot
         double currentAngle = getAngle();
         double currentX = currentPosition.getX();
@@ -301,13 +310,22 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(moveX, moveY);
         //TODO: temporary
         currentPosition = new Position(x, y);
+    }*/
+
+    public void setTargetPosition(double x, double y) {
+        targetX = x;
+        targetY = y;
+        //WORK HERE ERIC
+        double angle = getRotationInDimension('Z');
+        double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, angle);
+        move(translatedCoord[0], translatedCoord[1]);
+
     }
 
     public void moveRelative(double x, double y) {//a move method relative to the robot, but with the coordinate plane
-        double currentX = currentPosition.getX();
-        double currentY = currentPosition.getY();
-        moveTo(currentX + x, currentY + y);
+        setTargetPosition(targetX + x, targetY + y);
     }
+
     //todo: make moveto / coordinates and shit
     public void move(double inchesSideways, double inchesForward) {
         move(inchesSideways, inchesForward, 1);
@@ -316,11 +334,20 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void moveAddTolerance(double inchesSideways, double inchesForward, double maxPower, double inchesToleranceAddition) {
         move(inchesSideways, inchesForward, DEFAULT_MOVE_TOLERANCE + inchesToleranceAddition);
     }
-    public void move(double inchesSideways, double inchesForward, double inchesTolerance){
+
+    public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
         double p = -0.00005;
-        double i = -0.000018;
-        double d = 0.00001;
+        double i = -0.000012;
+        double d = 0.000012;
         move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
+    }
+
+    private static double[] rotatePoint(double x, double y, double angle /*in degrees*/) {
+        double[] translatedPoint = new double[2];
+        double angleRad = Math.PI / 180 * angle;
+        translatedPoint[0] = x * Math.cos(angleRad) - y * Math.sin(angleRad);
+        translatedPoint[1] = y * Math.cos(angleRad) + x * Math.sin(angleRad);
+        return translatedPoint;
     }
 
     public void move(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance) {
@@ -345,7 +372,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
         double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
 
-        double pRot = 0.01;
+        double pRot = 0.02;
         double initialAngle = getRotationInDimension('Z'); // -180 to 180
         double lastAngleIMU = initialAngle; // -180 to 180
         double currentAngle = initialAngle; // -inf to inf
@@ -378,13 +405,24 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             areaFront += interval.seconds() * disFront;
             areaSide += interval.seconds() * disSide;
 
+            double magnitude = Math.sqrt(Math.pow(disSide, 2) + Math.pow(disFront, 2));
+            double[] motorPowers = circle_to_taxicab(-disSide / magnitude, -disFront / magnitude, 0);
+
+
             // Sets the actual motor powers according to PID
             // Clips it so the motor power is not too low to avoid steady-state or goes too fast
-            double maxPower = Math.min(.5+.5*time.seconds(), 1);
-            frontLeft.setPower(motorClip(-pRot*(currentAngle-initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-            backRight.setPower(motorClip(pRot*(currentAngle-initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-            frontRight.setPower(motorClip(pRot*(currentAngle-initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
-            backLeft.setPower(motorClip(-pRot*(currentAngle-initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
+            double maxPower = Math.min(.5 + .5 * time.seconds(), 1);
+            if (Math.abs(currentAngle - initialAngle) > 3) {
+                frontLeft.setPower(motorClip(-pRot * (currentAngle - initialAngle) + motorPowers[3], minSpeed, maxPower));
+                backRight.setPower(motorClip(pRot * (currentAngle - initialAngle) + motorPowers[1], minSpeed, maxPower));
+                frontRight.setPower(motorClip(pRot * (currentAngle - initialAngle) + motorPowers[0], minSpeed, maxPower));
+                backLeft.setPower(motorClip(-pRot * (currentAngle - initialAngle) + motorPowers[2], minSpeed, maxPower));
+            } else {
+                frontRight.setPower(motorPowers[0]);
+                backRight.setPower(motorPowers[1]);
+                backLeft.setPower(motorPowers[2]);
+                frontLeft.setPower(motorPowers[3]);
+            }
 
             telemetry.addData("Motor Front Left and Back Right", frontLeft.getPower());
             telemetry.addData("Motor Front Right and Back Left", frontRight.getPower());
@@ -394,12 +432,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
             interval.reset();
         }
+        //turnAbsolute(initialAngle);
         setPowerDriveMotors(0);
+        targetX += rotatePoint(xTarget - disSide, yTarget - disFront, getRotationInDimension('Z'))[0];
+        targetY += rotatePoint(xTarget - disSide, yTarget - disFront, getRotationInDimension('Z'))[1];
     }
-    private double motorClip(double power, double minPower, double maxPower){
-        if(power < 0){
+
+    private double motorClip(double power, double minPower, double maxPower) {
+        if (power < 0) {
             return Range.clip(power, -maxPower, -minPower);
-        } else if (power > 0){
+        } else if (power > 0) {
             return Range.clip(power, minPower, maxPower);
         } else {
             return 0;
@@ -514,8 +556,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     //TODO values need to be changed
-    public void toggleHood(boolean down){
-        if(down)
+    public void toggleHood(boolean down) {
+        if (down)
             hoodServo.setPosition(1);
         else
             hoodServo.setPosition(0);
@@ -527,7 +569,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     //yeeter methods
-    public void extendYeeter (){ //extend yeeter to park
+    public void extendYeeter() { //extend yeeter to park
         //set position later
         yeetServo.setPosition(0.5);
     }
@@ -545,22 +587,25 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeServoLeft.setPosition(.3);
         intakeServoRight.setPosition(.6);
     }
+
     public void intakeStone() { //servos to a position to open, turns on intake wheels
         setIntakeWheels(0.9);
         intakeServoLeft.setPosition(.6);
         intakeServoRight.setPosition(.9);
     }
+
     public void clampStone() { //servos to close position
         intakeServoLeft.setPosition(.67);
         intakeServoRight.setPosition(.97);
     }
+
     public void stopIntakeWheels() {
         setIntakeWheels(0);
     }
 
 
-    public void bringSlidesDown(){
-        extendSlidesBy(2,0.5);
+    public void bringSlidesDown() {
+        extendSlidesBy(2, 0.5);
         sleep(500);
         releaseStone();
         sleep(500);
