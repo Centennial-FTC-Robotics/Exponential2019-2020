@@ -30,6 +30,7 @@ public class TeleOpMethods extends Exponential_Methods {
     public static final double SLIDE_FACTOR = .63;
     public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
+    public static final double YEETER_EXTENSION_POSITION = .4;
 
     public boolean servosOpen = true;
     public boolean hooksDown = false;
@@ -39,7 +40,6 @@ public class TeleOpMethods extends Exponential_Methods {
     public ElapsedTime timer = new ElapsedTime();
     public ElapsedTime hoodTimer = new ElapsedTime();
 
-    public double angle = 0;
     public int slidePosition = 0;
 
     public void runOpMode() throws InterruptedException {
@@ -117,7 +117,8 @@ public class TeleOpMethods extends Exponential_Methods {
     public void yeetServos() {
         //extend
         if (gamepad1.b) {
-            extendYeeter();
+            //yeeter methods
+            yeetServo.setPosition(YEETER_EXTENSION_POSITION);
         }
     }
 

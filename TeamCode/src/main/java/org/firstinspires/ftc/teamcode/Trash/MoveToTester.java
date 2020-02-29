@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Position;
 @Autonomous(group = "Autonomous", name = "moveTo tester")
 public class MoveToTester extends AutonomousPaths {
     public void runOpMode() throws InterruptedException {
+        /*
         super.runOpMode();
         waitForStart();
         initialHeading -= 90;
