@@ -318,7 +318,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void setTargetAngle(double angle) {
         targetAngle = angle;
     }
-    public void setTargetPosition(double x, double y, double targetAngle) {
+    /*public void setTargetPosition(double x, double y, double targetAngle) {
+        targetX = x;
+        targetY = y;
+        //WORK HERE ERIC
+        double angle = getRotationInDimension('Z');
+        double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, angle);
+        move(translatedCoord[0], translatedCoord[1]);
+    }*/
+    public void setTargetPosition(double x, double y) {
+        //setTargetPosition(x, y, targetAngle);
         targetX = x;
         targetY = y;
         //WORK HERE ERIC
@@ -326,14 +335,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, angle);
         move(translatedCoord[0], translatedCoord[1]);
     }
-
-    public void setTargetPosition(double x, double y) {
-        targetX = x;
-        targetY = y;
-        //WORK HERE ERIC
-        double angle = getRotationInDimension('Z');
-        double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, angle);
-        move(translatedCoord[0], translatedCoord[1]);    }
 
     public void moveRelative(double x, double y, double angle) {
         System.out.println("YEAH");
@@ -608,8 +609,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 angleArea = 0;
             }
             double[] displacementInTermsOfField = rotatePoint(xRobot, yRobot, initialAngle);
-            currentX += displacementInTermsOfField[0];
-            currentY += displacementInTermsOfField[1];
+            currentX += convertEncoderToInchOdom(displacementInTermsOfField[0]);
+            currentY += convertEncoderToInchOdom(displacementInTermsOfField[1]);
             telemetry.addData("xRobot", convertEncoderToInchOdom(xRobot));
             telemetry.addData("yRobot", convertEncoderToInchOdom(yRobot));
             telemetry.addData("front encoder", convertEncoderToInchOdom(odoWheelForwards.getCurrentPosition()));

@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.Position;
 
 public class AutonomousPaths extends Exponential_Methods {
 
-    public void twoStoneAutoMoveTo(String color, int stonePos) {
+    public void twoStoneAutoTargetPosition(String color, int stonePos) {
         initialHeading -= 270;
 
         int factor;
