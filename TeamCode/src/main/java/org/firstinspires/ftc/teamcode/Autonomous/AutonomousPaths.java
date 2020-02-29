@@ -24,6 +24,8 @@ public class AutonomousPaths extends Exponential_Methods {
 
         int inchesBlocks = stonePos * 8;
 
+        setTargetAngle(270);
+
         moveRelative(factor * (TILE_LENGTH + MIDDLE_OF_TILE - 6), 0);
         yuhwanSlidesDown();
         moveRelative(factor * 6, 0);

@@ -284,6 +284,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public double targetX;
     public double targetY;
 
+    public double targetAngle;
    /* public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
                                                 //if blue, positions are the bottom left of robot
     public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
@@ -315,16 +316,25 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         currentPosition = new Position(x, y);
     }*/
 
-    public void setTargetPosition(double x, double y) {
+    public void setTargetAngle(double angle) {
+        targetAngle = angle;
+    }
+    public void setTargetPosition(double x, double y, double targetAngle) {
         targetX = x;
         targetY = y;
         //WORK HERE ERIC
         double angle = getRotationInDimension('Z');
         double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, angle);
         move(translatedCoord[0], translatedCoord[1]);
-
     }
 
+    public void setTargetPosition(double x, double y) {
+        setTargetPosition(x, y, targetAngle);
+    }
+
+    public void moveRelative(double x, double y, double angle) {
+        System.out.println("YEAH");
+    }
     public void moveRelative(double x, double y) {//a move method relative to the robot, but with the coordinate plane
         setTargetPosition(targetX + x, targetY + y);
     }
@@ -642,6 +652,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public static final double DEFAULT_ROTATE_TOLERANCE = 5; // SET DEFAULT ROTATE TOLERANCE HERE
 
     public void turnAbsolute(double targetAngle) {
+        this.targetAngle = targetAngle;
         // SAME AS THE OTHER MOVE METHOD, change the default value for tolerance here
         turnAbsolute(targetAngle, DEFAULT_ROTATE_TOLERANCE);
     }
