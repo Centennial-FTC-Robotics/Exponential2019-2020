@@ -323,8 +323,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
-        double p = -0.00005;
-        double i = -0.000018;
+        double p = -0.000055;
+        double i = -0.00001;
         double d = 0.000011;
         move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
     }
@@ -463,10 +463,11 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
         double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
 
-        double pRot = 0.02; // Rotate p control loop for
+        double pRot = 0.01; // Rotate p control loop for
         // toleranceRot, won't rotate the robot if within the tolerance. If the
         // angle is within the tolerance but later isn't the rotate p control loop will activate again
-        double toleranceRot = 5;
+        double toleranceRot = 2;
+        double iRot = .01;
 
         // variables to help determine orientation
         double initialAngle = getRotationInDimension('Z'); // -180 to 180
@@ -478,7 +479,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         ElapsedTime interval = new ElapsedTime();
         ElapsedTime time = new ElapsedTime();
 
-        while (opModeIsActive() && (Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder) {
+        double angleArea = 0;
+        while (opModeIsActive() && ((Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder || Math.abs(currentAngle - initialAngle) > toleranceRot)) {
             // updates current angle
             // The normal imu angle is a problem because it only goes from -180 to 180, so the
             // change in angle would be off sometimes if you subtracted two imu angles
@@ -501,7 +503,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             double sidewaysOdometryWheelCurrentPosition = odoWheelSideways.getCurrentPosition();
             double intervalTime = interval.seconds();
             interval.reset();
-            double[] rotatedDisplacement = rotatePoint(sidewaysOdometryWheelCurrentPosition - sidewaysOdometryLastPosition - changeInAngle*Odometry_Sideways_Error, frontOdometryWheelCurrentPosition - frontOdometryLastPosition - changeInAngle*Odometry_Forwards_Error, currentAngle - initialAngle);
+            double[] rotatedDisplacement = rotatePoint(sidewaysOdometryWheelCurrentPosition - sidewaysOdometryLastPosition - changeInAngle * Odometry_Sideways_Error, frontOdometryWheelCurrentPosition - frontOdometryLastPosition - changeInAngle * Odometry_Forwards_Error, currentAngle - initialAngle);
             // Updates the area, displacement, and speed variables for the PID loop
             yRobot += rotatedDisplacement[1];
             xRobot += rotatedDisplacement[0];
@@ -527,16 +529,18 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             if (Math.abs(currentAngle - initialAngle) > toleranceRot) {
                 // Angle is not within tolerance, corrects using rotation p control loop as the robot strafes
-                frontLeft.setPower(-pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
-                backRight.setPower(pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
-                frontRight.setPower(pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
-                backLeft.setPower(-pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
+                frontLeft.setPower(-iRot * angleArea + -pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
+                backRight.setPower(iRot * angleArea + pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
+                frontRight.setPower(iRot * angleArea + pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
+                backLeft.setPower(-iRot * angleArea - pRot * (currentAngle - initialAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
+                angleArea += intervalTime * (currentAngle - initialAngle);
             } else {
                 // Angle is in the angle tolerance, does not activate rotation p control loop
                 frontLeft.setPower(motorClip(motorsStuff[0], minSpeed, maxPower));
                 backRight.setPower(motorClip(motorsStuff[0], minSpeed, maxPower));
                 frontRight.setPower(motorClip(motorsStuff[1], minSpeed, maxPower));
                 backLeft.setPower(motorClip(motorsStuff[1], minSpeed, maxPower));
+                angleArea = 0;
             }
             double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, ROTATE_TO_MOVE_RATIO * gamepad1.right_stick_x);
             double factor = 1;

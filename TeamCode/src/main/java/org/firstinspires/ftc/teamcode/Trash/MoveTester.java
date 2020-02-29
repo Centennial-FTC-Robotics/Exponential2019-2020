@@ -11,9 +11,10 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 public class MoveTester extends Exponential_Methods {
 
-    double p = -0.00005;
-    double i = -0.000018;
+    double p = -0.000055;
+    double i = -0.00001;
     double d = 0.000011;
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -37,8 +38,6 @@ public class MoveTester extends Exponential_Methods {
             telemetry.addData("p value", p);
             telemetry.addData("i value", i);
             telemetry.addData("d value", d);
-
-
             telemetry.update();
             if(gamepad1.a){
                 move(sideways, forwards, p, i, d, 1);
