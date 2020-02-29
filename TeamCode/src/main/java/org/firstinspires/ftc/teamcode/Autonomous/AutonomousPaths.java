@@ -6,7 +6,8 @@ import org.firstinspires.ftc.teamcode.Position;
 public class AutonomousPaths extends Exponential_Methods {
 
     public void twoStoneAutoMoveTo(String color, int stonePos) {
-        initialHeading -= 270;
+        setStartingAngle(270);
+
 
         int factor;
         if (color.equals("red"))
@@ -111,6 +112,9 @@ public class AutonomousPaths extends Exponential_Methods {
         outwardsIntake();
         //park
         setTargetPosition(targetX, -ROBOT_LENGTH / 2);
+
+
+
 
     }
     public void twoStoneAuto(String color, int stonePos) { //starts facing the bridge
