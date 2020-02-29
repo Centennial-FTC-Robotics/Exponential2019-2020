@@ -284,6 +284,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public double targetX;
     public double targetY;
 
+    public double targetAngle;
+
     //public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
     //if blue, positions are the bottom left of robot
     /*public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
@@ -480,7 +482,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void move(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance) {
-        moveWithAngle(inchesSideways, inchesForward, Kp, Ki, Kd, inchesTolerance, getRotationInDimension('Z'));
+        moveWithAngle(inchesSideways, inchesForward, Kp, Ki, Kd, inchesTolerance, targetAngle);
     }
 
 
