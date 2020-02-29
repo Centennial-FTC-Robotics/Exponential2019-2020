@@ -573,7 +573,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             double factor = .7;
             double magnitude = Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2));
             double[] rotatedInput = rotatePoint(disSide / magnitude, disFront / magnitude, -currentAngle + initialAngle);
-            double[] motorPowers = circle_to_taxicab(rotatedInput[0], rotatedInput[1], 0);
+            double[] motorPowers = circle_to_taxicab(factor*rotatedInput[0], factor*rotatedInput[1], 0);
 
             // Sets the actual motor powers according to PID
             // Clips it so the motor power is not too low to avoid steady-state or goes too fast
@@ -593,7 +593,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 backLeft.setPower(motorClip(motorPowers[3], minSpeed, maxPower));
                 angleArea = 0;
             }
-
+            double[] displacementInTermsOfField = rotatePoint(xRobot, yRobot, initialAngle);
+            currentX += displacementInTermsOfField[0];
+            currentY += displacementInTermsOfField[1];
             telemetry.addData("xRobot", convertEncoderToInchOdom(xRobot));
             telemetry.addData("yRobot", convertEncoderToInchOdom(yRobot));
             telemetry.addData("front encoder", convertEncoderToInchOdom(odoWheelForwards.getCurrentPosition()));
@@ -870,7 +872,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         intakeServoLeft.setPosition(position);
         intakeServoRight.setPosition(position);
     }
-
 
 
     //-------------- AUTO AID METHODS  -------------- (organization)
