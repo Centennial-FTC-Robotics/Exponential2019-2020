@@ -50,7 +50,6 @@ public class OdometryAgain extends Exponential_Methods {
 
         public void refresh() {
             // refreshes the information on the robot
-
             // Updates the angle so that currentAngle goes from negative infinity to positive
             // infinity rather than have if clip off at -180 to 180
             double currentAngleIMU = getRotationInDimension('Z');
