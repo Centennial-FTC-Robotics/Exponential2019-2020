@@ -276,8 +276,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
     public static final double DEFAULT_MOVE_TOLERANCE = 1.5; // SET DEFAULT TOLERANCE HERE
-    public Position currentPosition = new Position(0, 0);
+    //public Position currentPosition = new Position(0, 0);
 
+    public double currentX;
+    public double currentY;
+
+    public double targetX;
+    public double targetY;
+
+   /* public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
+                                                //if blue, positions are the bottom left of robot
     public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
         //if blue, positions are the bottom left of robot
         double currentAngle = getAngle();
@@ -305,12 +313,20 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         move(moveX, moveY);
         //TODO: temporary
         currentPosition = new Position(x, y);
+    }*/
+
+    public void setTargetPosition(double x, double y) {
+        targetX = x;
+        targetY = y;
+        //WORK HERE ERIC
+        double angle = getRotationInDimension('Z');
+        double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, angle);
+        move(translatedCoord[0], translatedCoord[1]);
+
     }
 
     public void moveRelative(double x, double y) {//a move method relative to the robot, but with the coordinate plane
-        double currentX = currentPosition.getX();
-        double currentY = currentPosition.getY();
-        moveTo(currentX + x, currentY + y);
+        setTargetPosition(targetX + x, targetY + y);
     }
 
     //todo: make moveto / coordinates and shit
@@ -326,7 +342,20 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double p = -0.000055;
         double i = -0.00001;
         double d = 0.000011;
+
+    public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
+        double p = -0.00005;
+        double i = -0.000012;
+        double d = 0.000012;
         move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
+    }
+
+    private static double[] rotatePoint(double x, double y, double angle /*in degrees*/) {
+        double[] translatedPoint = new double[2];
+        double angleRad = Math.PI / 180 * angle;
+        translatedPoint[0] = x * Math.cos(angleRad) - y * Math.sin(angleRad);
+        translatedPoint[1] = y * Math.cos(angleRad) + x * Math.sin(angleRad);
+        return translatedPoint;
     }
 
     /*
@@ -399,6 +428,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             // Gradually increases the maxPower
             double maxPower = Math.min(.5 + .5 * time.seconds(), 1);
 
+            double magnitude = Math.sqrt(Math.pow(disSide, 2) + Math.pow(disFront, 2));
+            double[] motorPowers = circle_to_taxicab(-disSide / magnitude, -disFront / magnitude, 0);
+
+
             // Sets the actual motor powers according to PID
             // Clips it so the motor power is not too low to avoid steady-state or goes too fast
             if (Math.abs(currentAngle - initialAngle) > toleranceRot) {
@@ -414,6 +447,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 frontRight.setPower(motorClip(Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
                 backLeft.setPower(motorClip(Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
 
+            double maxPower = Math.min(.5 + .5 * time.seconds(), 1);
+            if (Math.abs(currentAngle - initialAngle) > 3) {
+                frontLeft.setPower(motorClip(-pRot * (currentAngle - initialAngle) + motorPowers[3], minSpeed, maxPower));
+                backRight.setPower(motorClip(pRot * (currentAngle - initialAngle) + motorPowers[1], minSpeed, maxPower));
+                frontRight.setPower(motorClip(pRot * (currentAngle - initialAngle) + motorPowers[0], minSpeed, maxPower));
+                backLeft.setPower(motorClip(-pRot * (currentAngle - initialAngle) + motorPowers[2], minSpeed, maxPower));
+            } else {
+                frontRight.setPower(motorPowers[0]);
+                backRight.setPower(motorPowers[1]);
+                backLeft.setPower(motorPowers[2]);
+                frontLeft.setPower(motorPowers[3]);
             }
 
             telemetry.addData("Motor Front Left and Back Right", frontLeft.getPower());
@@ -424,8 +468,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
             interval.reset();
         }
+        //turnAbsolute(initialAngle);
         setPowerDriveMotors(0);
+        targetX += rotatePoint(xTarget - disSide, yTarget - disFront, getRotationInDimension('Z'))[0];
+        targetY += rotatePoint(xTarget - disSide, yTarget - disFront, getRotationInDimension('Z'))[1];
     }
+
+    private double motorClip(double power, double minPower, double maxPower) {
+        if (power < 0) {
     */
     private static double[] rotatePoint(double x, double y, double angle /*in degrees*/) {
         double[] translatedPoint = new double[2];
