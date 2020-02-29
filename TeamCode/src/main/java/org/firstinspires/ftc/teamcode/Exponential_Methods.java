@@ -487,7 +487,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
 
     // Monkey Move
-    public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
+    /*public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
         final double Odometry_Sideways_Error = -15.8524; // encoders per degree
         final double Odometry_Forwards_Error = -167.92024; // encoders per degree
 
@@ -607,10 +607,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             telemetry.update();
 
         }
-    }
+    }*/
 
     // Move with PID
-    /*public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
+    public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
         final double Odometry_Sideways_Error = -15.8524; // encoders per degree
         final double Odometry_Forwards_Error = -167.92024; // encoders per degree
 
@@ -727,11 +727,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 // if right bumper is pressed, reduce the motor speed
                 factor = TeleOpMethods.RIGHT_BUMPER_TRIGGER_FACTOR;
             }
-            *//*
-            frontRight.setPower(factor * answer[0]);
-            backRight.setPower(factor * answer[1]);
-            backLeft.setPower(factor * answer[2]);
-            frontLeft.setPower(factor * answer[3]);*//*
+            //frontRight.setPower(factor * answer[0]);
+            //backRight.setPower(factor * answer[1]);
+            //backLeft.setPower(factor * answer[2]);
+            //frontLeft.setPower(factor * answer[3]);
 
             telemetry.addData("xRobot", convertEncoderToInchOdom(xRobot));
             telemetry.addData("yRobot", convertEncoderToInchOdom(yRobot));
@@ -743,7 +742,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         }
         setPowerDriveMotors(0);
-    }*/
+    }
 
     private double motorClip(double power, double minPower, double maxPower) {
         if (power < 0) {
