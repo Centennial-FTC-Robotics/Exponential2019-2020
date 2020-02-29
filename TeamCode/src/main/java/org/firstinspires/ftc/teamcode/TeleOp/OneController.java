@@ -45,7 +45,7 @@ public class OneController extends TeleOpMethods {
 
     public void yeetServos(){
         if(gamepad1.y){
-            extendYeeter();
+            yeetServo.setPosition(YEETER_EXTENSION_POSITION);
         }
     }
 
