@@ -15,7 +15,7 @@ public class servoTester extends Exponential_Methods {
         while(opModeIsActive()){
             if(gamepad1.right_stick_x!=0.0&&time.seconds()>.2){
                 time.reset();
-                servoPos+=.1*(int)(gamepad1.right_stick_x);
+                servoPos+=.05*(int)(gamepad1.right_stick_x);
                 servoPos = Range.clip(servoPos,0,1);
                 hoodServo.setPosition(servoPos);
             }
