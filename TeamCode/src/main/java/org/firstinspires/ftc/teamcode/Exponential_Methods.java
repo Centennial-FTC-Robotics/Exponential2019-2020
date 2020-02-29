@@ -342,21 +342,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double p = -0.000055;
         double i = -0.00001;
         double d = 0.000011;
+        move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
 
-    public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
+    }
+
+   /* public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
         double p = -0.00005;
         double i = -0.000012;
         double d = 0.000012;
         move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
-    }
-
-    private static double[] rotatePoint(double x, double y, double angle /*in degrees*/) {
-        double[] translatedPoint = new double[2];
-        double angleRad = Math.PI / 180 * angle;
-        translatedPoint[0] = x * Math.cos(angleRad) - y * Math.sin(angleRad);
-        translatedPoint[1] = y * Math.cos(angleRad) + x * Math.sin(angleRad);
-        return translatedPoint;
-    }
+    }*/
 
     /*
     public void move(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance) {
