@@ -6,7 +6,8 @@ import org.firstinspires.ftc.teamcode.Position;
 public class AutonomousPaths extends Exponential_Methods {
 
     public void twoStoneAutoTargetPosition(String color, int stonePos) {
-        initialHeading -= 270;
+        setStartingAngle(270);
+
 
         int factor;
         if (color.equals("red"))
