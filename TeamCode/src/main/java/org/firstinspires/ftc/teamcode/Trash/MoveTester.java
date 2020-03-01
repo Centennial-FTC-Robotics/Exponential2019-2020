@@ -18,8 +18,8 @@ public class MoveTester extends Exponential_Methods {
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
-        double sideways = 36;
-        double forwards = 0;
+        double sideways = 0;
+        double forwards = 96;
         telemetry.addData("It got up here", "hello");
         telemetry.update();
         waitForStart();
