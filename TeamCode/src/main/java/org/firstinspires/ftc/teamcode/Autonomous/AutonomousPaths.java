@@ -128,7 +128,6 @@ public class AutonomousPaths extends Exponential_Methods {
         else
             factor = -1;
 
-
         //start distance away from wall (set later)
         double startX = /*TILE_LENGTH * 2 - ROBOT_LENGTH *//*- MIDDLE_OF_TILE*/TILE_LENGTH;
         double startY = 0;

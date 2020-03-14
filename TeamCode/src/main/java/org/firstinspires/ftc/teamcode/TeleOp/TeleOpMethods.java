@@ -58,7 +58,7 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
-            hoodServos();
+            //hoodServos();
         }
     }
 
@@ -127,7 +127,7 @@ public class TeleOpMethods extends Exponential_Methods {
             hoodDown = !hoodDown;
             hoodTimer.reset();
         }
-        toggleHood(hoodDown);
+        //toggleHood(hoodDown);
     }
 
     // moves the slides up and down

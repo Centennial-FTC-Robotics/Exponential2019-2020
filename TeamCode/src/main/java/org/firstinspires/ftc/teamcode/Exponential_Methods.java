@@ -58,6 +58,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public static final double MAX_POWER = .6;
     public double startingAngle = 0;
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -73,9 +74,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     //-------------- INITIALIZATION -------------- (organization)
-    public void setStartingAngle(double start){
+    public void setStartingAngle(double start) {
         startingAngle = start;
     }
+
     public void initializeIMU() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -319,6 +321,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void setTargetAngle(double angle) {
         targetAngle = angle;
     }
+
     public void setTargetPosition(double x, double y, double targetAngle) {
         targetX = x;
         targetY = y;
@@ -333,12 +336,14 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         targetY = y;
         //WORK HERE ERIC
         double angle = getRotationInDimension('Z');
-        double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, angle);
-        move(translatedCoord[0], translatedCoord[1]);    }
+        double[] translatedCoord = rotatePoint(targetX - currentX, targetY - currentY, -angle);
+        move(translatedCoord[0], translatedCoord[1]);
+    }
 
     public void moveRelative(double x, double y, double angle) {
         System.out.println("YEAH");
     }
+
     public void moveRelative(double x, double y) {//a move method relative to the robot, but with the coordinate plane
         setTargetPosition(targetX + x, targetY + y);
     }
@@ -353,9 +358,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
-        double p = -0.000045;
-        double i = -0.000014;
-        double d = 0.000018;
+        double p = -0.00005;
+        double i = -0.0000135;
+        double d = 0.000014;
         move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
 
     }
@@ -495,11 +500,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     }
 
     public void move(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance) {
-        moveWithAngle(inchesSideways, inchesForward, Kp, Ki, Kd, inchesTolerance, targetAngle-startingAngle);
+        moveWithAngle(inchesSideways, inchesForward, Kp, Ki, Kd, inchesTolerance, targetAngle - startingAngle);
     }
 
 
-    // Monkey Move
     public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
         final double Odometry_Sideways_Error = -21.8524; // encoders per degree
         final double Odometry_Forwards_Error = -191.92024; // encoders per degree
@@ -513,7 +517,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double toleranceEncoder = convertInchToEncoderOdom(inchesTolerance);
         double xTarget = convertInchToEncoderOdom(inchesSideways);
         double yTarget = convertInchToEncoderOdom(inchesForward);
-        double minSpeed = 0.02;// 0.005; // Change later
+        double minSpeed = 0.03;// 0.005; // Change later
 
         double disFront = yTarget; // Y displacement from the target in encoders
         double disSide = xTarget; // X displacement from the target in encoders
@@ -528,11 +532,12 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
         double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
 
-        double pRot = 0.02; // Rotate p control loop for
+        double pRot = 0.01; // Rotate p control loop for
         // toleranceRot, won't rotate the robot if within the tolerance. If the
         // angle is within the tolerance but later isn't the rotate p control loop will activate again
         double toleranceRot = 5;
-        double iRot = .01;
+        double iRot = .002;
+
 
         // variables to help determine orientation
         double initialAngle = getRotationInDimension('Z'); // -180 to 180
@@ -545,7 +550,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         ElapsedTime time = new ElapsedTime();
 
         double angleArea = 0;
-        while (opModeIsActive() && ((Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder || Math.abs(currentAngle - initialAngle) > toleranceRot)) {
+        while (opModeIsActive() && ((Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder)) {
             // updates current angle
             // The normal imu angle is a problem because it only goes from -180 to 180, so the
             // change in angle would be off sometimes if you subtracted two imu angles
@@ -578,6 +583,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             disSide = xTarget - xRobot;
             areaFront += intervalTime * disFront;
             areaSide += intervalTime * disSide;
+            areaFront = Range.clip(areaFront, .4 / Ki, -.4 / Ki);
+            areaSide = Range.clip(areaSide, .4 / Ki, -.4 / Ki);
 
             frontOdometryLastPosition = frontOdometryWheelCurrentPosition;
             sidewaysOdometryLastPosition = sidewaysOdometryWheelCurrentPosition;
@@ -585,12 +592,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             // Cannot start at any power faster than .5 because the rotation slip would be very high
             // Gradually increases the maxPower
             double maxPower = .65;
-            double factor = .7;
-            double magnitude = Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2));
-            double[] rotatedInput = rotatePoint(-disSide / magnitude, -disFront / magnitude, -currentAngle + initialAngle);
-            double[] motorPowers = circle_to_taxicab(factor*rotatedInput[0], factor*rotatedInput[1], 0);
-
-
             double[] motorsStuff = {Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide)};
             motorsStuff = rotatePoint(motorsStuff[0], motorsStuff[1], initialAngle - currentAngle);
 
@@ -605,6 +606,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 frontRight.setPower(iRot * angleArea + pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
                 backLeft.setPower(-iRot * angleArea - pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
                 angleArea += intervalTime * (currentAngle - targetAngle);
+                angleArea = Range.clip(angleArea, -.1 / iRot, .1 / iRot);
             } else {
                 // Angle is in the angle tolerance, does not activate rotation p control loop
                 frontLeft.setPower(motorClip(motorsStuff[0], minSpeed, maxPower));
@@ -842,6 +844,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
         while (opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);
+        setTargetAngle(targetAngle);
     }
 
     //-------------- SLIDES -------------- (organization)

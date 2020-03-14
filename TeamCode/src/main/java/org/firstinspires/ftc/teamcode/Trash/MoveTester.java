@@ -11,9 +11,9 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 public class MoveTester extends Exponential_Methods {
 
-    double p = -0.000055;
-    double i = -0.00001;
-    double d = 0.000011;
+    double p = -0.000031;
+    double i = -0.000004;
+    double d = 0.000017;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,13 +25,12 @@ public class MoveTester extends Exponential_Methods {
         waitForStart();
         while(opModeIsActive()) {
             if(gamepad1.left_stick_x!=0||gamepad1.left_stick_y!=0||gamepad1.right_stick_x!=0||gamepad1.right_stick_y!=0||gamepad2.right_stick_x!=0) {
-                sideways += 1*(int)(gamepad1.left_stick_x);
-                forwards -= 1*(int)(gamepad1.left_stick_y);
+                sideways += 2*(int)(gamepad1.left_stick_x);
+                forwards -= 2*(int)(gamepad1.left_stick_y);
                 p+=0.000001*(int)(gamepad1.right_stick_x);
                 i-=0.000001*(int)(gamepad1.right_stick_y);
                 d+=0.000001*(int)(gamepad2.right_stick_x);
                 sleep(200);
-
             }
             telemetry.addData("forwards", forwards);
             telemetry.addData("sideways", sideways);
