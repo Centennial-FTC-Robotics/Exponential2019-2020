@@ -35,6 +35,8 @@ public class TeleOpMethods extends Exponential_Methods {
     public boolean servosOpen = true;
     public boolean hooksDown = false;
     public boolean hoodDown = false;
+    public boolean clawDown = false;
+    public ElapsedTime clawTimer = new ElapsedTime();
     public ElapsedTime intakeTimer = new ElapsedTime();
     public ElapsedTime hookTimer = new ElapsedTime();
     public ElapsedTime timer = new ElapsedTime();
@@ -51,6 +53,7 @@ public class TeleOpMethods extends Exponential_Methods {
         }
 
         waitForStart();
+
         while (opModeIsActive()) {
             driveTrain();
             intakeServos();
@@ -58,6 +61,7 @@ public class TeleOpMethods extends Exponential_Methods {
             slideMotors();
             intakeMotors();
             yeetServos();
+            clawServo();
             //hoodServos();
         }
     }
@@ -106,11 +110,19 @@ public class TeleOpMethods extends Exponential_Methods {
     }
 
     public void hookServos() {
-        if (gamepad1.x & hookTimer.seconds() > HOOK_SERVOS_TIMER_INTERVAL) {
+        if (gamepad1.x && hookTimer.seconds() > HOOK_SERVOS_TIMER_INTERVAL) {
             hooksDown = !hooksDown;
             hookTimer.reset();
         }
         toggleHook(hooksDown);
+    }
+
+    public void clawServo(){
+        if (gamepad2.b && clawTimer.seconds() > HOOK_SERVOS_TIMER_INTERVAL) {
+            clawDown = !clawDown;
+            clawTimer.reset();
+        }
+        toggleClaw(clawDown);
     }
 
     // yeeter

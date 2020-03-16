@@ -896,15 +896,23 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void toggleHook(boolean down) {
         //might need to recalibrate
         if (down) {
-            hookServoLeft.setPosition(.44);
-            hookServoRight.setPosition(.48);
+            hookServoLeft.setPosition(1);
+            hookServoRight.setPosition(1);
         } else {
-            hookServoLeft.setPosition(0.1);
-            hookServoRight.setPosition(0.1);
+            hookServoLeft.setPosition(0);
+            hookServoRight.setPosition(0);
         }
         // sleep(500);
     }
 
+    public void toggleClaw(boolean down) {
+
+        if(down){
+            claw.setPosition(0);
+        } else {
+            claw.setPosition(1);
+        }
+    }
     //TODO values need to be changed
     public void toggleHood(boolean down) {
         if (down)

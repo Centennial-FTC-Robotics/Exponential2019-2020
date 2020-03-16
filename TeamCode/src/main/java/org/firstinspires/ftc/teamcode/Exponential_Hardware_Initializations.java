@@ -32,6 +32,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected Servo hookServoRight;
     protected Servo yeetServo;
     protected Servo hoodServo;
+    protected Servo claw;
 
     protected DcMotor odoWheelForwards;
     protected DcMotor odoWheelSideways;
@@ -62,6 +63,7 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
         intakeServoRight = hardwareMap.servo.get("intakeServoRight");
         yeetServo = hardwareMap.servo.get("yeetServo");
+        claw = hardwareMap.servo.get("claw");
         // hoodServo = hardwareMap.servo.get("hoodServo");
 
 
@@ -84,7 +86,6 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         // sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-
         intakeServoRight.setDirection(Servo.Direction.REVERSE);
         intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
         hookServoRight.setDirection(Servo.Direction.REVERSE);

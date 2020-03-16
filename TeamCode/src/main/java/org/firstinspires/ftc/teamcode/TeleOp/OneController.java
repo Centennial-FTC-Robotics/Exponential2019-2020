@@ -36,7 +36,7 @@ public class OneController extends TeleOpMethods {
     }
 
     public void hookServos(){
-        if(gamepad1.a&hookTimer.seconds()>HOOK_SERVOS_TIMER_INTERVAL){
+        if(gamepad1.a && hookTimer.seconds()>HOOK_SERVOS_TIMER_INTERVAL){
             hooksDown=!hooksDown;
             hookTimer.reset();
         }
