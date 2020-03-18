@@ -182,6 +182,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         initialHeading = orientation.firstAngle;
         initialRoll = orientation.secondAngle;
         initialPitch = orientation.thirdAngle;
+
     }
 
 
@@ -245,36 +246,37 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     // Takes in unit circle coordinates and rotation speed and outputs motor powers to put into the motors
     // The robot's speed/max speed in the direction will be the magnitude of the coordinates
-    public double[] circle_to_taxicab(double circle_x, double circle_y, double circle_rotate) {
-        double[] answer = new double[4];
+    public double[] getMotorPowers(double triggerX, double triggerY, double rotate) {
+        double[] motorPowers = new double[4];
         double x;
         double y;
 
-        if (circle_x == 0.0) {
+        if (triggerX == 0.0) {
             x = 0.0;
         } else {
-            x = circle_x / Math.abs(circle_x) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
-                    * (Math.abs(circle_x)) / (Math.abs(circle_x) + Math.abs(circle_y));
+            x = triggerX / Math.abs(triggerX) * Math.sqrt(Math.pow(triggerX, 2) + Math.pow(triggerY, 2))
+                    * (Math.abs(triggerX)) / (Math.abs(triggerY) + Math.abs(triggerY));
         }
-        if (circle_y == 0.0) {
+        if (triggerY == 0.0) {
             y = 0.0;
         } else {
-            y = circle_y / Math.abs(circle_y) * Math.sqrt(Math.pow(circle_x, 2) + Math.pow(circle_y, 2))
-                    * (Math.abs(circle_y)) / (Math.abs(circle_x) + Math.abs(circle_y));
+            y = triggerY / Math.abs(triggerY) * Math.sqrt(Math.pow(triggerX, 2) + Math.pow(triggerY, 2))
+                    * (Math.abs(triggerY)) / (Math.abs(triggerX) + Math.abs(triggerY));
         }
-        double sum = Math.abs(x) + Math.abs(y) + Math.abs(circle_rotate);
+
+        double sum = Math.abs(x) + Math.abs(y) + Math.abs(rotate);
         if (sum > 1) {
-            answer[0] = (x + y + circle_rotate) / sum;
-            answer[1] = (-x + y + circle_rotate) / sum;
-            answer[2] = (x + y - circle_rotate) / sum;
-            answer[3] = (-x + y - circle_rotate) / sum;
+            motorPowers[0] = (x + y - rotate) / sum;
+            motorPowers[1] = (-x + y - rotate) / sum;
+            motorPowers[2] = (x + y + rotate) / sum;
+            motorPowers[3] = (-x + y + rotate) / sum;
         } else {
-            answer[0] = (x + y + circle_rotate);
-            answer[1] = (-x + y + circle_rotate);
-            answer[2] = (x + y - circle_rotate);
-            answer[3] = (-x + y - circle_rotate);
+            motorPowers[0] = (x + y - rotate);
+            motorPowers[1] = (-x + y - rotate);
+            motorPowers[2] = (x + y + rotate);
+            motorPowers[3] = (-x + y + rotate);
         }
-        return answer;
+        return motorPowers;
     }
 
 
@@ -361,136 +363,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double p = -0.00005;
         double i = -0.0000135;
         double d = 0.000014;
+        // PID numbers (I know, they're supposed to be all positive, I think that the motors maybe in the wrong direction)
+
         move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
-
     }
-
-   /* public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
-        double p = -0.00005;
-        double i = -0.000012;
-        double d = 0.000012;
-        move(inchesSideways, inchesForward, p, i, d, inchesTolerance);
-    }*/
-
-    /*
-    public void move(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance) {
-        inchesSideways = -inchesSideways;
-        odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        double toleranceEncoder = convertInchToEncoderOdom(inchesTolerance);
-        double xTarget = convertInchToEncoderOdom(inchesSideways);
-        double yTarget = convertInchToEncoderOdom(inchesForward);
-        double minSpeed = 0;// 0.005; // Change later
-
-        double disFront = yTarget; // Y displacement from the target in encoders
-        double disSide = xTarget; // X displacement from the target in encoders
-        double speedFront = 0; // Y speed in encoders per second
-        double speedSide = 0; // X speed in encoders per second
-        double areaFront = 0; // Y area in encoders * seconds
-        double areaSide = 0; // X area in encoders * seconds
-
-        double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
-        double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
-
-        double pRot = 0.02; // Rotate p control loop for
-        // toleranceRot, won't rotate the robot if within the tolerance. If the
-        // angle is within the tolerance but later isn't the rotate p control loop will activate again
-        double toleranceRot = 5;
-
-        // variables to help determine orientation
-        double initialAngle = getRotationInDimension('Z'); // -180 to 180
-        double lastAngleIMU = initialAngle; // -180 to 180
-        double currentAngle = initialAngle; // -inf to inf, clockwise
-
-        // ElapsedTime interval is the time between consecutive loops
-        // ElapsedTime is the time of the method itself
-        ElapsedTime interval = new ElapsedTime();
-        ElapsedTime time = new ElapsedTime();
-
-        while (opModeIsActive() && (Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder) {
-            // updates current angle
-            // The normal imu angle is a problem because it only goes from -180 to 180, so the
-            // change in angle would be off sometimes if you subtracted two imu angles
-            double changeInAngle;
-            double currentAngleIMU = getRotationInDimension('Z');
-            if (Math.abs(lastAngleIMU - currentAngleIMU) > 300) {
-                // if the angle crossed the negative x axis
-                if (lastAngleIMU > currentAngleIMU) {
-                    changeInAngle = currentAngleIMU - lastAngleIMU + 360;
-                } else {
-                    changeInAngle = currentAngleIMU - lastAngleIMU - 360;
-                }
-            } else {
-                // normal
-                changeInAngle = currentAngleIMU - lastAngleIMU;
-            }
-            currentAngle += changeInAngle;
-            lastAngleIMU = currentAngleIMU;
-
-            // Updates the area, displacement, and speed variables for the PID loop
-            disFront = yTarget - odoWheelForwards.getCurrentPosition();
-            disSide = xTarget - odoWheelSideways.getCurrentPosition();
-            speedFront = (odoWheelForwards.getCurrentPosition() - frontOdometryLastPosition) / interval.seconds();
-            speedSide = (odoWheelSideways.getCurrentPosition() - sidewaysOdometryLastPosition) / interval.seconds();
-            areaFront += interval.seconds() * disFront;
-            areaSide += interval.seconds() * disSide;
-
-            // Cannot start at any power faster than .5 because the rotation slip would be very high
-            // Gradually increases the maxPower
-            double maxPower = Math.min(.5 + .5 * time.seconds(), 1);
-
-            double magnitude = Math.sqrt(Math.pow(disSide, 2) + Math.pow(disFront, 2));
-            double[] motorPowers = circle_to_taxicab(-disSide / magnitude, -disFront / magnitude, 0);
-
-
-            // Sets the actual motor powers according to PID
-            // Clips it so the motor power is not too low to avoid steady-state or goes too fast
-            if (Math.abs(currentAngle - initialAngle) > toleranceRot) {
-                // Angle is not within tolerance, corrects using rotation p control loop as the robot strafes
-                frontLeft.setPower(motorClip(pRot * (currentAngle - initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-                backRight.setPower(motorClip(-pRot * (currentAngle - initialAngle) + Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-                frontRight.setPower(motorClip(-pRot * (currentAngle - initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
-                backLeft.setPower(motorClip(pRot * (currentAngle - initialAngle) + Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
-            } else {
-                // Angle is in the angle tolerance, does not activate rotation p control loop
-                frontLeft.setPower(motorClip(Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-                backRight.setPower(motorClip(Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), minSpeed, maxPower));
-                frontRight.setPower(motorClip(Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
-                backLeft.setPower(motorClip(Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide), minSpeed, maxPower));
-
-            double maxPower = Math.min(.5 + .5 * time.seconds(), 1);
-            if (Math.abs(currentAngle - initialAngle) > 3) {
-                frontLeft.setPower(motorClip(-pRot * (currentAngle - initialAngle) + motorPowers[3], minSpeed, maxPower));
-                backRight.setPower(motorClip(pRot * (currentAngle - initialAngle) + motorPowers[1], minSpeed, maxPower));
-                frontRight.setPower(motorClip(pRot * (currentAngle - initialAngle) + motorPowers[0], minSpeed, maxPower));
-                backLeft.setPower(motorClip(-pRot * (currentAngle - initialAngle) + motorPowers[2], minSpeed, maxPower));
-            } else {
-                frontRight.setPower(motorPowers[0]);
-                backRight.setPower(motorPowers[1]);
-                backLeft.setPower(motorPowers[2]);
-                frontLeft.setPower(motorPowers[3]);
-            }
-
-            telemetry.addData("Motor Front Left and Back Right", frontLeft.getPower());
-            telemetry.addData("Motor Front Right and Back Left", frontRight.getPower());
-            telemetry.update();
-
-            frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
-            sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
-            interval.reset();
-        }
-        //turnAbsolute(initialAngle);
-        setPowerDriveMotors(0);
-        targetX += rotatePoint(xTarget - disSide, yTarget - disFront, getRotationInDimension('Z'))[0];
-        targetY += rotatePoint(xTarget - disSide, yTarget - disFront, getRotationInDimension('Z'))[1];
-    }
-
-    private double motorClip(double power, double minPower, double maxPower) {
-        if (power < 0) {
-    */
     private static double[] rotatePoint(double x, double y, double angle /*in degrees*/) {
         double[] translatedPoint = new double[2];
         double angleRad = Math.PI / 180 * angle;
@@ -507,8 +383,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
         final double Odometry_Sideways_Error = -21.8524; // encoders per degree
         final double Odometry_Forwards_Error = -191.92024; // encoders per degree
+        // encoders per degree that the odometry wheel renders when the robot rotates
 
         inchesSideways = -inchesSideways;
+
         odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -532,26 +410,29 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
         double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
 
-        double pRot = 0.01; // Rotate p control loop for
-        // toleranceRot, won't rotate the robot if within the tolerance. If the
-        // angle is within the tolerance but later isn't the rotate p control loop will activate again
-        double toleranceRot = 5;
-        double iRot = .002;
+        double pRot = 0.01; // Rotate p constant for angle PI loop
+        double iRot = .002; // Rotate i constant for angle PI loop
 
+        // toleranceRot, won't rotate the robot if within the tolerance. If the
+        // angle is within the tolerance but later isn't the rotate pi control loop will activate again
+        double toleranceRot = 5;
 
         // variables to help determine orientation
         double initialAngle = getRotationInDimension('Z'); // -180 to 180
         double lastAngleIMU = initialAngle; // -180 to 180
         double currentAngle = initialAngle; // -inf to inf, clockwise
 
-        // ElapsedTime interval is the time between consecutive loops
-        // ElapsedTime is the time of the method itself
+        // ElapsedTime interval is the time between consecutive while loop iterations
+        // ElapsedTime is the time since the start of the method
         ElapsedTime interval = new ElapsedTime();
         ElapsedTime time = new ElapsedTime();
 
+        // Area for rotation PI loop
         double angleArea = 0;
+
+        // tolerance is a circle about the target point, not a square like the old move method
         while (opModeIsActive() && ((Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder)) {
-            // updates current angle
+            // updates current angle variable so that it can go past 180 and past -180
             // The normal imu angle is a problem because it only goes from -180 to 180, so the
             // change in angle would be off sometimes if you subtracted two imu angles
             double changeInAngle;
@@ -569,11 +450,16 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                 changeInAngle = currentAngleIMU - lastAngleIMU;
             }
             lastAngleIMU = currentAngleIMU;
+
+            // Reads the encoders on the odometry wheels
             double frontOdometryWheelCurrentPosition = odoWheelForwards.getCurrentPosition();
             double sidewaysOdometryWheelCurrentPosition = odoWheelSideways.getCurrentPosition();
             double intervalTime = interval.seconds();
             interval.reset();
+
+            // Displacement vector for the displacement traveled by the robot in the duration of this while loop
             double[] rotatedDisplacement = rotatePoint(sidewaysOdometryWheelCurrentPosition - sidewaysOdometryLastPosition - changeInAngle * Odometry_Sideways_Error, frontOdometryWheelCurrentPosition - frontOdometryLastPosition - changeInAngle * Odometry_Forwards_Error, currentAngle - initialAngle);
+
             // Updates the area, displacement, and speed variables for the PID loop
             yRobot += rotatedDisplacement[1];
             xRobot += rotatedDisplacement[0];
@@ -583,39 +469,41 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             disSide = xTarget - xRobot;
             areaFront += intervalTime * disFront;
             areaSide += intervalTime * disSide;
+            // Limits the area so that the I in the PID loops doesn't take over everything
             areaFront = Range.clip(areaFront, .4 / Ki, -.4 / Ki);
             areaSide = Range.clip(areaSide, .4 / Ki, -.4 / Ki);
 
             frontOdometryLastPosition = frontOdometryWheelCurrentPosition;
             sidewaysOdometryLastPosition = sidewaysOdometryWheelCurrentPosition;
 
-            // Cannot start at any power faster than .5 because the rotation slip would be very high
-            // Gradually increases the maxPower
+            // Limits the speed of the motors not including rotation
             double maxPower = .65;
+
+            // finds the motor powers to enter into the robot for the linear PID
             double[] motorsStuff = {Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide)};
             motorsStuff = rotatePoint(motorsStuff[0], motorsStuff[1], initialAngle - currentAngle);
 
-            // Sets the actual motor powers according to PID
-            // Clips it so the motor power is not too low to avoid steady-state or goes too fast
-
-            // linear PID
+            // sets motor powers according to our dual PID loop (one for angle, one for strafing)
             if (Math.abs(currentAngle - targetAngle) > toleranceRot) {
-                // Angle is not within tolerance, corrects using rotation p control loop as the robot strafes
+                // PID for linear movement (which is limited by max speed) and a PI control loop for rotational error correction as it strafes
                 frontLeft.setPower(-iRot * angleArea + -pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
                 backRight.setPower(iRot * angleArea + pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
                 frontRight.setPower(iRot * angleArea + pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
                 backLeft.setPower(-iRot * angleArea - pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
+
+                // updates the angle Area for i portion of angular PI control loop
                 angleArea += intervalTime * (currentAngle - targetAngle);
                 angleArea = Range.clip(angleArea, -.1 / iRot, .1 / iRot);
             } else {
-                // Angle is in the angle tolerance, does not activate rotation p control loop
+                // Angle is in the angle tolerance, does not activate rotation PI control loop
                 frontLeft.setPower(motorClip(motorsStuff[0], minSpeed, maxPower));
                 backRight.setPower(motorClip(motorsStuff[0], minSpeed, maxPower));
                 frontRight.setPower(motorClip(motorsStuff[1], minSpeed, maxPower));
                 backLeft.setPower(motorClip(motorsStuff[1], minSpeed, maxPower));
+
+                // makes the angle area equal 0 so we don't get this crazy rotation if it ever leaves the angle tolerance
                 angleArea = 0;
             }
-
 
             /*
             // Monkey Move
@@ -644,147 +532,13 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             telemetry.update();
         }
+
+        // updates the coordinates of the robot on the field
         double[] displacementInTermsOfField = rotatePoint(xRobot, yRobot, initialAngle);
         currentX += displacementInTermsOfField[0];
         currentY += displacementInTermsOfField[1];
         setPowerDriveMotors(0);
     }
-
-    /*
-    // Move with PID
-    public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
-        final double Odometry_Sideways_Error = -15.8524; // encoders per degree
-        final double Odometry_Forwards_Error = -167.92024; // encoders per degree
-
-        inchesSideways = -inchesSideways;
-        odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odoWheelSideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        odoWheelForwards.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        double toleranceEncoder = convertInchToEncoderOdom(inchesTolerance);
-        double xTarget = convertInchToEncoderOdom(inchesSideways);
-        double yTarget = convertInchToEncoderOdom(inchesForward);
-        double minSpeed = 0;// 0.005; // Change later
-
-        double disFront = yTarget; // Y displacement from the target in encoders
-        double disSide = xTarget; // X displacement from the target in encoders
-
-        double xRobot = 0; // X coordinate
-        double yRobot = 0; // Y coordinate
-        double speedFront = 0; // Y speed in encoders per second
-        double speedSide = 0; // X speed in encoders per second
-        double areaFront = 0; // Y area in encoders * seconds
-        double areaSide = 0; // X area in encoders * seconds
-
-        double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
-        double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
-
-        double pRot = 0.02; // Rotate p control loop for
-        // toleranceRot, won't rotate the robot if within the tolerance. If the
-        // angle is within the tolerance but later isn't the rotate p control loop will activate again
-        double toleranceRot = 5;
-        double iRot = .01;
-
-        // variables to help determine orientation
-        double initialAngle = getRotationInDimension('Z'); // -180 to 180
-        double lastAngleIMU = initialAngle; // -180 to 180
-        double currentAngle = initialAngle; // -inf to inf, clockwise
-
-        // ElapsedTime interval is the time between consecutive loops
-        // ElapsedTime is the time of the method itself
-        ElapsedTime interval = new ElapsedTime();
-        ElapsedTime time = new ElapsedTime();
-
-        double angleArea = 0;
-        while (opModeIsActive() && ((Math.sqrt(Math.pow(disFront, 2) + Math.pow(disSide, 2))) > toleranceEncoder || Math.abs(currentAngle - initialAngle) > toleranceRot)) {
-            // updates current angle
-            // The normal imu angle is a problem because it only goes from -180 to 180, so the
-            // change in angle would be off sometimes if you subtracted two imu angles
-            double changeInAngle;
-            double currentAngleIMU = getRotationInDimension('Z');
-            if (Math.abs(lastAngleIMU - currentAngleIMU) > 300) {
-                if (lastAngleIMU > currentAngleIMU) {
-                    currentAngle += currentAngleIMU - lastAngleIMU + 360;
-                    changeInAngle = currentAngleIMU - lastAngleIMU + 360;
-                } else {
-                    currentAngle += currentAngleIMU - lastAngleIMU - 360;
-                    changeInAngle = currentAngleIMU - lastAngleIMU - 360;
-                }
-            } else {
-                currentAngle += currentAngleIMU - lastAngleIMU;
-                changeInAngle = currentAngleIMU - lastAngleIMU;
-            }
-            lastAngleIMU = currentAngleIMU;
-            double frontOdometryWheelCurrentPosition = odoWheelForwards.getCurrentPosition();
-            double sidewaysOdometryWheelCurrentPosition = odoWheelSideways.getCurrentPosition();
-            double intervalTime = interval.seconds();
-            interval.reset();
-            double[] rotatedDisplacement = rotatePoint(sidewaysOdometryWheelCurrentPosition - sidewaysOdometryLastPosition - changeInAngle * Odometry_Sideways_Error, frontOdometryWheelCurrentPosition - frontOdometryLastPosition - changeInAngle * Odometry_Forwards_Error, currentAngle - initialAngle);
-            // Updates the area, displacement, and speed variables for the PID loop
-            yRobot += rotatedDisplacement[1];
-            xRobot += rotatedDisplacement[0];
-            speedFront = rotatedDisplacement[1] / intervalTime;
-            speedSide = rotatedDisplacement[0] / intervalTime;
-            disFront = yTarget - yRobot;
-            disSide = xTarget - xRobot;
-            areaFront += intervalTime * disFront;
-            areaSide += intervalTime * disSide;
-
-            frontOdometryLastPosition = frontOdometryWheelCurrentPosition;
-            sidewaysOdometryLastPosition = sidewaysOdometryWheelCurrentPosition;
-
-            // Cannot start at any power faster than .5 because the rotation slip would be very high
-            // Gradually increases the maxPower
-            double maxPower = Math.min(.5 + .5 * time.seconds(), .9);
-
-            double[] motorsStuff = {Kp * (disFront - disSide) + Ki * (areaFront - areaSide) + Kd * (speedFront - speedSide), Kp * (disFront + disSide) + Ki * (areaFront + areaSide) + Kd * (speedFront + speedSide)};
-            motorsStuff = rotatePoint(motorsStuff[0], motorsStuff[1], initialAngle - currentAngle);
-
-            // Sets the actual motor powers according to PID
-            // Clips it so the motor power is not too low to avoid steady-state or goes too fast
-
-            if (Math.abs(currentAngle - targetAngle) > toleranceRot) {
-                // Angle is not within tolerance, corrects using rotation p control loop as the robot strafes
-                frontLeft.setPower(-iRot * angleArea + -pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
-                backRight.setPower(iRot * angleArea + pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[0], minSpeed, maxPower));
-                frontRight.setPower(iRot * angleArea + pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
-                backLeft.setPower(-iRot * angleArea - pRot * (currentAngle - targetAngle) + motorClip(motorsStuff[1], minSpeed, maxPower));
-                angleArea += intervalTime * (currentAngle - targetAngle);
-            } else {
-                // Angle is in the angle tolerance, does not activate rotation p control loop
-                frontLeft.setPower(motorClip(motorsStuff[0], minSpeed, maxPower));
-                backRight.setPower(motorClip(motorsStuff[0], minSpeed, maxPower));
-                frontRight.setPower(motorClip(motorsStuff[1], minSpeed, maxPower));
-                backLeft.setPower(motorClip(motorsStuff[1], minSpeed, maxPower));
-                angleArea = 0;
-            }
-            double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, ROTATE_TO_MOVE_RATIO * gamepad1.right_stick_x);
-            double factor = 1;
-            if (gamepad1.left_bumper) {
-                // if left bumper is pressed, reduce the motor speed
-                factor = TeleOpMethods.LEFT_BUMPER_TRIGGER_FACTOR;
-            }
-            if (gamepad1.right_bumper) {
-                // if right bumper is pressed, reduce the motor speed
-                factor = TeleOpMethods.RIGHT_BUMPER_TRIGGER_FACTOR;
-            }
-            //frontRight.setPower(factor * answer[0]);
-            //backRight.setPower(factor * answer[1]);
-            //backLeft.setPower(factor * answer[2]);
-            //frontLeft.setPower(factor * answer[3]);
-
-            telemetry.addData("xRobot", convertEncoderToInchOdom(xRobot));
-            telemetry.addData("yRobot", convertEncoderToInchOdom(yRobot));
-            // telemetry.addData("front encoder", convertEncoderToInchOdom(odoWheelForwards.getCurrentPosition()));
-            // telemetry.addData("side encoder ", convertEncoderToInchOdom(odoWheelSideways.getCurrentPosition()));
-            telemetry.addData("Initial Angle", initialAngle);
-            telemetry.addData("Current Angle", currentAngle);
-            telemetry.addData("Target Angle", targetAngle);
-            telemetry.update();
-        }
-        setPowerDriveMotors(0);
-    }*/
 
     private double motorClip(double power, double minPower, double maxPower) {
         if (power < 0) {
@@ -840,7 +594,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             //telemetry.addData("error", error);
             //telemetry.addData("turnRate", turnRate);
             //telemetry.update();
-            setPowerDriveMotors(-(float) (turnRate * direction), (float) (turnRate * direction));
+            setPowerDriveMotors((float) (turnRate * direction), - (float) (turnRate * direction));
         }
         while (opModeIsActive() && error > tolerance);
         setPowerDriveMotors(0);

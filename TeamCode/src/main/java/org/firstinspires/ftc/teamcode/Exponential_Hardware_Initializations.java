@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -20,12 +21,12 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 public abstract class Exponential_Hardware_Initializations extends LinearOpMode {
 
-    protected DcMotor frontLeft;
-    protected DcMotor frontRight;
-    protected DcMotor backLeft;
-    protected DcMotor backRight;
-    protected DcMotor intakeLeft;
-    protected DcMotor intakeRight;
+    protected DcMotorEx frontLeft;
+    protected DcMotorEx frontRight;
+    protected DcMotorEx backLeft;
+    protected DcMotorEx backRight;
+    protected DcMotorEx intakeLeft;
+    protected DcMotorEx intakeRight;
     protected Servo intakeServoLeft;
     protected Servo intakeServoRight;
     protected Servo hookServoLeft;
@@ -42,8 +43,8 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
     protected RevBlinkinLedDriver.BlinkinPattern pattern;
     //protected DisplayKind displayKind;
 
-    protected DcMotor slideUp;
-    protected DcMotor slideDown;
+    protected DcMotorEx slideUp;
+    protected DcMotorEx slideDown;
     protected DcMotor[] driveMotors = new DcMotor[4];
     protected ColorSensor sensorColor;
     protected DistanceSensor sensorDistance;
@@ -56,10 +57,10 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        frontRight = hardwareMap.dcMotor.get("frontRight");
-        backLeft = hardwareMap.dcMotor.get("backLeft");
-        backRight = hardwareMap.dcMotor.get("backRight");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        backRight = hardwareMap.get(DcMotorEx.class, "backRight");
         intakeServoLeft = hardwareMap.servo.get("intakeServoLeft");
         intakeServoRight = hardwareMap.servo.get("intakeServoRight");
         yeetServo = hardwareMap.servo.get("yeetServo");
@@ -74,10 +75,10 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         hookServoLeft = hardwareMap.servo.get("hookServoLeft");
         hookServoRight = hardwareMap.servo.get("hookServoRight");
 
-        intakeLeft = hardwareMap.dcMotor.get("intakeLeft");
-        intakeRight = hardwareMap.dcMotor.get("intakeRight");
-        slideUp = hardwareMap.dcMotor.get("slideRight");
-        slideDown = hardwareMap.dcMotor.get("slideLeft");
+        intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
+        intakeRight = hardwareMap.get(DcMotorEx.class, "intakeRight");
+        slideUp = hardwareMap.get(DcMotorEx.class, "slideRight");
+        slideDown = hardwareMap.get(DcMotorEx.class, "slideLeft");
 
         odoWheelForwards = intakeLeft;
         //Encoder cable for forwards odometry wheel is plugged into the intakeLeft motor encoder
@@ -87,11 +88,11 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
         // sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         intakeServoRight.setDirection(Servo.Direction.REVERSE);
-        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeRight.setDirection(DcMotorEx.Direction.REVERSE);
         hookServoRight.setDirection(Servo.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        slideUp.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
+        backRight.setDirection(DcMotorEx.Direction.REVERSE);
+        slideUp.setDirection(DcMotorEx.Direction.REVERSE);
         // slideDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
         driveMotors[0] = frontLeft;
@@ -105,15 +106,15 @@ public abstract class Exponential_Hardware_Initializations extends LinearOpMode 
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        odoWheelSideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odoWheelForwards.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odoWheelSideways.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        odoWheelForwards.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slideUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        odoWheelSideways.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        odoWheelForwards.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        odoWheelSideways.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        odoWheelForwards.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        slideUp.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        slideDown.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        slideUp.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        slideDown.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        slideUp.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        slideDown.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
 }

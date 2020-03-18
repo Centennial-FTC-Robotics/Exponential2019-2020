@@ -12,24 +12,42 @@ import org.firstinspires.ftc.teamcode.Exponential_Methods;
 
 @TeleOp(name = "TeleOp: Regular", group = "TeleOp")
 public class TeleOpMethods extends Exponential_Methods {
+    // The amount the drive train and slides slow down to when the left and right bumper is held down respectively
     public static final double LEFT_BUMPER_TRIGGER_FACTOR = .5;
     public static final double RIGHT_BUMPER_TRIGGER_FACTOR = .25;
+
+
+    // The servo positions of the intake servos when they open and close
     public static final double LEFT_SERVO_OPEN_POSITION = .4;
     public static final double RIGHT_SERVO_OPEN_POSITION = .7;
     public static final double LEFT_SERVO_CLOSE_POSITION = .66;
     public static final double RIGHT_SERVO_CLOSE_POSITION = .96;
+
+    // Max and minimum positions of the slides (slideMax and slideMin are variables in exponential methods)
     public static final int SLIDE_MAX = slideMax - slideMin;
     public static final int SLIDE_MIN = 0;
+
+    // To prevent double pressing, we added a timers that would only render a button press ever TIMER_INTERVAL seconds
     public static final double TIMER_INTERVAL = .15;
     public static final double INTAKE_SERVOS_TIMER_INTERVAL = .3;
     public static final double HOOK_SERVOS_TIMER_INTERVAL = .3;
     public static final double HOOD_SERVOS_TIMER_INTERVAL = .3;
     public static final double INTAKE_MOTORS_INTAKE = -1;
     public static final double INTAKE_MOTORS_OUTTAKE = 1;
+
+    // Adjusts how sensitive the rotation of a robot is compared to its linear movement (larger the ratio, the more sensitive the rotation will be)
     public static final double ROTATE_TO_MOVE_RATIO = .8;
+
+    // Adjusts how fast or slow the slide motors go
     public static final double SLIDE_FACTOR = .63;
+
+    // Adjusts the speed of the intake wheels
     public static final double INTAKE_WHEELS_SPEED_FACTOR = 1;
+
+    // Don't worry about this
     public static final double SLIDE_POWER = .3; //Don't change this, EVER
+
+    // Position of the yeeter servo
     public static final double YEETER_EXTENSION_POSITION = .4;
 
     public boolean servosOpen = true;
@@ -67,7 +85,7 @@ public class TeleOpMethods extends Exponential_Methods {
     }
 
     public void driveTrain() {
-        double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, ROTATE_TO_MOVE_RATIO * gamepad1.right_stick_x);
+        double[] motorPowers = getMotorPowers(gamepad1.left_stick_x, -gamepad1.left_stick_y, ROTATE_TO_MOVE_RATIO * gamepad1.right_stick_x);
         double factor = 1;
         if (gamepad1.left_bumper) {
             // if left bumper is pressed, reduce the motor speed
@@ -77,11 +95,12 @@ public class TeleOpMethods extends Exponential_Methods {
             // if right bumper is pressed, reduce the motor speed
             factor = RIGHT_BUMPER_TRIGGER_FACTOR;
         }
-        frontRight.setPower(factor * answer[0]);
-        backRight.setPower(factor * answer[1]);
-        backLeft.setPower(factor * answer[2]);
-        frontLeft.setPower(factor * answer[3]);
+        frontRight.setPower(factor * motorPowers[0]);
+        backRight.setPower(factor * motorPowers[1]);
+        backLeft.setPower(factor * motorPowers[2]);
+        frontLeft.setPower(factor * motorPowers[3]);
 
+        // D Pad driver assist
         if (gamepad1.dpad_down || gamepad1.dpad_up) {
             turnRelative(180);
         }
@@ -214,8 +233,4 @@ public class TeleOpMethods extends Exponential_Methods {
             setIntakeWheels(gamepad2.right_stick_y * INTAKE_WHEELS_SPEED_FACTOR);
         }
     }
-
-
-    // converts between the input of the trigger to the power of the motors
-    // don't worry about the math
 }
