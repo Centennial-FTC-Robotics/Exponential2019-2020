@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-import org.firstinspires.ftc.teamcode.Exponential_Methods;
+import org.firstinspires.ftc.teamcode.AutonomousPaths;
 
 //@Autonomous(group = "Autonomous", name = "Red Foundation")
 public class RedFoundationAuto extends AutonomousPaths {

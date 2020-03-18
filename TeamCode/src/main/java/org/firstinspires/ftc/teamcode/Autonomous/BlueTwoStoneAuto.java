@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.AutonomousPaths;
 import org.firstinspires.ftc.teamcode.SkystoneDetector;
 
 @Autonomous(group = "Autonomous", name = "Blue 2 Stone")

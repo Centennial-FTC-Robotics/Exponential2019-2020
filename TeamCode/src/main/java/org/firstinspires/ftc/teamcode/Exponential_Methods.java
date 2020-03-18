@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 
@@ -18,13 +17,8 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.robotcore.internal.tfod.Timer;
-import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMethods;
 
 import java.util.List;
-
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.TFOD_MODEL_ASSET;
-import static org.firstinspires.ftc.teamcode.TeleOp.TeleOpMethods.ROTATE_TO_MOVE_RATIO;
 
 public abstract class Exponential_Methods extends Exponential_Hardware_Initializations {
 
@@ -286,8 +280,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     // implements Runnable for multiThreading if needed
     class ExpoBot implements Runnable {
-        final double Odometry_Sideways_Error = -21.8524; // encoders per degree
-        final double Odometry_Forwards_Error = -191.92024; // encoders per degree
+        final static double Odometry_Forwards_Error = -191.92024; // encoders per degree
+        final static double Odometry_Sideways_Error = -21.8524; // encoders per degree
 
         // The following 6 variables are in terms of the field
         // In terms of encoders too
@@ -298,7 +292,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         public double targetX = 0;
         public double targetY = 0;
 
-        // positive X on the field is 0
+        // positive X on the field is angle = 0
         // positive goes counterclockwise
         // angles are unnormalized
         public double startingAngle = 90;
@@ -313,7 +307,9 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
 
         public void run() {
-            updateRobot();
+            while(opModeIsActive()) {
+                updateRobot();
+            }
         }
 
         // variables it needs to keep track of position with
@@ -367,7 +363,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
     }
 
-    ExpoBot decay = new ExpoBot();
+    public ExpoBot decay = new ExpoBot();
 
 
    /* public void moveTo(double x, double y) {  //if red,positions are the bottom right of robot
@@ -442,7 +438,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void move(double inchesSideways, double inchesForward, double inchesTolerance) {
         double p = 0.00005;
         double i = 0.0000135;
-        double d = -0.000014;
+        double d = 0.000014;
         // TODO: 3/18/2020 Make sure Diego's modification to the odometry wheels doesn't change anything (no wrong direction on either and change encoders per radian)
         // TODO: fix all the PID stuff because now everything is inverted (including rotation and linear)
         // PID numbers (I know, they're supposed to be all positive, I think that the motors maybe in the wrong direction)
@@ -474,6 +470,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         runToTarget(inchesTolerance, Kp, Ki, Kd);
     }
 
+
+    // Tells the robot to move to the target
     public void runToTarget(double inchesTolerance, double Kp, double Ki, double Kd) {
         frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -500,7 +498,6 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         // 0th index is frontRight and backLeft, 1th index is frontLeft and backRight
         double[] linearMotorPowers = new double[2];
 
-
         // variables for angle correction PID
         double angleTolerance = 5;
         double angleP = .02;
@@ -511,8 +508,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         double maxPower = 0.8;
 
         while (opModeIsActive() && !within(inchesTolerance)) {
-            linearMotorPowers[0] = Kp * yDis + Ki * yArea + Kp * yVel + Kp * xDis + Ki * xArea + Kd * xVel;
-            linearMotorPowers[1] = Kp * yDis + Ki * yArea + Kp * yVel - (Kp * xDis + Ki * xArea + Kd * xVel);
+            linearMotorPowers[0] = Kp * yDis + Ki * yArea - Kd * yVel + Kp * xDis + Ki * xArea - Kd * xVel;
+            linearMotorPowers[1] = Kp * yDis + Ki * yArea - Kd * yVel - (Kp * xDis + Ki * xArea - Kd * xVel);
 
             // rotates the linearMotorsPowers to get them in terms of robot
             linearMotorPowers = rotatePoint(linearMotorPowers[0], linearMotorPowers[1], -decay.currentAngle);
@@ -520,10 +517,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             linearMotorPowers[1] = Range.clip(linearMotorPowers[1], -maxPower, maxPower);
 
             if (Math.abs(angleDis) > angleTolerance) {
-                frontRight.setPower(angleP * angleDis + angleI * angleArea + angleD * angleVel + linearMotorPowers[0]);
-                frontLeft.setPower(-angleP * angleDis - angleI * angleArea - angleD * angleVel + linearMotorPowers[1]);
-                backRight.setPower(angleP * angleDis + angleI * angleArea + angleD * angleVel + linearMotorPowers[1]);
-                backLeft.setPower(-angleP * angleDis - angleI * angleArea - angleD * angleVel + linearMotorPowers[0]);
+                frontRight.setPower(angleP * angleDis + angleI * angleArea - angleD * angleVel + linearMotorPowers[0]);
+                frontLeft.setPower(-angleP * angleDis - angleI * angleArea + angleD * angleVel + linearMotorPowers[1]);
+                backRight.setPower(angleP * angleDis + angleI * angleArea - angleD * angleVel + linearMotorPowers[1]);
+                backLeft.setPower(-angleP * angleDis - angleI * angleArea + angleD * angleVel + linearMotorPowers[0]);
             } else {
                 frontRight.setPower(linearMotorPowers[0]);
                 frontLeft.setPower(linearMotorPowers[1]);
@@ -560,7 +557,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     private boolean within(double radiusInch) {
         double xDis = decay.targetX - decay.currentX;
         double yDis = decay.targetY - decay.currentY;
-        double radius = convertInchToEncoder(radiusInch);
+        double radius = convertInchToEncoderOdom(radiusInch);
         return Math.sqrt(Math.pow(xDis, 2) + Math.pow(yDis, 2)) <= radius;
     }
 
@@ -833,5 +830,4 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
         return blocksMoved * 8;
     }
-
 }

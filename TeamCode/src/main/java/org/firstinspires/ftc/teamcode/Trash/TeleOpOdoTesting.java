@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.Trash;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Exponential_Methods;
-import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMethods;
+import org.firstinspires.ftc.teamcode.TeleOpMethods;
 
 @TeleOp(name = "Odometry TeleOp Testing")
 public class TeleOpOdoTesting extends TeleOpMethods {

@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.TeleOpMethods;
+
 @TeleOp(name = "TeleOp: OneController", group = "TeleOp")
 public class OneController extends TeleOpMethods {
     public void runOpMode() throws InterruptedException {

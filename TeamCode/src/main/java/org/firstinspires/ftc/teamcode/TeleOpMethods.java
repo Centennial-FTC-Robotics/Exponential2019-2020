@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -81,6 +81,11 @@ public class TeleOpMethods extends Exponential_Methods {
             yeetServos();
             clawServo();
             //hoodServos();
+            decay.updateRobot();
+            telemetry.addData("x coordinate in inches", convertEncoderToInchOdom(decay.currentX));
+            telemetry.addData("y coordinate in inches", convertEncoderToInchOdom(decay.currentY));
+            telemetry.addData("angle", decay.currentAngle);
+            telemetry.update();
         }
     }
 

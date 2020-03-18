@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
-import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMethods;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.Exponential_Methods;
 import org.firstinspires.ftc.teamcode.Position;
@@ -20,8 +20,8 @@ public class AutonomousPaths extends Exponential_Methods {
         double startX = 3 * TILE_LENGTH * factor;
         double startY = /*TILE_LENGTH * 2 - ROBOT_LENGTH*/ TILE_LENGTH /* + something */;
 
-        currentX = startX;
-        currentY = startY;
+        decay.currentX = startX;
+        decay.currentY = startY;
 
         int inchesBlocks = stonePos * 8;
 
@@ -33,7 +33,7 @@ public class AutonomousPaths extends Exponential_Methods {
         double intakeWidthOffset = 2;
 
         if (stonePos == 2) {
-            setTargetPosition(targetX, -TILE_LENGTH + MIDDLE_OF_TILE);
+            setTargetPosition(decay.targetX, -TILE_LENGTH + MIDDLE_OF_TILE);
 
             turnAbsolute(270 - factor * 45);
             //turnAbsolute(225);
@@ -49,14 +49,14 @@ public class AutonomousPaths extends Exponential_Methods {
             turnAbsolute(270);
             //turnRelative(factor * 45);
         } else {
-            setTargetPosition(targetX, -2 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
+            setTargetPosition(decay.targetX, -2 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
             moveRelative(factor * -TILE_LENGTH / 2, 0);
 
             yuhwanIntakeStone();
 
             moveRelative(factor * TILE_LENGTH / 2, 0);
         }
-        setTargetPosition(targetX, FOUNDATION_POSITION_MOVETO);
+        setTargetPosition(decay.targetX, FOUNDATION_POSITION_MOVETO);
 
         //releasing stone
         extendSlidesBy(6, .5);
@@ -83,35 +83,35 @@ public class AutonomousPaths extends Exponential_Methods {
 
         //rotating foundation
 
-        setTargetPosition(factor * (3 * TILE_LENGTH - MIDDLE_OF_TILE), targetY);
+        setTargetPosition(factor * (3 * TILE_LENGTH - MIDDLE_OF_TILE), decay.targetY);
 
         turnAbsolute(270);
 
         toggleHook(true);
         //centering with second tile
-        setTargetPosition(factor * (2 * TILE_LENGTH - MIDDLE_OF_TILE), targetY);
+        setTargetPosition(factor * (2 * TILE_LENGTH - MIDDLE_OF_TILE), decay.targetY);
         //moving to intake second block
-        setTargetPosition(targetX, -3 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
+        setTargetPosition(decay.targetX, -3 * TILE_LENGTH + inchesBlocks + intakeWidthOffset);
 
         moveRelative(factor * -TILE_LENGTH / 2, 0);
         yuhwanIntakeStone();
         moveRelative(factor * TILE_LENGTH / 2, 0);
         //moving to 4th tile to rotate and extend slides
-        setTargetPosition(targetX, TILE_LENGTH);
+        setTargetPosition(decay.targetX, TILE_LENGTH);
         extendSlidesBy(6, .5);
 
         turnAbsolute(90);
         //turnRelative(180);
 
         //placing the stone
-        setTargetPosition(targetX, TILE_LENGTH * 3 - ROBOT_LENGTH - FOUNDATION_WIDTH);
+        setTargetPosition(decay.targetX, TILE_LENGTH * 3 - ROBOT_LENGTH - FOUNDATION_WIDTH);
         releaseStone();
         //moving back to lower slides
         moveRelative(0, -TILE_LENGTH);
         extendSlidesBy(-6, .5);
         outwardsIntake();
         //park
-        setTargetPosition(targetX, -ROBOT_LENGTH / 2);
+        setTargetPosition(decay.targetX, -ROBOT_LENGTH / 2);
 
     }
     public void twoStoneAuto(String color, int stonePos) { //starts facing the bridge
@@ -129,8 +129,8 @@ public class AutonomousPaths extends Exponential_Methods {
         double startX = /*TILE_LENGTH * 2 - ROBOT_LENGTH *//*- MIDDLE_OF_TILE*/TILE_LENGTH;
         double startY = 0;
 
-        currentX = startX;
-        currentY = startY;
+        decay.currentX = startX;
+        decay.currentY = startY;
 
         int inchesBlocks = stonePos * 8;
 

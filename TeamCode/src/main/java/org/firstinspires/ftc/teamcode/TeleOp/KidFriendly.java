@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.TeleOpMethods;
+
 @TeleOp(name = "TeleOp: Kid Friendly", group = "TeleOp")
 public class KidFriendly extends TeleOpMethods {
     public void driveTrain() {

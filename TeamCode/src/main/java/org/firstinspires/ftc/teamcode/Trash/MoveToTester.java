@@ -2,8 +2,7 @@ package org.firstinspires.ftc.teamcode.Trash;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPaths;
-import org.firstinspires.ftc.teamcode.Position;
+import org.firstinspires.ftc.teamcode.AutonomousPaths;
 
 @Autonomous(group = "Autonomous", name = "moveTo tester")
 public class MoveToTester extends AutonomousPaths {

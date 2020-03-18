@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.TeleOpMethods;
+
 @TeleOp(name = "Dual Mode", group = "TeleOp")
 public class DualModeTeleOp extends TeleOpMethods {
     String mode = "Regular";

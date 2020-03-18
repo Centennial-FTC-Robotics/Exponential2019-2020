@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.Trash;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMethods;
+import org.firstinspires.ftc.teamcode.TeleOpMethods;
 
 //@TeleOp(group = "TeleOp", name = "Diego Test")
 public class DiegoTesting extends TeleOpMethods {

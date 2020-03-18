@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Exponential_Methods;
+import org.firstinspires.ftc.teamcode.AutonomousPaths;
 import org.firstinspires.ftc.teamcode.SkystoneDetector;
 
 @Autonomous(group = "Autonomous", name = "Blue Corner")
