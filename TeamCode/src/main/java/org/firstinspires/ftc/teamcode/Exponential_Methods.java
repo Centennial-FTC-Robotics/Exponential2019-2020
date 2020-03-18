@@ -255,7 +255,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             x = 0.0;
         } else {
             x = triggerX / Math.abs(triggerX) * Math.sqrt(Math.pow(triggerX, 2) + Math.pow(triggerY, 2))
-                    * (Math.abs(triggerX)) / (Math.abs(triggerY) + Math.abs(triggerY));
+                    * (Math.abs(triggerX)) / (Math.abs(triggerX) + Math.abs(triggerY));
         }
         if (triggerY == 0.0) {
             y = 0.0;
