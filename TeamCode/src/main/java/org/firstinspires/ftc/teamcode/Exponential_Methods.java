@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -352,7 +353,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                     frontOdometryWheelCurrentPosition - frontOdometryLastPosition - changeInAngle * Odometry_Forwards_Error};
 
             // rotates the displacement vector so its in terms of the field
-            displacement = rotatePoint(displacement[0], displacement[1], -currentAngle - 90);
+            displacement = rotatePoint(displacement[0], displacement[1], currentAngle - 90);
 
             currentX += displacement[0];
             currentY += displacement[1];
@@ -464,11 +465,105 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
     public void moveWithAngle(double inchesSideways, double inchesForward, double Kp, double Ki, double Kd, double inchesTolerance, double targetAngle) {
         decay.targetAngle = targetAngle;
+        double[] changeTargetBy = {inchesSideways, inchesForward};
 
-        
-
-        setPowerDriveMotors(0);
+        decay.updateRobot();
+        changeTargetBy = rotatePoint(changeTargetBy[0], changeTargetBy[1], decay.currentAngle - 90);
+        decay.targetX += convertInchToEncoderOdom(changeTargetBy[0]);
+        decay.targetY += convertInchToEncoderOdom(changeTargetBy[1]);
+        runToTarget(inchesTolerance, Kp, Ki, Kd);
     }
+
+    public void runToTarget(double inchesTolerance, double Kp, double Ki, double Kd) {
+        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        // Displacement for p portion of the PID loop
+        double xDis = decay.targetX - decay.currentX;
+        double yDis = decay.targetY - decay.currentY;
+        double angleDis = decay.targetAngle - decay.currentAngle;
+
+        // Area for i portion of the PID loop
+        double xArea = 0;
+        double yArea = 0;
+        double angleArea = 0;
+
+        // Velocity for d portion of the PID loop
+        double xVel = 0;
+        double yVel = 0;
+        double angleVel = 0;
+
+        ElapsedTime whileLoopTime = new ElapsedTime();
+        // The motor power portion for the linear movement (there will also be a rotational movement)
+        // 0th index is frontRight and backLeft, 1th index is frontLeft and backRight
+        double[] linearMotorPowers = new double[2];
+
+
+        // variables for angle correction PID
+        double angleTolerance = 5;
+        double angleP = .02;
+        double angleI = .01;
+        double angleD = 0;
+
+        // maxPower for linear movement
+        double maxPower = 0.8;
+
+        while (opModeIsActive() && !within(inchesTolerance)) {
+            linearMotorPowers[0] = Kp * yDis + Ki * yArea + Kp * yVel + Kp * xDis + Ki * xArea + Kd * xVel;
+            linearMotorPowers[1] = Kp * yDis + Ki * yArea + Kp * yVel - (Kp * xDis + Ki * xArea + Kd * xVel);
+
+            // rotates the linearMotorsPowers to get them in terms of robot
+            linearMotorPowers = rotatePoint(linearMotorPowers[0], linearMotorPowers[1], -decay.currentAngle);
+            linearMotorPowers[0] = Range.clip(linearMotorPowers[0], -maxPower, maxPower);
+            linearMotorPowers[1] = Range.clip(linearMotorPowers[1], -maxPower, maxPower);
+
+            if (Math.abs(angleDis) > angleTolerance) {
+                frontRight.setPower(angleP * angleDis + angleI * angleArea + angleD * angleVel + linearMotorPowers[0]);
+                frontLeft.setPower(-angleP * angleDis - angleI * angleArea - angleD * angleVel + linearMotorPowers[1]);
+                backRight.setPower(angleP * angleDis + angleI * angleArea + angleD * angleVel + linearMotorPowers[1]);
+                backLeft.setPower(-angleP * angleDis - angleI * angleArea - angleD * angleVel + linearMotorPowers[0]);
+            } else {
+                frontRight.setPower(linearMotorPowers[0]);
+                frontLeft.setPower(linearMotorPowers[1]);
+                backRight.setPower(linearMotorPowers[1]);
+                backLeft.setPower(linearMotorPowers[0]);
+            }
+            decay.updateRobot();
+            double time = whileLoopTime.seconds();
+            whileLoopTime.reset();
+            xDis = decay.targetX - decay.currentX;
+            yDis = decay.targetY - decay.currentY;
+            angleDis = decay.targetAngle - decay.currentAngle;
+            if (within(5)) {
+                xArea += xDis * time;
+                yArea += yDis * time;
+            } else {
+                xArea = 0;
+                yArea = 0;
+            }
+            if (Math.abs(angleDis) > angleTolerance) {
+                angleArea += angleDis * time;
+                angleArea = Range.clip(angleArea, -0.2, 0.2);
+            } else {
+                angleArea = 0;
+            }
+            xVel = decay.velX;
+            yVel = decay.velY;
+            angleVel = decay.angleVel;
+        }
+    }
+
+    // returns whether the robot is within a certain radius of the target position
+    // DOES NOT UPDATE THE ROBOT POSITION, you need to do that manually
+    private boolean within(double radiusInch) {
+        double xDis = decay.targetX - decay.currentX;
+        double yDis = decay.targetY - decay.currentY;
+        double radius = convertInchToEncoder(radiusInch);
+        return Math.sqrt(Math.pow(xDis, 2) + Math.pow(yDis, 2)) <= radius;
+    }
+
 
     private double motorClip(double power, double minPower, double maxPower) {
         if (power < 0) {
