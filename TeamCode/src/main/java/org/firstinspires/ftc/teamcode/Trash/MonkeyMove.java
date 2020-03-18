@@ -13,7 +13,7 @@ public class MonkeyMove extends Exponential_Methods {
 
         while ((Math.abs(encoderXDistance) > encoderTolerance || Math.abs(encoderYDistance) > encoderTolerance) && opModeIsActive()) {
             double magnitude = Math.sqrt(Math.pow(encoderXDistance, 2) + Math.pow(encoderYDistance, 2));
-            double[] motorPowers = circle_to_taxicab(encoderXDistance / magnitude, encoderYDistance / magnitude, 0);
+            double[] motorPowers = getMotorPowers(encoderXDistance / magnitude, encoderYDistance / magnitude, 0);
 
             double factor = 1;
             frontRight.setPower(factor * motorPowers[0]);

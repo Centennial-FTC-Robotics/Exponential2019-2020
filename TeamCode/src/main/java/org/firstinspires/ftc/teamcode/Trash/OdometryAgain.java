@@ -150,7 +150,7 @@ public class OdometryAgain extends Exponential_Methods {
 
             // sets the robot to respond to the gamepad
             // TODO take out the gamepad actions
-            double[] answer = circle_to_taxicab(gamepad1.left_stick_x, gamepad1.left_stick_y, 0.8 * gamepad1.right_stick_x);
+            double[] answer = getMotorPowers(gamepad1.left_stick_x, gamepad1.left_stick_y, 0.8 * gamepad1.right_stick_x);
             double factor = 1;
             if (gamepad1.left_bumper) {
                 // if left bumper is pressed, reduce the motor speed
