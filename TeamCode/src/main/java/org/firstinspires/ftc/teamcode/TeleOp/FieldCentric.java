@@ -25,7 +25,7 @@ public class FieldCentric extends TeleOpMethods {
         double centricX = inputX*Math.cos(currentAngle)+inputY*Math.sin(currentAngle);
         double centricY = inputX*Math.sin(currentAngle)-inputY*Math.cos(currentAngle);
 
-        double[] answer = circle_to_taxicab(centricX, centricY, ROTATE_TO_MOVE_RATIO*gamepad1.right_stick_x);
+        double[] answer = getMotorPowers(centricX, centricY, ROTATE_TO_MOVE_RATIO*gamepad1.right_stick_x);
         double factor = 1;
         if(gamepad1.left_bumper){
             factor = LEFT_BUMPER_TRIGGER_FACTOR;
