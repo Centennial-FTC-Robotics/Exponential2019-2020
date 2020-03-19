@@ -312,17 +312,17 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             }
         }
 
-        public void initialize(){
+        public void initialize() {
             lastAngleIMU = getRotationInDimension('Z');
-            frontOdometryLastPosition =  odoWheelForwards.getCurrentPosition();
-            sidewaysOdometryLastPosition =  odoWheelSideways.getCurrentPosition();
+            frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
+            sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
         }
+
         // variables it needs to keep track of position with
         private double lastAngleIMU; // -180 to 180
         private double changeInAngle = 0;
         private double frontOdometryLastPosition;
         private double sidewaysOdometryLastPosition;
-
 
         private ElapsedTime time = new ElapsedTime();
 
@@ -354,7 +354,8 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
                     frontOdometryWheelCurrentPosition - frontOdometryLastPosition - changeInAngle * Odometry_Forwards_Error};
 
             // rotates the displacement vector so its in terms of the field
-            displacement = rotatePoint(displacement[0], displacement[1], currentAngle - 90);
+            // negative on displacement[0] is because the odometry wheel is in reverse
+            displacement = rotatePoint(-displacement[0], displacement[1], currentAngle - 90);
 
             currentX += displacement[0];
             currentY += displacement[1];
