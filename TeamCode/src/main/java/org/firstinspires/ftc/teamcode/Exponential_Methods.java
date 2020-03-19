@@ -57,7 +57,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         initializeIMU();
-
+        decay.initialize();
         //initVuforia();
         //initTfod();
 
@@ -307,16 +307,21 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
         }
 
         public void run() {
-            while(opModeIsActive()) {
+            while (opModeIsActive()) {
                 updateRobot();
             }
         }
 
+        public void initialize(){
+            lastAngleIMU = getRotationInDimension('Z');
+            frontOdometryLastPosition =  odoWheelForwards.getCurrentPosition();
+            sidewaysOdometryLastPosition =  odoWheelSideways.getCurrentPosition();
+        }
         // variables it needs to keep track of position with
-        private double lastAngleIMU = getRotationInDimension('Z'); // -180 to 180
+        private double lastAngleIMU; // -180 to 180
         private double changeInAngle = 0;
-        private double frontOdometryLastPosition = odoWheelForwards.getCurrentPosition();
-        private double sidewaysOdometryLastPosition = odoWheelSideways.getCurrentPosition();
+        private double frontOdometryLastPosition;
+        private double sidewaysOdometryLastPosition;
 
 
         private ElapsedTime time = new ElapsedTime();
@@ -512,7 +517,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             linearMotorPowers[1] = Kp * yDis + Ki * yArea - Kd * yVel - (Kp * xDis + Ki * xArea - Kd * xVel);
 
             // rotates the linearMotorsPowers to get them in terms of robot
-            linearMotorPowers = rotatePoint(linearMotorPowers[0], linearMotorPowers[1], -decay.currentAngle);
+            linearMotorPowers = rotatePoint(linearMotorPowers[0], linearMotorPowers[1], -decay.currentAngle + 90);
             linearMotorPowers[0] = Range.clip(linearMotorPowers[0], -maxPower, maxPower);
             linearMotorPowers[1] = Range.clip(linearMotorPowers[1], -maxPower, maxPower);
 
