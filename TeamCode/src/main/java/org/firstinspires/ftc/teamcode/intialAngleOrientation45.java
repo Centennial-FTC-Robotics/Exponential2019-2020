@@ -19,7 +19,7 @@ public class intialAngleOrientation45 extends Exponential_Methods {
         odoWheelForwards.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         odoWheelSideways.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        decay.startingAngle = 45;
+        decay.setStartingAngle(45);
         while(opModeIsActive()){
             decay.updateRobot();
             telemetry.addData("X coord", convertEncoderToInchOdom(decay.currentX));

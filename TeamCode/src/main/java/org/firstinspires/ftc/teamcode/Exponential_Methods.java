@@ -306,6 +306,10 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
             this.targetAngle = targetAngle;
         }
 
+        public void setStartingAngle(double initial){
+            startingAngle = initial;
+        }
+
         public void run() {
             while (opModeIsActive()) {
                 updateRobot();
@@ -355,7 +359,7 @@ public abstract class Exponential_Methods extends Exponential_Hardware_Initializ
 
             // rotates the displacement vector so its in terms of the field
             // negative on displacement[0] is because the odometry wheel is in reverse
-            displacement = rotatePoint(-displacement[0], displacement[1], currentAngle - 90);
+            displacement = rotatePoint(-displacement[0], displacement[1], currentAngle-90);
 
             currentX += displacement[0];
             currentY += displacement[1];

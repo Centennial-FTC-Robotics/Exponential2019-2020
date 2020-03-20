@@ -16,7 +16,7 @@ public class initialAngleOrientation180 extends Exponential_Methods {
         odoWheelForwards.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         odoWheelSideways.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        decay.startingAngle = 180;
+        decay.setStartingAngle(180);
         while(opModeIsActive()){
             decay.updateRobot();
             telemetry.addData("X coord", convertEncoderToInchOdom(decay.currentX));

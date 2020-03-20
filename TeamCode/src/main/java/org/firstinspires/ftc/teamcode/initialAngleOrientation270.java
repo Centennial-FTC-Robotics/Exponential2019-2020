@@ -16,7 +16,7 @@ public class initialAngleOrientation270 extends Exponential_Methods  {
         odoWheelForwards.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         odoWheelSideways.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        decay.startingAngle = 270;
+        decay.setStartingAngle(270);
         while(opModeIsActive()){
             decay.updateRobot();
             telemetry.addData("X coord", convertEncoderToInchOdom(decay.currentX));
